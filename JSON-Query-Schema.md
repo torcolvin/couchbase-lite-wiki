@@ -4,7 +4,9 @@ The JSON describes a parse tree. Each node of the tree describes an operation an
 
 A nice compact way to represent this is as a one-item JSON object whose key represents the operation and value represents the operands; for example `{"AND": [{...}, {...}]}`. If there's only one operand we don't need to put it in an array.
 
-The leaves of the tree are things like constants, property names and query parameter names. We can represent constants as their equivalent JSON scalar values, and the others as special operands whose values are strings.
+## Values
+
+The leaves of the tree are values like constants, property names and query parameter names. We can represent constants as their equivalent JSON scalar values, and the others as special operands whose values are strings.
 
 | Type | Representation | Example |
 |------|----------------|---------|
@@ -47,3 +49,8 @@ The operations can be named after their N1QL/SQL equivalents.
 | `prop` | 1 (path string) |
 | **Parameters:** |
 | `param` | 1 (name or position) |
+| **Query** |
+| `SELECT` | 1+ (of types below) |
+| `FROM` | 1+ (database names) |
+| `WHERE` | 1 |
+| `ORDER` | 1+ |
