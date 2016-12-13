@@ -50,7 +50,33 @@ The operations can be named after their N1QL/SQL equivalents.
 | **Parameters:** |
 | `param` | 1 (name or position) |
 | **Query** |
-| `SELECT` | 1+ (of types below) |
+| `QUERY` | 1+ (of types below) |
+| `SELECT` | 1+ |
 | `FROM` | 1+ (database names) |
 | `WHERE` | 1 |
 | `ORDER` | 1+ |
+| `LIMIT` | 1 |
+| `OFFSET` | 1 |
+
+## Example
+
+`SELECT name.first, name.last FROM students WHERE grade = 12 AND gpa >= 4.0`
+
+As a JSON tree this looks like:
+
+```
+{QUERY: [
+  {SELECT: [
+    {prop: "name.first"},
+    {prop: "name.last"} ] },
+  {FROM:
+    "students"},
+  {WHERE:
+    {AND: [
+      {"=": [
+        {prop: "grade"},
+        12 ]},
+      {">=": [
+        {prop: "gpa"},
+        4.0 ]} ]}} ]}
+```
