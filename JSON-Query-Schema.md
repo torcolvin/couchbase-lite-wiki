@@ -18,55 +18,46 @@ The leaves of the tree are values like constants, property names and query param
 
 The operations can be named after their N1QL/SQL equivalents.
 
-| Name | Operand Count |
-|------|---------------|
-| **Arithmetic:** |
-| `+`  | 2+ |
-| `-`  | 1 or 2 |
-| `*`  | 2+ |
-| `/`  | 2 |
-| `%`  | 2 |
-| `||`  | 2+ |
-| **Relational:** |
-| `=` | 2 |
-| `!=` | 2 |
-| `<` | 2 |
-| `<=` | 2 |
-| `>` | 2 |
-| `>=` | 2 |
-| `BETWEEN` | 3 (value, min, max) |
-| `IS` | 2 |
-| `IS NOT` | 2 |
-| `LIKE` | 2 |
-| `IN` | 2+ (value, option1, ...) |
-| `Exists` | 1 |
-| **Logical:** |
-| `NOT` | 1 |
-| `AND` | 2+ |
-| `OR` | 2+ |
-| **Functions:** |
-| _name_`()` | Depends on function |
-| **Conditional:** |
-| `CASE` | 1+ |
-| **Nested:** |
-| `.` | 2 (parent, child) |
-| `[]` | 1+ (index or range) |
-| **Collection:** |
-| `ANY` | 1 (expression) |
-| `EVERY` | 2 (expression) |
-| `ANY AND EVERY` | 2 (expression) |
-| **Properties:** |
-| `prop` | 1 (path string) |
-| **Parameters:** |
-| `param` | 1 (name or position) |
-| **Query** |
-| `QUERY` | 1+ (of types below) |
-| `SELECT` | 1+ |
-| `FROM` | 1+ (database names) |
-| `WHERE` | 1 |
-| `ORDER` | 1+ |
-| `LIMIT` | 1 |
-| `OFFSET` | 1 |
+|Category| Name | Operand Count |
+|--------|------|---------------|
+|Arithmetic| `+`  | 2+ |
+| | `-`  | 1 or 2 |
+| | `*`  | 2+ |
+| | `/`  | 2 |
+| | `%`  | 2 |
+| | `||`  | 2+ |
+|Relational| `=` | 2 |
+| | `!=` | 2 |
+| | `<` | 2 |
+| | `<=` | 2 |
+| | `>` | 2 |
+| | `>=` | 2 |
+| | `BETWEEN` | 3: (value, min, max) |
+| | `IS` | 2 |
+| | `IS NOT` | 2 |
+| | `LIKE` | 2 |
+| | `MATCH` | 2 |
+| | `IN` | 2+: (value, option1, ...) |
+| | `EXISTS` | 1 |
+|Logical| `NOT` | 1 |
+| | `AND` | 2+ |
+| | `OR` | 2+ |
+|Functions| _name_`()` | Depends on function |
+|Conditional| `CASE` | 2+: (expr, when1, ...) |
+| | `WHEN` | 2: (cond, value) |
+| | `ELSE` | 1: (value) |
+|Collections| `ANY` | 1: (expression) |
+| | `EVERY` | 2: (expression) |
+| | `ANY AND EVERY` | :2 (expression) |
+|Properties| `prop` | 1+: (path components) |
+|Parameters| `param` | 1 (name or position) |
+|Query| `QUERY` | 1+ (of types below) |
+| | `SELECT` | 1+ |
+| | `FROM` | 1+ (database names) |
+| | `WHERE` | 1 |
+| | `ORDER` | 1+ |
+| | `LIMIT` | 1 |
+| | `OFFSET` | 1 |
 
 ## Example
 
