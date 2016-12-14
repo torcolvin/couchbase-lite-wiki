@@ -48,6 +48,13 @@ The operations can be named after their N1QL/SQL equivalents.
 | _name_`()` | Depends on function |
 | **Conditional:** |
 | `CASE` | 1+ |
+| **Nested:** |
+| `.` | 2 (parent, child) |
+| `[]` | 1+ (index or range) |
+| **Collection:** |
+| `ANY` | 1 (expression) |
+| `EVERY` | 2 (expression) |
+| `ANY AND EVERY` | 2 (expression) |
 | **Properties:** |
 | `prop` | 1 (path string) |
 | **Parameters:** |
@@ -82,4 +89,21 @@ As a JSON tree this looks like:
       {">=": [
         {prop: "gpa"},
         4.0 ]} ]}} ]}
+```
+
+##Phase 2
+
+Nested and Collection Operators
+
+### Examples
+
+```
+SELECT *
+FROM contacts
+WHERE type = "contact"
+AND (social.twitter NOT NULL OR social.github NOT NULL)
+AND length(firstName) > 0
+AND ANY address IN addresses SATISFIES address.country IS NOT MISSING END
+AND EVERY address IN addresses SATISFIES address.street1 IS NOT MISSING END
+AND ANY AND EVERY address IN addresses SATISFIES address.city IS NOT MISSING END
 ```
