@@ -39,14 +39,14 @@ The operations can be named after their N1QL/SQL equivalents.
 | `IS NOT` | 2 |
 | `LIKE` | 2 |
 | `IN` | 2+ (value, option1, ...) |
+| `Exists` | 1 |
 | **Logical:** |
 | `NOT` | 1 |
 | `AND` | 2+ |
 | `OR` | 2+ |
-| `Exists` | 1 |
 | **Functions:** |
 | _name_`()` | Depends on function |
-| **Expressions:** |
+| **Conditional:** |
 | `CASE` | 1+ |
 | **Properties:** |
 | `prop` | 1 (path string) |
