@@ -95,6 +95,12 @@ As a JSON tree this looks like:
 
 Nested and Collection Operators
 
+### Rules
+- ANY: If ANY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
+- EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return TRUE for an array w/ no entries.
+- ANY AND EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
+
+
 ### Examples
 
 ```
