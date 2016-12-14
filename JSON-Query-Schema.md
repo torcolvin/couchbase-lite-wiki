@@ -43,8 +43,11 @@ The operations can be named after their N1QL/SQL equivalents.
 | `NOT` | 1 |
 | `AND` | 2+ |
 | `OR` | 2+ |
+| `Exists` | 1 |
 | **Functions:** |
 | _name_`()` | Depends on function |
+| **Expressions:** |
+| `CASE` | 1+ |
 | **Properties:** |
 | `prop` | 1 (path string) |
 | **Parameters:** |
