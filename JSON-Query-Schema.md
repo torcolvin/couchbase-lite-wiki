@@ -1,18 +1,20 @@
-Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like SQL. This document describes the schema.
+Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like [SQL](http://www.sqlite.org/lang_expr.html). This document describes the schema.
 
-The JSON describes a parse tree. Each node of the tree describes an operation and a list of operands (children). The operations can be arithmetic, comparison, logical, etc. The number of children depends on the operation; `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
+The JSON describes a parse tree. Each node of the tree describes an operation and a list of operands (children). The operations can be arithmetic, comparison, logical, etc. The number of children depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
 
-A nice compact way to represent this is as a one-item JSON object whose key represents the operation and value represents the operands; for example `{"AND": [{...}, {...}]}`. If there's only one operand we don't need to put it in an array.
+A typical way to represent a parse tree is as nested lists or arrays, where the first element represents the operator and the rest represent the operands; for example `["=", ["+", 2, 2], 5]`.
 
-## Values
+In addition to the operators from SQL and N1QL, we'll need ones to represent document property paths and query parameters. We'll use operator `"."` for paths, and `"$"` for parameters.
 
-The leaves of the tree are values like constants, property names and query parameter names. We can represent constants as their equivalent JSON scalar values, and the others as special operands whose values are strings.
+## Leaf Types
 
 | Type | Representation | Example |
 |------|----------------|---------|
 | Constant | JSON scalar | `true`, `null`, `17`, `"foo"` |
-| Property | `prop` operation | `{"prop": "name.first"}` |
-| Parameter | `param` operation | `{"param": "MIN_AGE"}` |
+| Property | `.` operation | `[".", "name", "first"]` |
+| Parameter | `$` operation | `["$", "MIN_AGE"]` |
+
+Note: The special property names `_id` and `_sequence` refer to the document's ID and current sequence number.
 
 ## Operations
 
@@ -51,46 +53,52 @@ The operations can be named after their N1QL/SQL equivalents.
 | | `ANY AND EVERY` | :2 (expression) |
 |Properties| `prop` | 1+: (path components) |
 |Parameters| `param` | 1 (name or position) |
-|Query| `QUERY` | 1+ (of types below) |
-| | `SELECT` | 1+ |
-| | `FROM` | 1+ (database names) |
-| | `WHERE` | 1 |
-| | `ORDER` | 1+ |
-| | `LIMIT` | 1 |
-| | `OFFSET` | 1 |
+|Queries| `SELECT` | 1 [see below] |
+
+## Top-Level Query
+
+The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary, with keys `WHAT`, `FROM`, `WHERE`, `ORDER BY`, `LIMIT`, `OFFSET`.
+
+| Key | Value | Default Value |
+|-----|-------|---------------|
+| `WHAT` | Array of expressions to return, generally properties | Entire document |
+| `FROM` | Array of database identifiers (format TBD) | Database being queried |
+| `WHERE` | Boolean-valued expression | Always true (all documents) |
+| `ORDER BY` | Expression(s) | Document ID (`_id`) |
+| `LIMIT` | Number | Infinite |
+| `OFFSET` | Number | 0 |
+
 
 ## Example
 
-`SELECT name.first, name.last FROM students WHERE grade = 12 AND gpa >= 4.0`
+`SELECT name.first, name.last FROM students WHERE grade = 12 AND gpa >= $GPA`
 
 As a JSON tree this looks like:
 
 ```
-{QUERY: [
-  {SELECT: [
-    {prop: "name.first"},
-    {prop: "name.last"} ] },
-  {FROM:
-    "students"},
-  {WHERE:
-    {AND: [
-      {"=": [
-        {prop: "grade"},
-        12 ]},
-      {">=": [
-        {prop: "gpa"},
-        4.0 ]} ]}} ]}
+["SELECT", {
+    "WHAT": [
+        [".", "name", "first"],
+        [".", "name", "last"] ],
+    "FROM":
+        "students",
+    "WHERE":
+        ["AND",
+            ["=",
+                [".", "grade"],
+                12],
+            [">=",
+                [".", "gpa"],
+                ["$", "GPA"] ] } ]
 ```
 
-##Phase 2
-
-Nested and Collection Operators
+## Phase 2: Nested and Collection Operators
 
 ### Rules
-- ANY: If ANY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
-- EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return TRUE for an array w/ no entries.
-- ANY AND EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
 
+* ANY: If ANY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
+* EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return TRUE for an array w/ no entries.
+* ANY AND EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
 
 ### Examples
 
