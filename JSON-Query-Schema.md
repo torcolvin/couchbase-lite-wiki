@@ -115,9 +115,16 @@ AND ANY AND EVERY address IN addresses SATISFIES address.city IS NOT MISSING END
 
 ##Phase 3
 Joins
-
+```
+SELECT * from `contact` contact  JOIN 'contact' order 
+where  contact.user_id = order.requestorID 
+```
 ##Phase 4 
 Projection
+```
+SELECT contact.firstName, contact.lastName from `contact` contact  JOIN 'contact' order 
+where  contact.user_id = order.requestorID 
+```
 
 ## Phase 5
 ###Full Text
