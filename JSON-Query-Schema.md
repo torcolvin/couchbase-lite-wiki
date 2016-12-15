@@ -92,7 +92,7 @@ As a JSON tree this looks like:
                 ["$", "GPA"] ] } ]
 ```
 
-## Phase 2: Nested and Collection Operators
+## Phase 2: Nested Operators and MISSING
 
 ### Rules
 
@@ -111,4 +111,21 @@ AND length(firstName) > 0
 AND ANY address IN addresses SATISFIES address.country IS NOT MISSING END
 AND EVERY address IN addresses SATISFIES address.street1 IS NOT MISSING END
 AND ANY AND EVERY address IN addresses SATISFIES address.city IS NOT MISSING END
+```
+
+##Phase 3
+Joins
+
+##Phase 4 
+Projection
+
+## Phase 5
+###Full Text
+
+###Index
+
+Will have support for full and partial indexes but won't support indexing of values in Arrays. 
+
+```
+CREATE INDEX over5 ON `beer-sample`(abv) WHERE abv > 5
 ```
