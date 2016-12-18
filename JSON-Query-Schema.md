@@ -48,9 +48,9 @@ The operations can be named after their N1QL/SQL equivalents.
 |Conditional| `CASE` | 2+: (expr, when1, ...) |
 | | `WHEN` | 2: (cond, value) |
 | | `ELSE` | 1: (value) |
-|Collections| `ANY` | 1: (expression) |
-| | `EVERY` | 2: (expression) |
-| | `ANY AND EVERY` | :2 (expression) |
+|Collections| `ANY` | 3: (var, array, satisfies) |
+| | `EVERY` | 3: (var, array, satisfies) |
+| | `ANY AND EVERY` | 3: (var, array, satisfies) |
 |Properties| `prop` | 1+: (path components) |
 |Parameters| `param` | 1 (name or position) |
 |Queries| `SELECT` | 1 [see below] |
