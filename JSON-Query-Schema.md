@@ -137,6 +137,12 @@ WHERE  contact.user_id = order.requestorID
 ORDER BY contact.firstName
 ```
 
+##Phase 6 
+Aggregate functions and Group By
+
+```
+TBD - Query and list of functions
+```
 
 ## Phase 7
 ###Full Text
