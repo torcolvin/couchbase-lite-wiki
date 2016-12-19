@@ -116,9 +116,10 @@ AND ANY AND EVERY address IN addresses SATISFIES address.city IS NOT MISSING END
 ##Phase 3
 Joins
 ```
-SELECT * FROM `contact` contact  JOIN 'contact' order 
+SELECT * FROM `contact` as contact  JOIN 'contact' as order 
 WHERE  contact.user_id = order.requestorID 
 ```
+
 ##Phase 4 
 Projection
 ```
@@ -127,7 +128,17 @@ FROM `contact` contact  JOIN 'contact' order
 WHERE  contact.user_id = order.requestorID 
 ```
 
-## Phase 5
+##Phase 5 
+Order By
+```
+SELECT contact.firstName, contact.lastName 
+FROM `contact` contact  JOIN 'contact' order 
+WHERE  contact.user_id = order.requestorID 
+ORDER BY contact.firstName
+```
+
+
+## Phase 7
 ###Full Text
 
 ###Index
