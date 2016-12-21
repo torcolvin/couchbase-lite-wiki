@@ -133,28 +133,8 @@ WHERE  contact.user_id = order.requestorID
 ```
 
 ##Phase 5 
-Order By
-```
-SELECT contact.firstName, contact.lastName 
-FROM `contact` contact  JOIN 'contact' order 
-WHERE  contact.user_id = order.requestorID 
-ORDER BY contact.firstName
-```
-
-##Phase 6 
 Aggregate functions and Group By
 
 ```
 TBD - Query and list of functions
-```
-
-## Phase 7
-###Full Text
-
-###Index
-
-Will have support for full and partial indexes but won't support indexing of values in Arrays. 
-
-```
-CREATE INDEX over5 ON `beer-sample`(abv) WHERE abv > 5
 ```
