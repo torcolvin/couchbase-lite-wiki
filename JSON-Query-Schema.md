@@ -13,6 +13,7 @@ In addition to the operators from SQL and N1QL, we'll need ones to represent doc
 | Constant | JSON scalar | `true`, `null`, `17`, `"foo"` |
 | Property | `.` operation | `[".", "name", "first"]` |
 | Parameter | `$` operation | `["$", "MIN_AGE"]` |
+| Variable | `?` operation | `["?", "X"]` |
 
 As shorthand, properties and parameters can be collapsed into one-element arrays, like `[".name.first"]` and `["$MIN_AGE"]`.
 
@@ -53,8 +54,9 @@ The operations can be named after their N1QL/SQL equivalents.
 |Collections| `ANY` | 3: (var, array, satisfies) |
 | | `EVERY` | 3: (var, array, satisfies) |
 | | `ANY AND EVERY` | 3: (var, array, satisfies) |
-|Properties| `prop` | 1+: (path components) |
-|Parameters| `param` | 1 (name or position) |
+|Properties| `.` | 1+: (path components) |
+|Parameters| `$` | 1 (name or position) |
+|Variables| `?` | 1 (name) |
 |Queries| `SELECT` | 1 [see below] |
 
 ## Top-Level Query
