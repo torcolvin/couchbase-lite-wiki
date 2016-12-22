@@ -13,7 +13,7 @@ In addition to the operators from SQL and N1QL, we'll need ones to represent doc
 | Constant | JSON scalar | `true`, `null`, `17`, `"foo"` |
 | Property | `.` operation | `[".", "name", "first"]` |
 | Parameter | `$` operation | `["$", "MIN_AGE"]` |
-| Variable | `?` operation | `["?", "X"]` |
+| Variable | `?` operation | `["?", "Item"]` `["?", "Item", "price"]` |
 
 As shorthand, properties and parameters can be collapsed into one-element arrays, like `[".name.first"]` and `["$MIN_AGE"]`.
 
@@ -44,6 +44,10 @@ The operations can be named after their N1QL/SQL equivalents.
 | | `MATCH` | 2 |
 | | `IN` | 2+: (value, option1, ...) |
 | | `EXISTS` | 1 |
+| | `IS MISSING` | 1 |
+| | `IS NOT MISSING` | 1 |
+| | `IS NULL` | 1 |
+| | `IS NOT NULL` | 1 |
 |Logical| `NOT` | 1 |
 | | `AND` | 2+ |
 | | `OR` | 2+ |
@@ -51,12 +55,12 @@ The operations can be named after their N1QL/SQL equivalents.
 |Conditional| `CASE` | 2+: (expr, when1, ...) |
 | | `WHEN` | 2: (cond, value) |
 | | `ELSE` | 1: (value) |
-|Collections| `ANY` | 3: (var, array, satisfies) |
-| | `EVERY` | 3: (var, array, satisfies) |
-| | `ANY AND EVERY` | 3: (var, array, satisfies) |
+|Collections| `ANY` | 3: (variable name, array, satisfies) |
+| | `EVERY` | 3: (variable name, array, satisfies) |
+| | `ANY AND EVERY` | 3: (variable name, array, satisfies) |
 |Properties| `.` | 1+: (path components) |
 |Parameters| `$` | 1 (name or position) |
-|Variables| `?` | 1 (name) |
+|Variables| `?` | 1+ (name, optional path components) |
 |Queries| `SELECT` | 1 [see below] |
 
 ## Top-Level Query
@@ -96,44 +100,28 @@ As a JSON tree this looks like:
                 ["$", "GPA"] ] } ]
 ```
 
-## Phase 2: Nested Operators and MISSING
+## TBD
 
-### Rules
+### Phase 2: Nested Operators and MISSING
 
-* ANY: If ANY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
-* EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return TRUE for an array w/ no entries.
-* ANY AND EVERY: If EVERY entry (address) in the array (addresses) matches the expression return TRUE, otherwise FALSE. Return FALSE for an array w/ no entries.
+* Implemented ANY / EVERY operators.
+* Thinking about how to distinguish MISSING from NULL in the generated SQL.
 
-### Examples
+### Phase 3: Joins
 
-```
-SELECT *
-FROM contacts
-WHERE type = "contact"
-AND (social.twitter NOT NULL OR social.github NOT NULL)
-AND length(firstName) > 0
-AND ANY address IN addresses SATISFIES address.country IS NOT MISSING END
-AND EVERY address IN addresses SATISFIES address.street1 IS NOT MISSING END
-AND ANY AND EVERY address IN addresses SATISFIES address.city IS NOT MISSING END
-```
-
-##Phase 3
-Joins
 ```
 SELECT * FROM `contact` as contact  JOIN 'contact' as order 
 WHERE  contact.user_id = order.requestorID 
 ```
 
-##Phase 4 
-Projection
+### Phase 4: Projection
 ```
 SELECT contact.firstName, contact.lastName 
 FROM `contact` contact  JOIN 'contact' order 
 WHERE  contact.user_id = order.requestorID 
 ```
 
-##Phase 5 
-Aggregate functions and Group By
+### Phase 5: Aggregate functions and Group By
 
 ```
 TBD - Query and list of functions
