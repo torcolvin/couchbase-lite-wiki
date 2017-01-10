@@ -15,7 +15,7 @@ In addition to the operators from SQL and N1QL, we'll need ones to represent doc
 | Parameter | `$` operation | `["$", "MIN_AGE"]` |
 | Variable | `?` operation | `["?", "Item"]` `["?", "Item", "price"]` |
 
-As shorthand, properties and parameters can be collapsed into one-element arrays, like `[".name.first"]` and `["$MIN_AGE"]`.
+As shorthand, properties/parameters/variables can be collapsed into one-element arrays, like `[".name.first"]` and `["$MIN_AGE"]`.
 
 Note: The special property names `_id` and `_sequence` refer to the document's ID and current sequence number.
 
@@ -30,7 +30,7 @@ The operations can be named after their N1QL/SQL equivalents.
 | | `*`  | 2+ |
 | | `/`  | 2 |
 | | `%`  | 2 |
-| | `||`  | 2+ |
+|String| `||`  | 2+ |
 |Relational| `=` | 2 |
 | | `!=` | 2 |
 | | `<` | 2 |
