@@ -100,7 +100,31 @@ As a JSON tree this looks like:
                 ["$", "GPA"] ] } ]
 ```
 
-## TBD
+## Query API
+
+###SQL
+SELECT *
+FROM  accounts
+WHERE (type = 'account' AND account.owner = 'Wayne')
+ORDER BY 'dealSize'
+
+###JAVA
+query
+    .select()
+    .from(database)
+    .where(
+        Expression.property("type").equalTo("account")
+        .and(Expression.property("owner").equalTo("Wayne")))
+    .orderBy(Expression.property("dealSize"))
+
+###iOS
+[Query select: [CBLQueryResult all]
+         from: [CBLQueryDatasource database: database]
+        where: [[[[CBLQueryExpression property: @"type"] equalTo: @"account"]
+               and: [[CBLQueryExpression property: @"owner"] equalTo: @"Wayne"]]]
+      orderBy: [CBLQueryExpression property: @"dealSize"]
+];
+
 
 ### Phase 2: Nested Operators and MISSING
 
