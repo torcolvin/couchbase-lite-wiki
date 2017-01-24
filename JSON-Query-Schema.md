@@ -100,6 +100,8 @@ As a JSON tree this looks like:
                 ["$", "GPA"] ] } ]
 ```
 
+## Implementation Status
+
 ### Phase 2: Nested Operators and MISSING
 
 * Implemented ANY / EVERY operators.
