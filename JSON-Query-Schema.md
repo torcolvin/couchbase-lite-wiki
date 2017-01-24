@@ -72,7 +72,7 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
 | `FROM` | Array of database identifiers (format TBD) | Database being queried |
 | `WHERE` | Boolean-valued expression | Always true (all documents) |
-| `ORDER BY` | Expression(s) | Document ID (`_id`) |
+| `ORDER BY` | Expression(s) | undefined / unsorted |
 | `LIMIT` | Number | Infinite |
 | `OFFSET` | Number | 0 |
 
