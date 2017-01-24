@@ -69,7 +69,7 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
-| `WHAT` | Array of expressions to return, generally properties | Entire document |
+| `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
 | `FROM` | Array of database identifiers (format TBD) | Database being queried |
 | `WHERE` | Boolean-valued expression | Always true (all documents) |
 | `ORDER BY` | Expression(s) | Document ID (`_id`) |
@@ -105,17 +105,14 @@ As a JSON tree this looks like:
 * Implemented ANY / EVERY operators.
 * Thinking about how to distinguish MISSING from NULL in the generated SQL.
 
-### Phase 3: Joins
+### Phase 3: Projection
+
+* Implemented `WHAT` property of the `SELECT` object.
+
+### Phase 4: Joins
 
 ```
 SELECT * FROM `contact` as contact  JOIN 'contact' as order 
-WHERE  contact.user_id = order.requestorID 
-```
-
-### Phase 4: Projection
-```
-SELECT contact.firstName, contact.lastName 
-FROM `contact` contact  JOIN 'contact' order 
 WHERE  contact.user_id = order.requestorID 
 ```
 
