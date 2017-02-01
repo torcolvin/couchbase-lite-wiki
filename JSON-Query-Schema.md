@@ -65,13 +65,16 @@ The operations can be named after their N1QL/SQL equivalents.
 
 ## Top-Level Query
 
-The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary, with keys `WHAT`, `FROM`, `WHERE`, `ORDER BY`, `LIMIT`, `OFFSET`.
+The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary with the following keys, all optional:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
 | `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
 | `FROM` | Array of database identifiers (format TBD) | Database being queried |
-| `WHERE` | Boolean-valued expression | Always true (all documents) |
+| `WHERE` | Boolean-valued expression | `true` (all documents) |
+| `GROUP BY` | Expression(s) | `[]` (no grouping) |
+| `HAVING` | Expression | `true` |
+| `DISTINCT` | Boolean | `false` |
 | `ORDER BY` | Expression(s) | undefined / unsorted |
 | `LIMIT` | Number | Infinite |
 | `OFFSET` | Number | 0 |
