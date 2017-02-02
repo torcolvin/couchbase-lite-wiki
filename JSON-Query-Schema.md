@@ -1,3 +1,15 @@
+## Table Of Contents
+
+* [Introduction](#introduction)
+* [Example](#example)
+* [Leaf Types](#leaf-types)
+* [Operations](#operations)
+* [Top-Level Query, and `SELECT`](#top-level-query-and-select)
+* [Functions](#functions)
+* [Implementation Status](#implementation-status)
+
+## Introduction
+
 Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like [SQL](http://www.sqlite.org/lang_expr.html). This document describes the schema.
 
 The JSON describes a parse tree. Each node of the tree describes an operation and a list of operands (children). The operations can be arithmetic, comparison, logical, etc. The number of children depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
@@ -7,6 +19,29 @@ A typical way to represent a parse tree is as nested lists or arrays, where the 
 In addition to the operators from SQL and N1QL, we'll need ones to represent document property paths and query parameters. We'll use operator `"."` for paths, and `"$"` for parameters.
 
 **NOTE:** This schema is case-insensitive, like SQL and N1QL. All operation names, function names, and `SELECT` keys can be upper- or lower-case or any mixture.
+
+## Example
+
+`SELECT name.first, name.last FROM students WHERE grade = 12 AND gpa >= $GPA`
+
+As a JSON tree this looks like:
+
+```
+["SELECT", {
+    "WHAT": [
+        [".", "name", "first"],
+        [".", "name", "last"] ],
+    "FROM":
+        "students",
+    "WHERE":
+        ["AND",
+            ["=",
+                [".", "grade"],
+                12],
+            [">=",
+                [".", "gpa"],
+                ["$", "GPA"] ] } ]
+```
 
 ## Leaf Types
 
@@ -224,30 +259,9 @@ These are N1QL functions. For detailed information about parameters and results,
 * `toobject()`
 * `tostring()`
 
-## Example
-
-`SELECT name.first, name.last FROM students WHERE grade = 12 AND gpa >= $GPA`
-
-As a JSON tree this looks like:
-
-```
-["SELECT", {
-    "WHAT": [
-        [".", "name", "first"],
-        [".", "name", "last"] ],
-    "FROM":
-        "students",
-    "WHERE":
-        ["AND",
-            ["=",
-                [".", "grade"],
-                12],
-            [">=",
-                [".", "gpa"],
-                ["$", "GPA"] ] } ]
-```
-
 ## Implementation Status
+
+(Updated Feb 2, 2017)
 
 ### Phase 2: Nested Operators and MISSING
 
