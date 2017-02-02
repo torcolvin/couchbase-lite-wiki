@@ -114,15 +114,14 @@ As a JSON tree this looks like:
 
 * Implemented `WHAT` property of the `SELECT` object.
 
-### Phase 4: Joins
+### Phase 4: Aggregate functions and Group By
+
+* Implemented `GROUP_BY` and `DISTINCT` properties of the `SELECT` object
+* Implemented support for aggregate functions
+
+### Phase 5: Joins
 
 ```
 SELECT * FROM `contact` as contact  JOIN 'contact' as order 
 WHERE  contact.user_id = order.requestorID 
-```
-
-### Phase 5: Aggregate functions and Group By
-
-```
-TBD - Query and list of functions
 ```
