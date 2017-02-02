@@ -6,6 +6,8 @@ A typical way to represent a parse tree is as nested lists or arrays, where the 
 
 In addition to the operators from SQL and N1QL, we'll need ones to represent document property paths and query parameters. We'll use operator `"."` for paths, and `"$"` for parameters.
 
+**NOTE:** This schema is case-insensitive, like SQL and N1QL. All operation names, function names, and `SELECT` keys can be upper- or lower-case or any mixture.
+
 ## Leaf Types
 
 | Type | Representation | Example |
