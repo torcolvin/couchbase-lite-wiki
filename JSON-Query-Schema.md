@@ -81,6 +81,148 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | `LIMIT` | Number | Infinite |
 | `OFFSET` | Number | 0 |
 
+## Functions
+
+These are N1QL functions. For detailed information about parameters and results, please consult the [N1QL documentation](https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html). 
+
+**NOTE:** There are some differences from SQL, or at least from SQLite; for example, SQLite has non-aggregate versions of `min` and `max`, but in N1QL (and LiteCore) these are called `least` and `greatest`.
+
+**STATUS:** (Feb 2016) _Most of these functions are unimplemented!_ For now the rule of thumb is that, if it's not a built-in [SQLite  function](http://www.sqlite.org/lang_corefunc.html) or [aggregate](http://www.sqlite.org/lang_aggfunc.html), it won't work.
+
+#### Aggregate Functions:
+* `array_agg()`
+* `avg()`
+* `count()`
+* `max()`
+* `min()`
+* `sum()`
+
+#### Arrays:
+* `array_append()`
+* `array_avg()`
+* `array_concat()`
+* `array_contains()`
+* `array_count()`
+* `array_distinct()`
+* `array_ifnull()`
+* `array_insert()`
+* `array_intersect()`
+* `array_length()`
+* `array_max()`
+* `array_min()`
+* `array_position()`
+* `array_prepend()`
+* `array_put()`
+* `array_range()`
+* `array_remove()`
+* `array_repeat()`
+* `array_replace()`
+* `array_reverse()`
+* `array_sort()`
+* `array_sum()`
+* `array_star()`
+
+#### Base64 and UUID:
+* `base64()` _(synonym for `base64_encode`)_
+* `base64_encode()`
+* `base64_decode()`
+* `uuid()`
+
+#### Comparisons:
+* `greatest()`
+* `least()`
+
+#### Conditional (unknowns):
+* `ifmissing()`
+* `ifnull()`
+* `ifmissingornull()`
+* `missingif()`
+* `nullif()`
+
+#### Conditional (numbers):
+* `ifinf()`
+* `ifnan()`
+* `ifnanorinf()`
+* `nanif()`
+* `neginfif()`
+* `posinfif()`
+
+#### Math:
+* `abs()`
+* `acos()`
+* `asin()`
+* `atan()`
+* `atan2()`
+* `ceil()`
+* `cos()`
+* `degrees()`
+* `e()`
+* `exp()`
+* `ln()`
+* `log()`
+* `floor()`
+* `pi()`
+* `power()`
+* `radians()`
+* `random()`
+* `round()`
+* `sign()`
+* `sin()`
+* `sqrt()`
+* `tan()`
+* `trunc()`
+
+#### Objects:
+* `object_length()`
+* `object_names()`
+* `object_pairs()`
+* `object_length()`
+* `object_inner_pairs()`
+* `object_values()`
+* `object_inner_values()`
+* `object_add()`
+* `object_put()`
+* `object_remove()`
+* `object_unwrap()`
+
+#### Patterns:
+* `regexp_contains()`
+* `regexp_like()`
+* `regexp_position()`
+* `regexp_replace()`
+* `rank()`
+
+#### Strings:
+* `contains()`
+* `initcap()`
+* `length()`
+* `lower()`
+* `ltrim()`
+* `position()`
+* `repeat()`
+* `replace()`
+* `rtrim()`
+* `split()`
+* `substr()`
+* `suffixes()`
+* `title()` _(synonym for `initcap`)_
+* `trim()`
+* `upper()`
+
+#### Type Checking / Coercion:
+* `isarray()`
+* `isatom()`
+* `isboolean()`
+* `isnumber()`
+* `isobject()`
+* `isstring()`
+* `type()`
+* `toarray()`
+* `toatom()`
+* `toboolean()`
+* `tonumber()`
+* `toobject()`
+* `tostring()`
 
 ## Example
 
