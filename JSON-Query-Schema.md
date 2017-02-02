@@ -63,7 +63,7 @@ The operations can be named after their N1QL/SQL equivalents.
 |Variables| `?` | 1+ (name, optional path components) |
 |Queries| `SELECT` | 1 [see below] |
 
-## Top-Level Query
+## Top-Level Query, and `SELECT`
 
 The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary with the following keys, all optional:
 
@@ -72,10 +72,10 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
 | `FROM` | Array of database identifiers (format TBD) | Database being queried |
 | `WHERE` | Boolean-valued expression | `true` (all documents) |
-| `GROUP BY` | Expression(s) | `[]` (no grouping) |
 | `HAVING` | Expression | `true` |
 | `DISTINCT` | Boolean | `false` |
-| `ORDER BY` | Expression(s) | undefined / unsorted |
+| `GROUP_BY` | Array of expressions or property names | `[]` (no grouping) |
+| `ORDER_BY` | Array of expressions or property names | `[]` (unsorted) |
 | `LIMIT` | Number | Infinite |
 | `OFFSET` | Number | 0 |
 
