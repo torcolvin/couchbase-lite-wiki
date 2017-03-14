@@ -4,19 +4,19 @@ Disclaimer:  LiteCore is not a directly supported / delivered product, but rathe
 
 Here is a list of all dependencies for LiteCore:
 
-Compilation or Download needed
-[libsqlite3](https://www.sqlite.org/download.html)
-[libc++](https://libcxx.llvm.org/)
-[libbsd](https://libbsd.freedesktop.org/releases/)
-[libcrypto](https://github.com/openssl/openssl)
+Compilation or Download needed<br>
+[libsqlite3](https://www.sqlite.org/download.html)<br>
+[libc++](https://libcxx.llvm.org/)<br>
+[libbsd](https://libbsd.freedesktop.org/releases/)<br>
+[libcrypto](https://github.com/openssl/openssl)<br>
 
 Likely already installed:
-libm.so
-libgcc_s.so
-libc.so
-libpthread.so
-libdl.so
-librt.so
+libm.so<br>
+libgcc_s.so<br>
+libc.so<br>
+libpthread.so<br>
+libdl.so<br>
+librt.so<br>
 ld-linux.so
 
 ## Building
