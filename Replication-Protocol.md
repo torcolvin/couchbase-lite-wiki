@@ -18,7 +18,7 @@ Benefits of the new protocol are:
 
 ## 1. Architecture
 
-The new replication protocol is built on the multiplexed [BLIP messaging protocol](https://github.com/couchbaselabs/CBL-BLIPSync-iOS/blob/master/Docs/BLIP%20Protocol.md), which itself is layered on WebSockets. The relevant aspects of the transport are:
+The new replication protocol is built on the multiplexed [BLIP messaging protocol](https://github.com/couchbaselabs/BLIP-Cocoa/blob/master/Docs/BLIP%20Protocol.md), which itself is layered on WebSockets. The relevant aspects of the transport are:
 
 * Communication runs over a single socket. 
 * Both client and server can send **messages**. The protocol is symmetrical.
