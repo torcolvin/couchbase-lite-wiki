@@ -1,8 +1,10 @@
-Disclaimer:  LiteCore is not a directly supported / delivered product, but rather a product that is consumed by Couchbase Lite.  That being said, it is tested extensively as part of the Couchbase Lite build and testing process.  This document describes the basics of using the library.  For arbitrary reasons, I have chosen x86 Linux as an example but the concepts will apply to any platform.  
+Disclaimer:  LiteCore is not a directly supported / delivered product, but rather a product that is consumed by Couchbase Lite.  That being said, it is tested extensively as part of the Couchbase Lite build and testing process.  This document describes the basics of using the library.
+
+For arbitrary reasons, I have chosen x86 Linux as an example but the concepts will apply to any platform.  
 
 ## Dependencies
 
-Here is a list of all dependencies for LiteCore:
+Here is a list of all dependencies for LiteCore on Linux:
 
 Compilation or Download needed<br>
 [libsqlite3](https://www.sqlite.org/download.html)<br>
