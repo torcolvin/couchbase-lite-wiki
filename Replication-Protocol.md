@@ -52,13 +52,13 @@ Retrieves a checkpoint stored on the receiver. The checkpoint is a JSON object t
 
 Response:
 
-`rev`: The MVCC revision ID of the checkpoint.  
-Body: JSON data of the checkpoint.
+`rev`: The MVCC revision ID of the checkpoint  
+Body: JSON data of the checkpoint
 
 ### setCheckpoint
 
 `client`: Unique ID of client checkpoint to store  
-`rev`: Last known MVCC revision ID of the checkpoint
+`rev`: Last known MVCC revision ID of the checkpoint _(omitted if this is a new checkpoint)_  
 Body: JSON data of checkpoint
 
 Stores a checkpoint on the receiver. The JSON object in the request body is associated with the key given in the `client` property. If the `rev` value does not match the checkpoint's current MVCC revision ID, the request fails. On success, a new revision ID is generated and returned in the response for use in the next request.
@@ -72,8 +72,8 @@ Response:
 `since`: Latest sequence ID already known to the requestor, JSON-encoded _(optional)_  
 `continuous`: Set to `true` if the requestor wants change notifications to be sent indefinitely _(optional)_  
 `filter`: The name of a filter function known to the recipient _(optional)_  
-_other properties_: Named parameters for the filter function _(optional)_  
-`batch`: Maximum number of changes to send in a single `change` message _(optional)_
+`batch`: Maximum number of changes to send in a single `change` message _(optional)_  
+_other properties_: Named parameters for the filter function _(optional)_
 
 Asks the recipient to begin sending change messages starting from the sequence just after the one given by the `since` property, or from the beginning if no `since` is given.
 
@@ -115,7 +115,7 @@ The `maxHistory` response property, if present, indicates the maximum length of 
 
 `id`: Document ID _(optional)_  
 `rev`: Revision ID _(optional)_  
-`deleted`: true if the revision is a tombstone _(optional)_
+`deleted`: true if the revision is a tombstone _(optional)_  
 `sequence`: Sequence ID, JSON-encoded _(optional unless unsolicited, q.v.)_  
 `history`: Revision history (comma-delimited list of revision IDs)  
 Body: Document JSON
