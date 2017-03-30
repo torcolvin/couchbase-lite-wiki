@@ -16,7 +16,7 @@ The JSON describes a parse tree. Each node of the tree describes an operation an
 
 A typical way to represent a parse tree is as nested lists or arrays, where the first element represents the operator and the rest represent the operands; for example `["=", ["+", 2, 2], 5]`.
 
-In addition to the operators from SQL and N1QL, we'll need ones to represent document property paths and query parameters. We'll use operator `"."` for paths, and `"$"` for parameters.
+In addition to the operators from SQL and N1QL, we need ones to represent document property paths and query parameters. Operator `"."` represents a path, and `"$"` a parameter.
 
 **NOTE:** This schema is case-insensitive, like SQL and N1QL. All operation names, function names, and `SELECT` keys can be upper- or lower-case or any mixture.
 
@@ -58,7 +58,7 @@ Note: The special property names `_id` and `_sequence` refer to the document's I
 
 ## Operations
 
-The operations can be named after their N1QL/SQL equivalents.
+The operations are named after their N1QL/SQL equivalents.
 
 |Category| Name | Operand Count |
 |--------|------|---------------|
@@ -102,12 +102,12 @@ The operations can be named after their N1QL/SQL equivalents.
 
 ## Top-Level Query, and `SELECT`
 
-The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary with the following keys, all optional:
+The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary with the following keys:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
 | `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
-| `FROM` | Array of database identifiers (format TBD) | Database being queried |
+| `FROM` | Array of database/join identifiers | Database being queried |
 | `WHERE` | Boolean-valued expression | `true` (all documents) |
 | `HAVING` | Expression | `true` |
 | `DISTINCT` | Boolean | `false` |
@@ -116,13 +116,41 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | `LIMIT` | Number | Infinite |
 | `OFFSET` | Number | 0 |
 
+### Database/Join Identifiers
+
+The items in the `FROM` array are dictionaries with the following keys:
+
+| Key | Value | Default Value |
+|-----|-------|---------------|
+| `AS` | Alphanumeric string: an alias to refer to this database or join by | _required_ |
+| `DB` | String: Database name | Database being queried |
+| `JOIN` | String: Type of join | `"INNER"` (if `ON` is given) |
+| `ON` | Boolean-valued expression: the join constraint | no join |
+
+Some requirements:
+* The first item in the array serves only to alias the default database; it can't have a `JOIN` or `ON` property.
+* The subsequent items _must_ be joins, with `ON` properties.
+* It's an error to have a `JOIN` property but not an `ON`.
+* All `AS` values must be unique.
+
+**STATUS:** (March 2017) The `DB` and `JOIN` properties are not yet implemented. So only one database can be queried at a time, and joins are always inner.
+
+Example:
+```json
+    "FROM": [{"as": "person"},
+             {"as": "state", "on": ["=", [".state.abbreviation"],
+                                         [".person.contact.address.state"]]}],
+```
+
+**Adding a `FROM` clause affects the interpretation of properties.** Since there are usually multiple databases or join sources, property names (paths) in the entire query need to be disambiguated by prefixing the appropriate alias. So in the above example, a document's `abbreviation` property has to be named as `.state.abbreviation`, not just `.abbreviation`.
+
 ## Functions
 
 These are N1QL functions. For detailed information about parameters and results, please consult the [N1QL documentation](https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html). 
 
 **NOTE:** There are some differences from SQL, or at least from SQLite; for example, SQLite has non-aggregate versions of `min` and `max`, but in N1QL (and LiteCore) these are called `least` and `greatest`.
 
-**STATUS:** (Feb 2016) _Most of these functions are unimplemented!_ For now the rule of thumb is that, if it's not a built-in [SQLite  function](http://www.sqlite.org/lang_corefunc.html) or [aggregate](http://www.sqlite.org/lang_aggfunc.html), it won't work.
+**STATUS:** (Feb 2017) _Most of these functions are unimplemented!_ For now, the rule of thumb is that, if it's not a built-in [SQLite  function](http://www.sqlite.org/lang_corefunc.html) or [aggregate](http://www.sqlite.org/lang_aggfunc.html), it won't work.
 
 |Category| Name | Operand Count |
 |--------|------|---------------|
@@ -242,12 +270,12 @@ These are N1QL functions. For detailed information about parameters and results,
 
 ## Implementation Status
 
-(Updated Feb 2, 2017)
+(Updated March 30, 2017)
 
 ### Phase 2: Nested Operators and MISSING
 
 * Implemented ANY / EVERY operators.
-* Thinking about how to distinguish MISSING from NULL in the generated SQL.
+* `NULL` (which is a JSON null, not a SQL null!) is represented by a zero-length blob in the generated SQL.
 
 ### Phase 3: Projection
 
@@ -260,7 +288,6 @@ These are N1QL functions. For detailed information about parameters and results,
 
 ### Phase 5: Joins
 
-```
-SELECT * FROM `contact` as contact  JOIN 'contact' as order 
-WHERE  contact.user_id = order.requestorID 
-```
+* Basic inner joins implemented.
+* No support for multiple databases yet.
+* No support for left, outer, cross, natural, ingrown or dovetail joins.
