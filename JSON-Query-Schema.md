@@ -131,9 +131,10 @@ Some requirements:
 * The first item in the array serves only to alias the default database; it can't have a `JOIN` or `ON` property.
 * The subsequent items _must_ be joins, with `ON` properties.
 * It's an error to have a `JOIN` property but not an `ON`.
+* Legal values for `JOIN` are `"INNER"`, `"OUTER"`, `"LEFT OUTER"`, and `"CROSS"`. (Case-insensitive)
 * All `AS` values must be unique.
 
-**STATUS:** (March 2017) The `DB` and `JOIN` properties are not yet implemented. So only one database can be queried at a time, and joins are always inner.
+**STATUS:** (March 2017) The `DB`property is not yet implemented; only one database can be queried at a time.
 
 Example:
 ```json
