@@ -145,6 +145,12 @@ Requests the body of an attachment, given its digest. This is called by the reci
 
 If the server's database has per-document access control, where documents may be readable by some but not all users, it MUST check that an attachment with this digest appears in at least one document that the client has access to. Otherwise a client could violate access control by getting the body of any attachment it can learn the digest of (probably "leaked" by another user who does have access to it.) The simplest way to enforce this is for the server to keep track of which `rev` messages it's sent to the client but not yet received responses to; these are the ones that the client will be requesting attachments of, to complete its downloads.
 
+(This request is problematic -- it assumes that the recipient indexes attachments by digest, which is true of Couchbase Mobile but not necessarily of other implementations. Adding the document and revision ID to the properties would help.)
+
+Response:
+
+Body: raw contents of attachment
+
 ### proveAttachment
 
 `digest`: Attachment digest (as found in document `_attachments` metadata.)  
