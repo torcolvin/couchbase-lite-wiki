@@ -93,7 +93,11 @@ Notifies the recipient of a series of changes made to the sender's database. A p
 
 The changes are encoded in the message body as a JSON array with one item per change. There can be zero or more changes; a messages with zero changes signifies that delivery has "caught up" and all existing sequences have been sent. This may be followed by more changes as they occur, if the replication is continuous.
 
-Each change in the array is encoded as a nested array of the form `[sequence, docID, revID, deleted]`, i.e. sequence ID followed by document ID followed by revision ID followed by the deletion state (which can be omitted if it's `false`.) The sequence IDs MUST be in forward chronological order but are otherwise opaque (and may be any JSON data type.)
+Each change in the array is encoded as a nested array of the form `[sequence, docID, revID, deleted]`, i.e. sequence ID followed by document ID followed by revision ID followed by the deletion state (which can be omitted if it's `false`.)
+
+The sequence IDs MUST be in forward chronological order but are otherwise opaque (and may be any JSON data type.)
+
+The document body size (in bytes) MAY be appended to the array as a fifth item if it's known. This is understood to be approximate, since the sender's database may not store the body in exactly the same form that will be transmitted.
 
 The sender SHOULD break up its change history into multiple `changes` messages instead of sending them in one big message. (It SHOULD honor the optional `batch` parameter in the `subChanges` request it received from the peer.) It SHOULD use flow control by limiting the number of `changes` messages that it's sent but not received replies to yet.
 
