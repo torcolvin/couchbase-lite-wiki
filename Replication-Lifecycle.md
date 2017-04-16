@@ -1,0 +1,1 @@
+This is a high-level description of the states the replicator goes through.
