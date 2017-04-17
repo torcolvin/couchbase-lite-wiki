@@ -16,7 +16,7 @@ This is a high-level description of the states the replicator goes through.
 
 ## Notes on "Offline"
 
-**DISCLAIMER:** The Offline state has not been implemented yet. See issue #98.
+**DISCLAIMER:** The Offline state has not been implemented yet. See [issue #98](https://github.com/couchbase/couchbase-lite-core/issues/98).
 
 There are quite a few causes behind the offline state:
 
