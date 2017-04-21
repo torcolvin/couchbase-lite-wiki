@@ -11,6 +11,14 @@ At this point (April 2017) it's intended mostly as an aid for automated testing 
 | GET    | /  | | Server info, like the version |
 | GET    | /_all_dbs | | List of all database names |
 | GET    | /_db_  | | Database doc count, current sequence, etc. |
+| DELETE | /_db_       | | Deletes a database |
+| PUT    | /_db_       | | Creates a database |
+| POST   | /_db_       | | Creates a document with an automatically generated UUID |
 | GET    | /_db_/_all_docs | | List of documents including current revID |
-|        |                 | ?include_docs=true | Adds body of each doc | 
+|        |  | ?include_docs=true | Adds body of each doc |
 | GET    | /_db_/_id_  | | Returns document body |
+|        | |?rev=_revID_ | Revision ID to get (optional) | 
+| DELETE | /_db_/_id_  | | Deletes a document |
+|        | |?rev=_revID_ | Current revision ID (required) | 
+| PUT    | /_db_/_id_  | | Creates or updates a document |
+|        | |?rev=_revID_ | Current revision ID (required if doc exists, unless you add a `_rev` property to the JSON body) | 
