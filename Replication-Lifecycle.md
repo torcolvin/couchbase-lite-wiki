@@ -26,7 +26,7 @@ There are quite a few causes behind the offline state:
 4. DNS can't resolve the hostname (DNS servers down, wrong DNS configuration on device or router, or host is on a private network and hostname is not public)
 5. Proxy server is unreachable (DHCP misconfiguration, proxy is down, proxy is up but misconfigured, etc.)
 6. Hostname is known, but that IP address is on an unreachable private network like an intranet
-7. Other network issues along the route to the server (ISP problems, a backhoe has cut a backbone fiber line, AWS went tits-up again, etc.)
+7. Other network issues along the route to the server (ISP problems, a backhoe has cut a backbone fiber line, AWS went down again, etc.)
 8. Server itself is down
 9. Sync Gateway is down
 
