@@ -28,5 +28,5 @@ At this point (May 2017) it's intended mostly as an aid for automated testing of
 
 #### `/_replicate`
 
-* The only properties implemented so far are `source`, `target` and `continuous`.
+* The only properties implemented so far are `source`, `target`, `continuous`, and `cancel`.
 * Local-to-local replication (both `source` and `target` are local db names) isn't supported yet.
