@@ -14,9 +14,58 @@ There’s nothing very scientific about this set of operations and it could prob
 The data set consists of a JSON representation of an iTunes music library. It in fact derives from my (Jens Alfke’s) music library at some point in 2011 or 2012, converted from the XML format iTunes generates.
 This lives in a 6.7MB text file called iTunesMusicLibrary.json, which can be found [here](https://github.com/couchbase/couchbase-lite-core/blob/master/C/tests/data/iTunesMusicLibrary.json). Each of the 12,189 lines of the file is a JSON object representing a single track; they look like this:
 
-    {"Year":1997,"Kind":"AAC audio file","Genre":"Alternative","Name":"Syndir Guos (Opinberun Frelsarans)","Track ID":18022,"Total Time":465684,"Album":"Von","Persistent ID":"A2F441604C2B4919","Date Added":"2008-08-07T05:18:51.000Z","Track Type":"Remote","Artist":"Sigur Rós","Size":11614406,"Sample Rate":44100,"Track Number":11,"Bit Rate":256,"Date Modified":"2011-02-26T20:03:37.000Z"}
+`{"Year":1997,"Kind":"AAC audio file","Genre":"Alternative","Name":"Syndir Guos (Opinberun Frelsarans)","Track ID":18022,"Total Time":465684,"Album":"Von","Persistent ID":"A2F441604C2B4919","Date Added":"2008-08-07T05:18:51.000Z","Track Type":"Remote","Artist":"Sigur Rós","Size":11614406,"Sample Rate":44100,"Track Number":11,"Bit Rate":256,"Date Modified":"2011-02-26T20:03:37.000Z"}`
 
 The only properties TuneMark currently uses are `Name`, `Album` and `Artist`, but we import all of them into the database just to bulk it up more.
+
+## Example Results
+
+Generated June 21 2017, with latest builds of Couchbase Lite 2 and LiteCore.
+
+### iPhone 6s+
+
+iOS 10.3.2
+```
+Import 12189 docs:  Range:   2.534 ...   2.611 sec, Average:   2.560, median:   2.553, std dev: 0.0173
+                    Range: 207.859 ... 214.202 us/doc, Average: 209.986, median: 209.454, std dev:  1.42
+Update 1223 docs:   Range: 914.047 ... 2265.080 ms, Average: 946.194, median: 948.793, std dev:  15.6
+                    Range: 747.381 ... 1852.069 us/update, Average: 773.666, median: 775.792, std dev:  12.7
+Query 1115 artists: Range: 567.217 ... 605.762 ms, Average: 592.508, median: 594.644, std dev:   8.7
+                    Range: 508.715 ... 543.284 us/row, Average: 531.397, median: 533.313, std dev:   7.8
+Index by artist:    Range:  20.730 ...  28.636 ms, Average:  23.456, median:  23.391, std dev: 0.442
+                    Range:   1.701 ...   2.349 us/doc, Average:   1.924, median:   1.919, std dev: 0.0363
+Query 1115 artists: Range:  26.399 ...  28.078 ms, Average:  27.316, median:  27.377, std dev: 0.297
+                    Range:  23.677 ...  25.182 us/row, Average:  24.498, median:  24.554, std dev: 0.266
+Query 1887 albums:  Range:  82.016 ...  85.412 ms, Average:  83.123, median:  83.083, std dev:  0.24
+                    Range:  73.557 ...  76.603 us/artist, Average:  74.550, median:  74.514, std dev: 0.216
+FTS indexing:       Range: 192.383 ... 195.867 ms, Average: 194.300, median: 194.558, std dev: 0.636
+                    Range:  15.783 ...  16.069 us/doc, Average:  15.941, median:  15.962, std dev: 0.0522
+FTS query:          Range:  10.056 ...  11.166 ms, Average:  10.867, median:  11.018, std dev: 0.227
+                    Range: 372.461 ... 413.548 us/row, Average: 402.465, median: 408.082, std dev:  8.42
+```
+
+### MacBook Pro (15", late 2013)
+
+2.3GHz Intel Core i7, 16GB RAM, internal Apple SSD, macOS 10.12.6
+
+```
+Import 12189 docs:  Range:   1.210 ...   1.238 sec, Average:   1.225, median:   1.227, std dev: 0.00516
+                    Range:  99.273 ... 101.571 us/doc, Average: 100.518, median: 100.700, std dev: 0.423
+Update 1223 docs:   Range: 374.795 ... 413.160 ms, Average: 387.855, median: 390.990, std dev:   5.5
+                    Range: 306.456 ... 337.825 us/update, Average: 317.134, median: 319.697, std dev:  4.49
+Query 1115 artists: Range:  29.121 ...  30.685 ms, Average:  30.093, median:  30.132, std dev: 0.325
+                    Range:  26.118 ...  27.520 us/row, Average:  26.990, median:  27.024, std dev: 0.291
+Index by artist:    Range:  18.060 ...  22.018 ms, Average:  19.092, median:  18.982, std dev: 0.384
+                    Range:   1.482 ...   1.806 us/doc, Average:   1.566, median:   1.557, std dev: 0.0315
+Query 1115 artists: Range:  25.413 ...  27.139 ms, Average:  26.105, median:  26.138, std dev:  0.36
+                    Range:  22.792 ...  24.340 us/row, Average:  23.413, median:  23.442, std dev: 0.322
+Query 1887 albums:  Range:  73.152 ...  78.027 ms, Average:  75.374, median:  75.238, std dev:  1.53
+                    Range:  65.607 ...  69.980 us/artist, Average:  67.600, median:  67.478, std dev:  1.37
+FTS indexing:       Range: 118.692 ... 124.893 ms, Average: 121.656, median: 121.341, std dev:  2.03
+                    Range:   9.738 ...  10.246 us/doc, Average:   9.981, median:   9.955, std dev: 0.167
+FTS query:          Range:   8.767 ...  10.768 ms, Average:   8.988, median:   8.955, std dev: 0.176
+                    Range: 324.694 ... 398.812 us/row, Average: 332.871, median: 331.681, std dev:  6.52
+```
 
 ## Procedure
 
