@@ -1,6 +1,8 @@
 # Couchbase Mobile 2.0 Replication Protocol
 
-Jens Alfke — March 2017
+Jens Alfke — June 2017
+
+Protocol version 1.2
 
 This document specifies the new replication protocol in development for Couchbase Mobile 2.0. It supersedes the REST-based protocol inherited from CouchDB.
 
@@ -15,6 +17,7 @@ Benefits of the new protocol are:
 * Less code (about 40% less in the iOS implementation)
 * Cleaner implementation, with the generic messaging layer separated from the replication-specific logic
 * Protocol is inherently symmetric between client/server, which means the two roles share a lot of common code
+* Supports “conflict-free” servers, which require clients to resolve conflicts before pushing changes.
 
 ## 1. Architecture
 
@@ -101,6 +104,8 @@ The document body size (in bytes) MAY be appended to the array as a fifth item i
 
 The sender SHOULD break up its change history into multiple `changes` messages instead of sending them in one big message. (It SHOULD honor the optional `batch` parameter in the `subChanges` request it received from the peer.) It SHOULD use flow control by limiting the number of `changes` messages that it's sent but not received replies to yet.
 
+A peer in conflict-free mode SHOULD reject a received `changes` message by returning a BLIP/409 error. This informs the sender that it should use `proposeChanges` instead.
+
 Response:
 
 `maxHistory`: Max length of revision history to send _(optional)_  
@@ -115,6 +120,24 @@ Trailing zeros or nulls can be omitted from the response array, so in the simple
 
 The `maxHistory` response property, if present, indicates the maximum length of the `history` array to be sent in `rev` messages (see below.) It should be set to the maximum revision-tree depth of the database. If it's missing, the history length is unlimited.
 
+### proposeChanges
+
+Body: JSON array
+
+Sends proposed changes to a server that’s in conflict-free mode. This is much like `changes` except that the items in the body array are different; they look like `[docID, serverRevID]`. Each still represents an updated document, but the information sent is simply the documentID, and the revisionID of the last known server revision. (As with `changes`, the estimated body size MAY be appended.)
+
+The recipient SHOULD then look through those documents in its database and check whether the given revision IDs are still current for those documents. If not, the proposed document will be rejected with a 409 status (see below.) The recipient MAY also detect other problems, such as an invalid document ID, or a lack of write access to the document, and send back an appropriate status code as described below.
+
+A peer not in conflict-free mode MUST reject a received `proposeChanges` message by returning a BLIP/404 error. This informs the sender that it should use `changes` instead.
+
+Response:
+
+Body: JSON array
+
+The response message indicates which of the proposed changes are allowed and which are out of date. It consists of an array of numbers, where 0 indicates the change is allowed (and the peer should send the revision), and other numbers are HTTP status codes, typically 409 denoting a conflict.
+
+As with `changes`, trailing zeros can be omitted, but the interpretation is different since a zero means “send it” instead of “don’t send it”. So the common case of an empty array response tells the sender to *send* all of the proposed revisions.
+
 ### rev
 
 `id`: Document ID _(optional)_  
@@ -126,7 +149,7 @@ Body: Document JSON
 
 Sends one document revision. The `id`, `rev`, `deleted` properties are optional if corresponding `_id`, `_rev`, `_deleted` properties exist in the JSON body (and vice versa.) The `sequence` property is optional unless this message was unsolicited.
 
-If the document has attachments, the document body MUST contain an `_attachments` property containing attachment metadata, with the usual schema. The `digest` property MUST be provided for every attachment. The attachments SHOULD all be in "stub" form, with no inline data, unless the data is very small. Attachments MUST NOT be in "follows" form.
+A recipient in conflict-free mode will check whether the `history` array contains the current local revision ID, or if the `history` array is empty and the document does not exist locally. If not, it MUST reject the revision by returning a 409 status.
 
 Ordinarily a `rev` message is triggered by a prior response to a `changes` message. However, it MAY be sent unsolicited, _instead_ of in a `changes` message, if all of the following are true:
 
@@ -137,9 +160,9 @@ Ordinarily a `rev` message is triggered by a prior response to a `changes` messa
 
 In practice this is most likely to occur for brand new changes being sent in a continuous replication in response to a local database update notification.
 
-The recipient MUST send a response unless the request was sent 'noreply'. It MUST not send the response until it has durably added the revision to its database, or has failed to add it. On success the response can be empty; on failure it MUST be an error.
+The recipient MUST send a response unless the request was sent 'noreply'. It MUST not send a success response until it has durably added the revision to its database, or has failed to add it. On success the response can be empty; on failure it MUST be an error.
 
-Note: The recipient may need to send one or more `getattach` messages while processing the `rev` message, in which case it will not be able to send the `rev`'s response until it's received responses to the `getattach` message(s) and added the attachments, as well as the document, to its database.
+Note: The recipient may need to send one or more `getattach` messages while processing the `rev` message, in which case it MUST NOT send the `rev`'s response until it's received responses to the `getattach` message(s) and durably added the attachments, as well as the document, to its database.
 
 ### getAttachment
 
