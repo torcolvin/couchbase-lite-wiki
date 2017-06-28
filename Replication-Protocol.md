@@ -124,9 +124,9 @@ The `maxHistory` response property, if present, indicates the maximum length of 
 
 Body: JSON array
 
-Sends proposed changes to a server that’s in conflict-free mode. This is much like `changes` except that the items in the body array are different; they look like `[docID, serverRevID]`. Each still represents an updated document, but the information sent is simply the documentID, and the revisionID of the last known server revision. (As with `changes`, the estimated body size MAY be appended.)
+Sends proposed changes to a server that’s in conflict-free mode. This is much like `changes` except that the items in the body array are different; they look like `[docID, serverRevID]`. Each still represents an updated document, but the information sent is simply the documentID, and the revisionID of the last known server revision (if any). If there is no known server revision, the `serverRevID` SHOULD be omitted, or otherwise MUST be an empty string. (As with `changes`, the estimated body size MAY be appended, if the `serverRevID` is present.)
 
-The recipient SHOULD then look through those documents in its database and check whether the given revision IDs are still current for those documents. If not, the proposed document will be rejected with a 409 status (see below.) The recipient MAY also detect other problems, such as an invalid document ID, or a lack of write access to the document, and send back an appropriate status code as described below.
+The recipient SHOULD then look through each document in its database. If the document exists, but the given server revision ID is not known or not current, the proposed document SHOULD be rejected with a 409 status (see below.) The recipient MAY also detect other problems, such as an illegal document ID, or a lack of write access to the document, and send back an appropriate status code as described below.
 
 A peer not in conflict-free mode MUST reject a received `proposeChanges` message by returning a BLIP/404 error. This informs the sender that it should use `changes` instead.
 
