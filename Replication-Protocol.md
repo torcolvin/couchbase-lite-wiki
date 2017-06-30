@@ -77,6 +77,7 @@ Response:
 `filter`: The name of a filter function known to the recipient _(optional)_  
 `batch`: Maximum number of changes to send in a single `change` message _(optional)_  
 _other properties_: Named parameters for the filter function _(optional)_
+Body: JSON dictionary _(optional)_
 
 Asks the recipient to begin sending change messages starting from the sequence just after the one given by the `since` property, or from the beginning if no `since` is given.
 
@@ -87,6 +88,8 @@ The changes are _not_ sent as a response to this request, rather as a series of 
 Once all the existing changes have been sent, the end is signaled via an empty `changes` message. Ordinarily, that will be the last message sent. However, if the `continuous` property was set in the `getchanges` request, the recipient will continue to send `changes` messages as new changes are made to its database, until the connection is closed.
 
 The optional `filter` parameter names a filter function known to the recipient that limits which changes are sent. If this is present, any other properties to the request will be passed as parameters to the filter function. The Sync Gateway only recognizes the filter `sync_gateway/bychannel`, which requires the parameter `channels` whose value is a comma-delimited set of channel names.
+
+If a request body is present, it MUST be a JSON dictionary/object. In this dictionary the key `docIDs` MAY appear; its value MUST be an array of strings. If present, the recipient MUST only send changes to documents with IDs appearing in that array. Other unrecognized keys in the dictionary MUST be ignored.
 
 ### changes
 
