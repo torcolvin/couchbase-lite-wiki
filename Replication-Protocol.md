@@ -76,7 +76,7 @@ Response:
 `continuous`: Set to `true` if the requestor wants change notifications to be sent indefinitely _(optional)_  
 `filter`: The name of a filter function known to the recipient _(optional)_  
 `batch`: Maximum number of changes to send in a single `change` message _(optional)_  
-_other properties_: Named parameters for the filter function _(optional)_
+_other properties_: Named parameters for the filter function _(optional)_  
 Body: JSON dictionary _(optional)_
 
 Asks the recipient to begin sending change messages starting from the sequence just after the one given by the `since` property, or from the beginning if no `since` is given.
