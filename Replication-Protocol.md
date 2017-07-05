@@ -6,6 +6,7 @@ Protocol version 1.2
 
 This document specifies the new replication protocol in development for Couchbase Mobile 2.0. It supersedes the REST-based protocol inherited from CouchDB.
 
+
 Benefits of the new protocol are:
 
 * Faster and uses less bandwidth
@@ -18,6 +19,21 @@ Benefits of the new protocol are:
 * Cleaner implementation, with the generic messaging layer separated from the replication-specific logic
 * Protocol is inherently symmetric between client/server, which means the two roles share a lot of common code
 * Supports “conflict-free” servers, which require clients to resolve conflicts before pushing changes.
+
+## Contents
+
+1. [Architecture](#1-architecture)
+2. [Connecting](#2-connecting)
+3. [Message Types](#3-message-types)
+   * [getCheckpoint](#getcheckpoint)
+   * [setCheckpoint](#setcheckpoint)
+   * [subChanges](#subchanges)
+   * [changes](#changes)
+   * [proposeChanges](#proposeChanges)
+   * [rev](#rev)
+   * [getAttachment](#getAttachment)
+   * [proveAttachment](#proveAttachment)
+4. [Algorithm](#4-algorithm)
 
 ## 1. Architecture
 
