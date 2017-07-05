@@ -29,10 +29,10 @@ Benefits of the new protocol are:
    * [setCheckpoint](#setcheckpoint)
    * [subChanges](#subchanges)
    * [changes](#changes)
-   * [proposeChanges](#proposeChanges)
+   * [proposeChanges](#proposechanges)
    * [rev](#rev)
-   * [getAttachment](#getAttachment)
-   * [proveAttachment](#proveAttachment)
+   * [getAttachment](#getattachment)
+   * [proveAttachment](#proveattachment)
 4. [Algorithm](#4-algorithm)
 
 ## 1. Architecture
