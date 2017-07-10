@@ -228,9 +228,11 @@ Here are informal descriptions of the flow of control of both push and pull repl
 1. Client opens connection to server and authenticates
 2. Client sends `getCheckpoint` to verify checkpoint status
 3. Client sends one or more `changes` messages containing revisions added since the checkpointed local sequence
+    * If response is a BLIP/409 or HTTP/409 error, client infers that the server is in "no conflicts" mode, and switches to sending `proposeChanges` messages, including resending the failed one.
     * Client keeps track of how many `changes` messages have been sent but not yet responded to
     * If that count exceeds a reasonable limit, the client waits to send the next message until a response is received.
 4. Server replies to each `changes` message indicating which revisions it wants and which ancestors it already has
+    * If server is in "no conflicts" mode, it will reject `changes` messages with a BLIP/409 or HTTP/409 error, and instead accept `proposeChanges` messages.
 5. For each requested revision:
     1. Client sends document body in a `rev` message
     2. Server looks at each newly-added attachment digest in each revision and
