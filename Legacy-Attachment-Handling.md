@@ -32,7 +32,7 @@ A CBL document that looks like this:
   photos: {
     thumbnail: {
       _cbltype: "blob",
-      digest: "xxxxxxxxxx",
+      digest: "E3548AF60A3A407CA67389653ED82C09",
       type: "image/jpeg",
       length: 4321 }
   }
