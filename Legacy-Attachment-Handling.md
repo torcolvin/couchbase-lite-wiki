@@ -14,6 +14,8 @@ If a document contains an `_attachments` property whose value is an object (map/
 
 This rule needs to be honored by Couchbase Lite's sub-document API, as well as LiteCore code that detects attachments in documents (i.e. to set the internal `kC4DocHasAttachment` flag.)
 
+Applications can choose to migrate attachments to blob properties if they wish, treating this like any other type of application schema change. They could upgrade every document (move attachments to blobs) at once when first opening the database, or wait until saving a document. In the latter case, their code (including queries!) needs to be flexible enough to look for blobs in either location.
+
 ## Pushing To Sync Gateway
 
 When pushing a document that contains blobs to Sync Gateway:
@@ -65,4 +67,8 @@ When pulling from Sync Gateway, every incoming document needs to be checked for 
     * If found, remove the corresponding `_attachments` entry.
 * If all `_attachments` entries are removed, remove the property itself too.
 
-The usual cases are: receiving a document created by CBL 2 (the synthesized `_attachments` property will simply be removed), or receiving a document created by CBL 1 or a different database (the `_attachments` property will be left alone since it contains the real attachments.) But this logic should also work in less common cases like a document upgraded from CBL 1.x where blobs have been added but the `_attachments` property not yet deleted.
+If this is a document that was created by CBL 2, the result is that the synthesized `_attachments` property will be removed, and the document will be exactly as it was in the originating database.
+
+Otherwise, (the document was created by CBL 1 or a different database), the `_attachments` property will be left alone since it contains the real attachments.
+
+There are some other less likely cases, like a document upgraded from CBL 1.x where blobs have been added but the `_attachments` property not yet deleted; this algorithm should give good results then as well. 
