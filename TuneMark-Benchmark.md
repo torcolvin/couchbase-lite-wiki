@@ -42,6 +42,35 @@ FTS query:          Range:  10.056 ...  11.166 ms, Average:  10.867, median:  11
                     Range: 372.461 ... 413.548 us/row, Average: 402.465, median: 408.082, std dev:  8.42
 ```
 
+### iOS (Xamarin)
+(iPhone 6s+, iOS 10.3.2; July 19, 2017)
+```
+Import 12189 docs
+Range: 8.770 ... 8.976 sec, median: 8.956, std dev: 0.077
+Range: 719.538 ... 736.390 us/doc, median: 734.791, std dev: 6.32
+Update 1223 docs
+Range: 1.688 ... 1.723 sec, median: 1.692, std dev: 0.014
+Range: 1.380 ... 1.409 ms/update, median: 1.384, std dev: 0.0114
+Query 1115 artists
+Range: 588.415 ... 614.022 ms, median: 594.432, std dev: 3
+Range: 527.726 ... 550.692 us/row, median: 533.123, std dev: 8.07
+Index by artist
+Range: 22.336 ... 30.148 ms, median: 24.114, std dev: 3
+Range: 1.832 ... 2.473 us/doc, median: 1.978, std dev: 0.246
+Query 1115 artists
+Range: 26.960 ... 28.830 ms, median: 28.623, std dev: 1
+Range: 24.179 ... 25.856 us/row, median: 25.671, std dev: 0.897
+Query 1887 albums
+Range: 110.591 ... 120.504 ms, median: 115.054, std dev: 3
+Range: 99.185 ... 108.075 us/artist, median: 103.188, std dev: 2.69
+FTS indexing:
+Range: 185.327 ... 193.505 ms, median: 189.100, std dev: 3
+Range: 6.864 ... 7.167 ms/doc, median: 356.204, std dev: 37
+FTS query:
+Range: 9.495 ... 11.335 ms, median: 9.618, std dev: 1
+Range: 351.670 ... 419.830 us/row, median: 356.204, std dev: 37
+```
+
 ### Android (Xamarin)
 
 (Nexus 5, Android AOSP API 25 OS; July 19, 2017)
