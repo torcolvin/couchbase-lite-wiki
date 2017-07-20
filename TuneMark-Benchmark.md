@@ -142,6 +142,28 @@ FTS query:          Range: 5.377 ... 8.109 ms, median: 5.960, std dev: 1
                     Range: 199.156 ... 300.319 us/row, median: 220.748, std dev: 37
 ```
 
+### iOS — CBL 1.4
+(iPhone 6s+, iOS 10.3.3; July 20, 2017)
+
+```
+Import 12189 docs:  Range:   2.909 ...   3.092 sec, Average:   2.950, median:   2.943, std dev: 0.0468
+                    Range: 238.665 ... 253.654 us/doc, Average: 242.017, median: 241.426, std dev:  3.84
+Update 1223 docs:   Range:   1.743 ...   2.539 sec, Average:   1.807, median:   1.798, std dev: 0.0427
+                    Range:   1.425 ...   2.076 ms/update, Average:   1.477, median:   1.470, std dev: 0.0349
+Query 1114 artists: Range:  82.929 ...  91.692 ms, Average:  88.331, median:  88.713, std dev:  1.62
+                    Range:  74.442 ...  82.309 us/row, Average:  79.291, median:  79.634, std dev:  1.45
+Index by artist:    Range: 520.720 ... 579.324 ms, Average: 545.557, median: 544.835, std dev:  12.5
+                    Range:  42.720 ...  47.528 us/doc, Average:  44.758, median:  44.699, std dev:  1.02
+Query 1114 artists: N/A
+                    
+Query 1886 albums:  Range: 262.376 ... 280.685 ms, Average: 271.212, median: 270.650, std dev:  4.25
+                    Range: 235.526 ... 251.962 us/artist, Average: 243.458, median: 242.953, std dev:  3.81
+FTS indexing:       Range: 683.968 ... 757.246 ms, Average: 725.306, median: 719.835, std dev:  14.3
+                    Range:  56.114 ...  62.125 us/doc, Average:  59.505, median:  59.056, std dev:  1.17
+FTS query:          Range:   2.658 ...   4.485 ms, Average:   2.811, median:   2.779, std dev: 0.138
+                    Range:  88.607 ... 149.508 us/row, Average:  93.699, median:  92.646, std dev:  4.59
+```
+
 ## Procedure
 
 The whole test below should be run 10 times, and the results of each operation averaged across runs, because the individual times are pretty variable. I use LiteCore’s `Benchmark` class to collect the times, compute averages and standard deviations, and log them.
