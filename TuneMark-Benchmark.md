@@ -20,11 +20,9 @@ The only properties TuneMark currently uses are `Name`, `Album` and `Artist`, bu
 
 ## Example Results
 
-Generated June 21 2017, with latest builds of Couchbase Lite 2 and LiteCore.
+### iOS
 
-### iPhone 6s+
-
-iOS 10.3.2
+(iPhone 6s+, iOS 10.3.2; June 21, 2017)
 ```
 Import 12189 docs:  Range:   2.534 ...   2.611 sec, Average:   2.560, median:   2.553, std dev: 0.0173
                     Range: 207.859 ... 214.202 us/doc, Average: 209.986, median: 209.454, std dev:  1.42
@@ -44,10 +42,31 @@ FTS query:          Range:  10.056 ...  11.166 ms, Average:  10.867, median:  11
                     Range: 372.461 ... 413.548 us/row, Average: 402.465, median: 408.082, std dev:  8.42
 ```
 
-### MacBook Pro (15", late 2013)
+### Android (Xamarin)
 
-2.3GHz Intel Core i7, 16GB RAM, internal Apple SSD, macOS 10.12.6
+(Nexus 5, Android AOSP API 25 OS; July 19, 2017)
+```
+Import 12189 docs:  Range: 20.209 ... 21.585 sec, median: 21.344, std dev: 0.504
+                    Range: 1.658 ... 1.771 ms/doc, median: 1.751, std dev: 0.0413
+Update 1223 docs:   Range: 4.521 ... 4.750 sec, median: 4.604, std dev: 0.079
+                    Range: 3.697 ... 3.884 ms/update, median: 3.765, std dev: 0.0646
+Query 1115 artists: Range: 245.263 ... 253.975 ms, median: 250.236, std dev: 3
+                    Range: 219.967 ... 227.781 us/row, median: 250.236, std dev: 2.69
+Index by artist:    Range: 135.851 ... 153.619 ms, median: 148.694, std dev: 6
+                    Range: 11.145 ... 12.603 us/doc, median: 12.199, std dev: 0.492
+Query 1115 artists: Range: 178.961 ... 188.075 ms, median: 180.198, std dev: 3
+                    Range: 160.503 ... 168.677 us/row, median: 161.613, std dev: 2.69
+Query 1887 albums:  Range: 409.295 ... 456.837 ms, median: 427.659, std dev: 17
+                    Range: 367.080 ... 409.719 us/artist, median: 383.551, std dev: 15.2
+FTS indexing:       Range: 1.092 ... 1.108 sec, median: 1.096, std dev: 0.006
+                    Range: 40.462 ... 41.051 ms/doc, median: 40.598, std dev: 0.222
+FTS query:          Range: 26.118 ... 31.231 ms, median: 26.594, std dev: 2
+                    Range: 0.967 ... 1.157 ms/row, median: 0.985, std dev: 0.0741
+```
 
+### Mac OS
+
+(MacBook Pro (15", late 2013), 2.3GHz Intel Core i7, 16GB RAM, internal Apple SSD, macOS 10.12.6; June 21, 2017)
 ```
 Import 12189 docs:  Range:   1.210 ...   1.238 sec, Average:   1.225, median:   1.227, std dev: 0.00516
                     Range:  99.273 ... 101.571 us/doc, Average: 100.518, median: 100.700, std dev: 0.423
@@ -65,6 +84,33 @@ FTS indexing:       Range: 118.692 ... 124.893 ms, Average: 121.656, median: 121
                     Range:   9.738 ...  10.246 us/doc, Average:   9.981, median:   9.955, std dev: 0.167
 FTS query:          Range:   8.767 ...  10.768 ms, Average:   8.988, median:   8.955, std dev: 0.176
                     Range: 324.694 ... 398.812 us/row, Average: 332.871, median: 331.681, std dev:  6.52
+```
+
+### Windows (.NET)
+
+(Windows 10 Home 64-bit Desktop  
+Core i5 @ 3.5 Ghz  
+16 GB DDR3 @ 666 Mhz (9-9-9-24)  
+ASRock Z97 Extreme4 Motherboard  
+Crucial MX100 256 GB SATAIII SSD drive  
+July 19, 2017)
+```
+Import 12189 docs:  Range: 1.113 ... 1.247 sec, median: 1.142, std dev: 0.157
+                    Range: 91.307 ... 102.345 us/doc, median: 93.681, std dev: 12.9
+Update 1223 docs:   Range: 358.133 ... 396.489 ms, median: 361.169, std dev: 51
+                    Range: 292.832 ... 324.194 us/update, median: 295.314, std dev: 41.7
+Query 1115 artists: Range: 32.607 ... 36.397 ms, median: 33.983, std dev: 5
+                    Range: 29.244 ... 32.643 us/row, median: 30.478, std dev: 4.48
+Index by artist:    Range: 20.035 ... 26.170 ms, median: 22.895, std dev: 3
+                    Range: 1.644 ... 2.147 us/doc, median: 1.878, std dev: 0.246
+Query 1115 artists: Range: 20.256 ... 21.372 ms, median: 20.773, std dev: 3
+                    Range: 18.167 ... 19.167 us/row, median: 18.630, std dev: 2.69
+Query 1887 albums:  Range: 63.121 ... 70.197 ms, median: 67.074, std dev: 9
+                    Range: 56.610 ... 62.957 us/artist, median: 60.156, std dev: 8.07
+FTS indexing:       Range: 121.583 ... 133.806 ms, median: 123.274, std dev: 17
+                    Range: 4.503 ... 4.956 ms/doc, median: 4.566, std dev: 0.63
+FTS query:          Range: 5.377 ... 8.109 ms, median: 5.960, std dev: 1
+                    Range: 199.156 ... 300.319 us/row, median: 220.748, std dev: 37
 ```
 
 ## Procedure
