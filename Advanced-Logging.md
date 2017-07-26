@@ -4,7 +4,7 @@ There is a goal to make logs easier to extract from whatever platform Couchbase 
 
 The initial implementation will be kept straight forward.  There will be a way to set the maximum size for log storage, and an API that provides a list or some other sort of iterator to the paths of the current log files so that they can be extracted.  Beyond that will be an application level concern about what to do with them.
 
-Proposed API:
+Proposed API:<br>
 `void c4log_setMaxStorage(uint bytes);`<br>
 `C4Slice[] c4log_getPaths(int* size);`
 
