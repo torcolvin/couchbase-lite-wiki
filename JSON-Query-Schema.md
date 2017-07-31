@@ -4,6 +4,7 @@
 * [Example](#example)
 * [Leaf Types](#leaf-types)
 * [Operations](#operations)
+* [Collation](#collation)
 * [Top-Level Query, and `SELECT`](#top-level-query-and-select)
 * [Functions](#functions)
 * [Implementation Status](#implementation-status)
@@ -85,10 +86,11 @@ The operations are named after their N1QL/SQL equivalents.
 | | `IS NOT MISSING` | 1 |
 | | `IS NULL` | 1 |
 | | `IS NOT NULL` | 1 |
+| | `COLLATE` | 2: (options, expr) [see **[Collation](#collation)** below] |
 |Logical| `NOT` | 1 |
 | | `AND` | 2+ |
 | | `OR` | 2+ |
-|Functions| _name_`()` | Depends on function |
+|Functions| _name_`()` | Depends on [function](#functions) |
 |Conditional| `CASE` | 2+: (expr, when1, ...) |
 | | `WHEN` | 2: (cond, value) |
 | | `ELSE` | 1: (value) |
@@ -98,7 +100,22 @@ The operations are named after their N1QL/SQL equivalents.
 |Properties| `.` | 1+: (path components) |
 |Parameters| `$` | 1 (name or position) |
 |Variables| `?` | 1+ (name, optional path components) |
-|Queries| `SELECT` | 1 [see below] |
+|Queries| `SELECT` | 1 [[see below](#top-level-query-and-select)] |
+
+## Collation
+
+The `COLLATE` operator does nothing itself, merely returns the value of its second parameter, but it alters the string collation used when evaluating that expression and nested expressions. The first parameter is a dictionary that specifies the collation; its keys are:
+
+| Key | Value | Default Value |
+|-----|-------|---------------|
+| `UNICODE` | Unicode-aware? | `false` |
+| `CASE` | Case-sensitive? | `true` |
+| `DIAC` | Diacritic (accent) -sensitive? | `true` |
+| `LANG` | Language code (`"en"`, `"es"`, etc.) | system language |
+
+Any keys not specified are inherited from the enclosing context. There's implicitly a top-level context with the default values for the keys, i.e. `{UNICODE: false, CASE: true, DIAC: true, LANG: $system_language}`.
+
+**STATUS:** (July 2017) Still under design; implementation coming ASAP
 
 ## Top-Level Query, and `SELECT`
 
@@ -107,7 +124,7 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | Key | Value | Default Value |
 |-----|-------|---------------|
 | `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
-| `FROM` | Array of database/join identifiers | Database being queried |
+| `FROM` | Array of [database/join identifiers](#databasejoin-identifiers) | Database being queried |
 | `WHERE` | Boolean-valued expression | `true` (all documents) |
 | `HAVING` | Expression | `true` |
 | `DISTINCT` | Boolean | `false` |
@@ -271,7 +288,7 @@ These are N1QL functions. For detailed information about parameters and results,
 
 ## Implementation Status
 
-(Updated March 30, 2017)
+(Updated July 31, 2017)
 
 ### Phase 2: Nested Operators and MISSING
 
@@ -292,3 +309,9 @@ These are N1QL functions. For detailed information about parameters and results,
 * Basic inner joins implemented.
 * No support for multiple databases yet.
 * No support for left, outer, cross, natural, ingrown or dovetail joins.
+
+### Phase 6: Collation
+
+* Unicode-aware collation functions being implemented in LiteCore
+* Specifying JSON schema of collation specifiers
+* Collation specifiers not recognized by query parser yet
