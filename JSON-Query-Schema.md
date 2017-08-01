@@ -111,12 +111,12 @@ The `COLLATE` operator does nothing itself, merely returns the value of its seco
 | `UNICODE` | Unicode-aware? | `false` |
 | `CASE` | Case-sensitive? | `true` |
 | `DIAC` | Diacritic (accent) -sensitive? | `true` |
-| `LOCALE` | ISO locale or language code (`"en"`, `"en_US"`, etc.) | system language |
+| `LOCALE` | ISO locale or language code (`"en"`, `"en_US"`, etc.) | null |
 
 * If `UNICODE` is not true, `DIAC` and `LOCALE` are ignored.
 * If `UNICODE` is true, but `LOCALE` is missing or null, the collation is Unicode-aware but not localized; for example, accented Roman letters sort right after the base letter.
 * Any keys not specified are inherited from the enclosing context.
-* There's implicitly a top-level context with the default values for the keys, i.e. `{UNICODE: false, CASE: true, DIAC: true, LANG: $system_language}`.
+* There's implicitly a top-level context with the default values for the keys, i.e. `{UNICODE: false, CASE: true, DIAC: true, LOCALE: null}`.
 
 **STATUS:** (July 2017) Still under design; implementation coming ASAP
 
