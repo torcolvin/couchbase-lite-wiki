@@ -9,19 +9,21 @@
 * [Functions](#functions)
 * [Implementation Status](#implementation-status)
 
-## Introduction
+## 1. Introduction
 
 Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like [SQL](http://www.sqlite.org/lang_expr.html). This document describes the schema.
 
-The JSON describes a parse tree. Each node of the tree describes an operation and a list of operands (children). The operations can be arithmetic, comparison, logical, etc. The number of children depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
+A query is described as a sort of parse tree. Each node of the tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
 
-A typical way to represent a parse tree is as nested lists or arrays, where the first element represents the operator and the rest represent the operands; for example `["=", ["+", 2, 2], 5]`.
+A node is represented in JSON as an array, where the first element is a string naming the operation, and the other elements represent the operands (often nested arrays); for example `["=", ["+", 2, 2], 5]`. (If you know LISP or any functional languages, this should look pretty familiar!)
 
-In addition to the operators from SQL and N1QL, we need ones to represent document property paths and query parameters. Operator `"."` represents a path, and `"$"` a parameter.
+A few operations, like `SELECT` and `COLLATE`, take a set of _named_ operands. These are represented as a single operand that's a JSON object/dictionary whose items are the real operands.
+
+Most of the operation names are SQL / N1QL keywords or math symbols, but there are also operations to represent document property paths (`"."`), query parameters (`"$"`), etc.
 
 **NOTE:** This schema is case-insensitive, like SQL and N1QL. All operation names, function names, and `SELECT` keys can be upper- or lower-case or any mixture.
 
-## Example
+## 2. Example
 
 `SELECT name.first, name.last FROM students WHERE grade = 12 AND gpa >= $GPA`
 
@@ -32,8 +34,6 @@ As a JSON tree this looks like:
     "WHAT": [
         [".", "name", "first"],
         [".", "name", "last"] ],
-    "FROM":
-        "students",
     "WHERE":
         ["AND",
             ["=",
@@ -44,18 +44,43 @@ As a JSON tree this looks like:
                 ["$", "GPA"] ] } ]
 ```
 
-## Leaf Types
+## 3. Leaf Types (Literals, Properties, Parameters, Variables)
 
-| Type | Representation | Example |
-|------|----------------|---------|
-| Constant | JSON scalar | `true`, `null`, `17`, `"foo"` |
-| Property | `.` operation | `[".", "name", "first"]` |
-| Parameter | `$` operation | `["$", "MIN_AGE"]` |
-| Variable | `?` operation | `["?", "Item"]` `["?", "Item", "price"]` |
+### Literals
 
-As shorthand, properties/parameters/variables can be collapsed into one-element arrays, like `[".name.first"]` and `["$MIN_AGE"]`.
+As an operand, a JSON string, number, boolean or `null` represents itself.
 
-Note: The special property names `_id` and `_sequence` refer to the document's ID and current sequence number.
+Examples: `true`, `null`, `17`, `"foo"`
+
+### Properties
+
+Properties are references to document properties. The property operation name is `"."`; its operands are a path from the document root to the property being named.
+
+Example:  `[".", "name", "first"]`
+
+As shorthand, a property expression can be collapsed into a one-element array, like `[".name.first"]`.
+
+A property expression with zero operands, `["."]`, represents the root of the document. (This is commonly used in a `WHAT` list, where it is the equivalent of the SQL `*` specifier.)
+
+The special top-level property names `_id` and `_sequence` refer to the document's ID and current sequence number. _[TBD: This may change to a special `meta` object.]_
+
+In a query with a `FROM` clause, where multiple documents are being queried, a property expression's path MUST be prefixed with the alias of the document as its first operand. For example, if the alias were `db`, then `[".", "name"]` would become `[".", "db", "name"]`; `["."]` would become `[".", "db"]`; and `[".", "_id"]` would become `[".", "db", "_id"]`. Of course these can be abbreviated as `[".db.name"]`, etc.
+
+### Parameters
+
+Parameters are placeholders whose values are substituted when the query is run. The parameter name is the single (required) operand of the `"$"` expression.
+
+Example: `["$", "MIN_AGE"]`
+
+As shorthand, a parameter expressions can be collapsed into a one-element array, like `["$MIN_AGE"]`.
+
+### Variables
+
+Variables are placeholders used in a `ANY` and `EVERY` expression to represent the collection item being iterated over. The (required) first operand of the `"?"` expression is the variable's name, and the (optional) extra operands are a property path relative to the variable's value.
+
+Example: `["?", "address", "zip"]`
+
+As shorthand, a variable expression can be collapsed into a one-element array, like `["?address"]` or `["?address.zip"]`.
 
 ## Operations
 
@@ -97,28 +122,42 @@ The operations are named after their N1QL/SQL equivalents.
 |Collections| `ANY` | 3: (variable name, array, satisfies) |
 | | `EVERY` | 3: (variable name, array, satisfies) |
 | | `ANY AND EVERY` | 3: (variable name, array, satisfies) |
-|Properties| `.` | 1+: (path components) |
-|Parameters| `$` | 1 (name or position) |
-|Variables| `?` | 1+ (name, optional path components) |
+|Properties| `.` | 0+: (path components) [[see above](#properties)] |
+|Parameters| `$` | 1 (name or position) [[see above](#parameters)] |
+|Variables| `?` | 1+ (name, optional path components) [[see above](#variables)] |
 |Queries| `SELECT` | 1 [[see below](#top-level-query-and-select)] |
 
 ## Collation
 
-The `COLLATE` operator does nothing itself, merely returns the value of its second parameter, but it alters the string collation used when evaluating that expression and nested expressions. The first parameter is a dictionary that specifies the collation; its keys are:
+The `COLLATE` operator does nothing itself, merely returns the value of its second operand, but it alters the string collation (comparison/sorting) used when evaluating that expression _and nested expressions_. The first operand is a dictionary that specifies the collation; its keys are:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
 | `UNICODE` | Unicode-aware? | `false` |
 | `CASE` | Case-sensitive? | `true` |
 | `DIAC` | Diacritic (accent) -sensitive? | `true` |
-| `LOCALE` | ISO locale or language code (`"en"`, `"en_US"`, etc.) | null |
+| `LOCALE` | ISO locale* string or `null` | `null` |
 
-* If `UNICODE` is not true, `DIAC` and `LOCALE` are ignored.
-* If `UNICODE` is true, but `LOCALE` is missing or null, the collation is Unicode-aware but not localized; for example, accented Roman letters sort right after the base letter.
+\* A **locale** is an ISO-639 [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) plus, optionally, an underscore and an ISO-3166 [country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2): `"en"`, `"en_US"`, `"fr_CA"`, etc.
+
+Some details on combining keys:
+
+* If `UNICODE` is not true, only the `CASE` value is significant: a case-sensitive collation is a purely binary string comparison; a case-insensitive one also treats ASCII uppercase and lowercase letters as equivalent.
+* If `UNICODE` is true, but `LOCALE` is missing or null, the collation is Unicode-aware but not localized; for example, accented Roman letters sort right after the base letter. (This is implemented by using the "en_US" locale.)
 * Any keys not specified are inherited from the enclosing context.
 * There's implicitly a top-level context with the default values for the keys, i.e. `{UNICODE: false, CASE: true, DIAC: true, LOCALE: null}`.
 
-**STATUS:** (July 2017) Still under design; implementation coming ASAP
+### About Unicode Collation
+
+The details of [Unicode collation](http://userguide.icu-project.org/collation) are quite complex, though for the most part it just Does The Right Thing according to a human of that locale. But it doesn't behave like the simple `strcmp` and `strcasecmp` functions that programmers are used to!
+
+* The collation algorithm first compares the strings ignoring case and diacritics, just looking at the base letters. If the letters are not equal, it stops and returns the relative ordering based on the mismatched letters. This is usually, but _not always_, the ordering English speakers are used to; for example, in Lithuanian "Y" comes after "I", and in traditional Spanish the sequence "CH" sorts as a single letter that comes between "C" and "D".
+* Otherwise, if diacritic-sensitive, it compares the strings again, this time considering also diacritics (accents). If they differ, it returns the relative ordering. By default an accented letter sorts just after the base letter, but many locales have special rules: "Å" in Danish is treated as a separate letter that sorts just after "Z".
+* Otherwise, if case-sensitive, it compares the strings again, now considering case; if they differ in case, it returns the relative ordering, with lowercase coming _before_ uppercase (contrary to the intuition of programmers used to ASCII ordering!)
+
+The above applies to the Roman alphabet. For many non-Roman scripts, especially Chinese and Japanese, the rules get much more complicated.
+
+Some unintuitive results: in a case-sensitive collation, "abc" comes before "ABC" (lowercase first!), but "abd" comes _after_ "ABC" because the letter mismatch takes priority over the case mismatch. Likewise, "ápple" comes after "Apple" (in most locales) because the diacritic is higher priority than uppercase.
 
 ## Top-Level Query, and `SELECT`
 
