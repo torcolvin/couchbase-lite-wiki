@@ -52,6 +52,10 @@ As an operand, a JSON string, number, boolean or `null` represents itself.
 
 Examples: `true`, `null`, `17`, `"foo"`
 
+An array literal is created using the `"[]"` operation. All of the operands are evaluated and concatenated to make the array.
+
+Example: `["[]", 10, true, "foo"]`
+
 ### Properties
 
 Properties are references to document properties. The property operation name is `"."`; its operands are a path from the document root to the property being named.
@@ -105,7 +109,8 @@ The operations are named after their N1QL/SQL equivalents.
 | | `IS NOT` | 2 |
 | | `LIKE` | 2 |
 | | `MATCH` | 2 |
-| | `IN` | 2+: (value, option1, ...) |
+| | `IN` | 2: (value, array) |
+| | `NOT IN` | 2: (value, array) |
 | | `EXISTS` | 1 |
 | | `IS MISSING` | 1 |
 | | `IS NOT MISSING` | 1 |
