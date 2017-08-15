@@ -20,6 +20,8 @@ The only properties TuneMark currently uses are `Name`, `Album` and `Artist`, bu
 
 ## Example Results
 
+>**NOTE:** The current (15 Aug 2017) benchmark code has a bug, in that it combines the "Update play counts" and "Update artist names" times (see below) into one "Update ___ docs" step, and mistakenly counts only the number of documents updated by the second step. So in the reports below, the per-doc times for the "Update" step really should be based on 12189 + 1223 docs (and also account for iterating over all 12189 docs twice!)
+
 ### iOS
 
 (iPhone 6s+, iOS 10.3.2; June 21, 2017)
