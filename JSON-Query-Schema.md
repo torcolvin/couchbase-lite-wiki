@@ -215,150 +215,82 @@ These are N1QL functions. For detailed information about parameters and results,
 
 **NOTE:** There are some differences from SQL, or at least from SQLite; for example, SQLite has non-aggregate versions of `min` and `max`, but in N1QL (and LiteCore) these are called `least` and `greatest`.
 
-**STATUS:** (Feb 2017) _Most of these functions are unimplemented!_ For now, the rule of thumb is that, if it's not a built-in [SQLite  function](http://www.sqlite.org/lang_corefunc.html) or [aggregate](http://www.sqlite.org/lang_aggfunc.html), it won't work.
-
 |Category| Name | Operand Count |
 |--------|------|---------------|
-| **Aggregate** | `array_agg()` | |
-| | `avg()` | |
-| | `count()` | |
-| | `max()` | |
-| | `min()` | |
-| | `sum()` | |
-| **Arrays** | `array_append()` | |
-| | `array_avg()` | |
-| | `array_concat()` | |
-| | `array_contains()` | |
-| | `array_count()` | |
-| | `array_distinct()` | |
-| | `array_ifnull()` | |
-| | `array_insert()` | |
-| | `array_intersect()` | |
-| | `array_length()` | |
-| | `array_max()` | |
-| | `array_min()` | |
-| | `array_position()` | |
-| | `array_prepend()` | |
-| | `array_put()` | |
-| | `array_range()` | |
-| | `array_remove()` | |
-| | `array_repeat()` | |
-| | `array_replace()` | |
-| | `array_reverse()` | |
-| | `array_sort()` | |
-| | `array_sum()` | |
-| | `array_star()` | |
-| **Comparisons** | `greatest()` | |
-| | `least()` | |
-| **Conditionals** | `ifinf()` | |
-| | `ifmissing()` | |
-| | `ifmissingornull()` | |
-| | `ifnan()` | |
-| | `ifnanorinf()` | |
-| | `ifnull()` | |
-| | `missingif()` | |
-| | `nanif()` | |
-| | `nullif()` | |
-| | `neginfif()` | |
-| | `posinfif()` | |
-| **Math** | `abs()` | |
-| | `acos()` | |
-| | `asin()` | |
-| | `atan()` | |
-| | `atan2()` | |
-| | `ceil()` | |
-| | `cos()` | |
-| | `degrees()` | |
-| | `e()` | |
-| | `exp()` | |
-| | `ln()` | |
-| | `log()` | |
-| | `floor()` | |
-| | `pi()` | |
-| | `power()` | |
-| | `radians()` | |
-| | `random()` | |
-| | `round()` | |
-| | `sign()` | |
-| | `sin()` | |
-| | `sqrt()` | |
-| | `tan()` | |
-| | `trunc()` | |
-| **Misc** | `base64()` | |
-| | `base64_encode()` | |
-| | `base64_decode()` | |
-| | `uuid()` | |
-| **Objects** | `object_length()` | |
-| | `object_names()` | |
-| | `object_pairs()` | |
-| | `object_length()` | |
-| | `object_inner_pairs()` | |
-| | `object_values()` | |
-| | `object_inner_values()` | |
-| | `object_add()` | |
-| | `object_put()` | |
-| | `object_remove()` | |
-| | `object_unwrap()` | |
-| **Patterns** | `regexp_contains()` | |
-| | `regexp_like()` | |
-| | `regexp_position()` | |
-| | `regexp_replace()` | |
-| | `rank()` | |
-| **Strings** | `contains()` | |
-| | `initcap()` | |
-| | `length()` | |
-| | `lower()` | |
-| | `ltrim()` | |
-| | `position()` | |
-| | `repeat()` | |
-| | `replace()` | |
-| | `rtrim()` | |
-| | `split()` | |
-| | `substr()` | |
-| | `suffixes()` | |
-| | `title()` | |
-| | `trim()` | |
-| | `upper()` | |
-| **Types** | `isarray()` | |
-| | `isatom()` | |
-| | `isboolean()` | |
-| | `isnumber()` | |
-| | `isobject()` | |
-| | `isstring()` | |
-| | `type()` | |
-| | `toarray()` | |
-| | `toatom()` | |
-| | `toboolean()` | |
-| | `tonumber()` | |
-| | `toobject()` | |
-| | `tostring()` | |
+| **Aggregate** | `avg()` | 1 |
+| | `count()` | 1 |
+| | `max()` | 1 |
+| | `min()` | 1 |
+| | `sum()` | 1 |
+| **Arrays** | `array_avg()` | 1 |
+| | `array_contains()` | 2 |
+| | `array_count()` | 1 |
+| | `array_ifnull()` | 1 |
+| | `array_length()` | 1 |
+| | `array_max()` | 1 |
+| | `array_min()` | 1 |
+| | `array_sum()` | 1 |
+| **Comparisons** | `greatest()` | 2+ |
+| | `least()` | 2+ |
+| **Conditionals** | `ifmissing()` | 2+ |
+| | `ifmissingornull()` | 1+ |
+| | `ifnull()` | 1+ |
+| | `missingif()` | 2 |
+| | `nullif()` | 2 |
+| **Math** | `abs()` | 1 |
+| | `acos()` | 1 |
+| | `asin()` | 1 |
+| | `atan()` | 1 |
+| | `atan2()` | 2 |
+| | `ceil()` | 1 |
+| | `cos()` | 1 |
+| | `degrees()` | 1 |
+| | `e()` | 0 |
+| | `exp()` | 1 |
+| | `ln()` | 1 |
+| | `log()` | 1 |
+| | `floor()` | 1 |
+| | `pi()` | 0 |
+| | `power()` | 2 |
+| | `radians()` | 1 |
+| | `round()` | 1–2 |
+| | `sign()` | 1 |
+| | `sin()` | 1 |
+| | `sqrt()` | 1 |
+| | `tan()` | 1 |
+| | `trunc()` | 1–2 |
+| **Patterns** | `regexp_contains()` | 2 |
+| | `regexp_like()` | 2 |
+| | `regexp_position()` | 2 |
+| | `regexp_replace()` | 3-4 |
+| | `rank()` | 1 |
+| **Strings** | `contains()` | 2 |
+| | `length()` | 1 |
+| | `lower()` | 1 |
+| | `ltrim()` | 1–2 |
+| | `rtrim()` | 1–2 |
+| | `trim()` | 1–2 |
+| | `upper()` | 1 |
+| **Types** | `isarray()` | 1 |
+| | `isatom()` | 1 |
+| | `isboolean()` | 1 |
+| | `isnumber()` | 1 |
+| | `isobject()` | 1 |
+| | `isstring()` | 1 |
+| | `type()` | 1 |
+| | `toarray()` | 1 |
+| | `toatom()` | 1 |
+| | `toboolean()` | 1 |
+| | `tonumber()` | 1 |
+| | `toobject()` | 1 |
+| | `tostring()` | 1 |
 
 ## Implementation Status
 
-(Updated July 31, 2017)
+(Updated August 18, 2017)
 
-### Phase 2: Nested Operators and MISSING
+Still TBD, probably coming post-2.0:
 
-* Implemented ANY / EVERY operators.
-* `NULL` (which is a JSON null, not a SQL null!) is represented by a zero-length blob in the generated SQL.
-
-### Phase 3: Projection
-
-* Implemented `WHAT` property of the `SELECT` object.
-
-### Phase 4: Aggregate functions and Group By
-
-* Implemented `GROUP_BY` and `DISTINCT` properties of the `SELECT` object
-* Implemented support for aggregate functions
-
-### Phase 5: Joins
-
-* Basic inner joins implemented.
-* No support for multiple databases yet.
-* No support for left, outer, cross, natural, ingrown or dovetail joins.
-
-### Phase 6: Collation
-
-* Unicode-aware collation functions being implemented in LiteCore
-* Specifying JSON schema of collation specifiers
-* Collation specifiers not recognized by query parser yet
+* Multi-database JOINs
+* Left, outer, cross, natural, ingrown, dovetail JOINs
+* More N1QL functions; many of the remaining ones are useless in a SELECT query (like `random`), but there are a number of array and object operations that can be useful.
