@@ -87,3 +87,9 @@ $  cblite query --limit 10 travel-sample.cblite2 '{WHAT: [[".name"]], WHERE:  ["
 | `--limit` _n_ | Stop after _n_ rows |
 
 The _query_ must follow the [[JSON query schema|JSON Query Schema]]. [JSON5](http://json5.org) syntax is allowed. It can be a dictionary {`{ ... }`) containing an entire query specification, or an array (`[ ... ]`) with just a `WHERE` clause. There are examples of each up above.
+
+## Where To Get It
+
+As of this writing (30 Aug 2017) the tool is brand new, and has to be built from the Xcode project. Choose (or create) the `cblite` scheme and build it; then dig through the build output to find the `cblite` binary. You can move the tool anywhere; it has no external dependencies.
+
+In the future I want this to be added to Couchbase's official builds.
