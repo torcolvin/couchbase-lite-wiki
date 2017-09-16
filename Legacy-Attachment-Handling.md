@@ -1,4 +1,4 @@
-Couchbase Lite 2 changes the way attachments (now called "blobs") are represented in documents. They used to be stored in a top-level property named `_attachments`; now they can be stored anywhere in the document, in objects with a property `"cbltype":"blob"`.
+Couchbase Lite 2 changes the way attachments (now called "blobs") are represented in documents. They used to be stored in a top-level property named `_attachments`; now they can be stored anywhere in the document, in objects with a property `"@type":"blob"`.
 
 This causes some compatibility issues in several situations:
 
