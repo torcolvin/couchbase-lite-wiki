@@ -1,3 +1,5 @@
+## The General Rule
+
 LiteCore has very little explicit thread-safety built into its API layer. Instead it expects you to follow the general rule:
 
 > **A C4Database object, and objects derived from it, shall not be called concurrently.**
@@ -10,11 +12,11 @@ This scope refers to in-memory objects, not files. It's perfectly legal to open 
 
 The general rule is conservative, and it is actually legal to call some of the functions concurrently. The rest of this document details this, by grouping the API into categories.
 
-## Functions by thread-safety type
+## Functions By Thread-Safety Type
 
 ### Thread-safe
 
-These functions can be called at any time, as long as their parameters remain valid during the call (i.e. another thread isn't freeing the data at the same time):
+These functions can be called at any time, **as long as their parameters remain valid during the call** (i.e. another thread isn't freeing the data at the same time):
 
 * Library info
     - `c4_getBuildInfo`
@@ -135,7 +137,17 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4socket_registerFactory` (Can only be called _once_)
 
 
-**Note on transactions:** These have their own concurrency rules. A transaction is associated with a C4Database instance, _not_ with a thread. If two threads call `c4db_beginTransaction` one after the other on the same database, this is legal but creates a _single_ transaction. The second thread does _not_ block until the first ends its transaction. Instead, any writes performed by either C4Database will go into the transaction and be committed when the second call to `c4db_endTransaction` is made. The moral of the story is that if you need a separate transaction, you should open a separate connection.
+### Transactions
+
+Transactions have their own concurrency behavior:
+
+> **A transaction is associated with a C4Database instance, _not_ with a thread.**
+
+If two threads call `c4db_beginTransaction` one after the other on the same database, this is legal but creates a _single_ transaction. The second call does _not_ block until the first thread ends its transaction; instead it just increments the transaction's ref-count. Any writes performed by either C4Database instance will go through, and be committed when the second call to `c4db_endTransaction` is made.
+
+A related effect is that there is no read isolation between threads. If one thread opens a transaction and makes changes, another thread reading via the same C4Database instance will see those changes, even before the transaction is committed.
+
+The moral of the story is that if your threads need their own transactions, they should open separate connections. Alternatively, you could create your own per-database transaction mutex that a thread acquires before beginning a transaction and releases after ending it.
 
 ### Document-exclusive
 
