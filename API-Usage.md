@@ -6,8 +6,8 @@ This is a list of all LiteCore functions being used by the Objective-C implement
 (postprocessed slightly by hand, to remove the parens and add line breaks between groups.)
 
 ```
-c4_dumpInstances
-c4_getObjectCount
+c4_dumpInstances [tests only]
+c4_getObjectCount [tests only]
 
 c4blob_create
 c4blob_getContents
@@ -20,7 +20,7 @@ c4db_beginTransaction
 c4db_close
 c4db_compact
 c4db_copy
-c4db_createFleeceEncoder
+c4db_createFleeceEncoder [tests only]
 c4db_createIndex
 c4db_delete
 c4db_deleteAtPath
@@ -47,7 +47,7 @@ c4doc_free
 c4doc_get
 c4doc_hasRevisionBody
 c4doc_purgeRevision
-c4doc_put
+c4doc_put [tests only]
 c4doc_resolveConflict
 c4doc_save
 c4doc_selectCommonAncestorRevision
@@ -66,7 +66,7 @@ c4log_getDomain
 c4log_getDomainName
 c4log_getLevel
 c4log_setLevel
-c4log_writeToBinaryFile
+c4log_writeToBinaryFile [tests only]
 c4log_writeToCallback
 
 c4query_columnCount
