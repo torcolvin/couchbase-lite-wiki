@@ -1,19 +1,19 @@
 ## Table Of Contents
 
-* [Introduction](#introduction)
-* [Example](#example)
-* [Leaf Types](#leaf-types)
-* [Operations](#operations)
-* [Collation](#collation)
-* [Top-Level Query, and `SELECT`](#top-level-query-and-select)
-* [Functions](#functions)
-* [Implementation Status](#implementation-status)
+* [Introduction][1]
+* [Example][2]
+* [Leaf Types][3]
+* [Operations][4]
+* [Collation][5]
+* [`MATCH` and Full-Text Search][6]
+* [Top-Level Query, and `SELECT`][7]
+* [Functions][8]
 
 ## 1. Introduction
 
-Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like [SQL](http://www.sqlite.org/lang_expr.html). This document describes the schema.
+Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like [SQL][9]. This document describes the schema.
 
-A query is described as a sort of parse tree. Each node of the tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
+A query is described as a sort of parse tree. Each **node** of the tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
 
 A node is represented in JSON as an array, where the first element is a string naming the operation, and the other elements represent the operands (often nested arrays); for example `["=", ["+", 2, 2], 5]`. (If you know LISP or any functional languages, this should look pretty familiar!)
 
@@ -116,45 +116,49 @@ The operations are named after their N1QL/SQL equivalents.
 | | `IS NOT MISSING` | 1 |
 | | `IS NULL` | 1 |
 | | `IS NOT NULL` | 1 |
-| | `COLLATE` | 2: (options, expr) [see **[Collation](#collation)** below] |
+| | `COLLATE` | 2: (options, expr) [see **[Collation][10]** below] |
 |Logical| `NOT` | 1 |
 | | `AND` | 2+ |
 | | `OR` | 2+ |
-|Functions| _name_`()` | Depends on [function](#functions) |
+|Functions| _name_`()` | Depends on [function][11] |
 |Conditional| `CASE` | 2+: (expr, when1, ...) |
 | | `WHEN` | 2: (cond, value) |
 | | `ELSE` | 1: (value) |
 |Collections| `ANY` | 3: (variable name, array, satisfies) |
 | | `EVERY` | 3: (variable name, array, satisfies) |
 | | `ANY AND EVERY` | 3: (variable name, array, satisfies) |
-|Properties| `.` | 0+: (path components) [[see above](#properties)] |
-|Parameters| `$` | 1 (name or position) [[see above](#parameters)] |
-|Variables| `?` | 1+ (name, optional path components) [[see above](#variables)] |
-|Queries| `SELECT` | 1 [[see below](#top-level-query-and-select)] |
+|Properties| `.` | 0+: (path components) [[see above][12]] |
+|Parameters| `$` | 1 (name or position) [[see above][13]] |
+|Variables| `?` | 1+ (name, optional path components) [[see above][14]] |
+|Queries| `SELECT` | 1 [[see below][15]] |
 
 ## Collation
 
-The `COLLATE` operator does nothing itself, merely returns the value of its second operand, but it alters the string collation (comparison/sorting) used when evaluating that expression _and nested expressions_. The first operand is a dictionary that specifies the collation; its keys are:
+The `COLLATE` operator does nothing itself, merely returns the value of its second operand, but it alters the string collation (comparison/sorting) used when evaluating that expression _and nested expressions_.
+
+**STATUS:** (Nov 2017) String matching operators (`LIKE`,  `contains()`, regex functions) don't yet obey collations. None of them are Unicode-aware, and `LIKE` is always case-insensitive while the others are case-sensitive. ([^296](https://github.com/couchbase/couchbase-lite-core/issues/296))
+
+The first operand is a dictionary that specifies the collation; its keys are:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
 | `UNICODE` | Unicode-aware? | `false` |
 | `CASE` | Case-sensitive? | `true` |
 | `DIAC` | Diacritic (accent) -sensitive? | `true` |
-| `LOCALE` | ISO locale* string or `null` | `null` |
+| `LOCALE` | ISO locale\* string or `null` | `null` |
 
-\* A **locale** is an ISO-639 [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) plus, optionally, an underscore and an ISO-3166 [country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2): `"en"`, `"en_US"`, `"fr_CA"`, etc.
+\* A **locale** is an ISO-639 [language code][16] plus, optionally, an underscore and an ISO-3166 [country code][17]: `"en"`, `"en_US"`, `"fr_CA"`, etc.
 
 Some details on combining keys:
 
 * If `UNICODE` is not true, only the `CASE` value is significant: a case-sensitive collation is a purely binary string comparison; a case-insensitive one also treats ASCII uppercase and lowercase letters as equivalent.
-* If `UNICODE` is true, but `LOCALE` is missing or null, the collation is Unicode-aware but not localized; for example, accented Roman letters sort right after the base letter. (This is implemented by using the "en_US" locale.)
+* If `UNICODE` is true, but `LOCALE` is missing or null, the collation is Unicode-aware but not localized; for example, accented Roman letters sort right after the base letter. (This is implemented by using the "en\_US" locale.)
 * Any keys not specified are inherited from the enclosing context.
 * There's implicitly a top-level context with the default values for the keys, i.e. `{UNICODE: false, CASE: true, DIAC: true, LOCALE: null}`.
 
 ### About Unicode Collation
 
-The details of [Unicode collation](http://userguide.icu-project.org/collation) are quite complex, though for the most part it just Does The Right Thing according to a human of that locale. But it doesn't behave like the simple `strcmp` and `strcasecmp` functions that programmers are used to!
+The details of [Unicode collation][18] are quite complex, though for the most part it just Does The Right Thing according to a human of that locale. But it doesn't behave like the simple `strcmp` and `strcasecmp` functions that programmers are used to!
 
 * The collation algorithm first compares the strings ignoring case and diacritics, just looking at the base letters. If the letters are not equal, it stops and returns the relative ordering based on the mismatched letters. This is usually, but _not always_, the ordering English speakers are used to; for example, in Lithuanian "Y" comes after "I", and in traditional Spanish the sequence "CH" sorts as a single letter that comes between "C" and "D".
 * Otherwise, if diacritic-sensitive, it compares the strings again, this time considering also diacritics (accents). If they differ, it returns the relative ordering. By default an accented letter sorts just after the base letter, but many locales have special rules: "Å" in Danish is treated as a separate letter that sorts just after "Z".
@@ -164,6 +168,42 @@ The above applies to the Roman alphabet. For many non-Roman scripts, especially 
 
 Some unintuitive results: in a case-sensitive collation, "abc" comes before "ABC" (lowercase first!), but "abd" comes _after_ "ABC" because the letter mismatch takes priority over the case mismatch. Likewise, "ápple" comes after "Apple" (in most locales) because the diacritic is higher priority than uppercase.
 
+## `MATCH` and Full-Text Search
+
+The `MATCH` operator queries a full-text-search (FTS) index. 
+
+Its _first_ parameter is an expression that evaluates to the text to be searched. This must correspond to an existing full-text index, or the query will fail to compile.
+
+**STATUS:** (Nov 2017) The expression must be a property reference, not anything more complex.
+
+Its _second_ parameter is a search string.
+
+### FTS Search-String Syntax
+
+The search string in a `MATCH` expression is (currently) passed directly to SQLite’s FTS4 search engine, so its [syntax][19] is specified by FTS4. A summary:
+
+* Search terms (words) are separated by whitespace.
+* If there are multiple terms, by default the text must contain all of them.
+* A term ending in `*` will match any word beginning with that prefix.
+* A term starting with “`^`” only matches at the start of the text. 
+* A series of terms enclosed in double-quotes is a **phrase**; the terms must appear adjacent to each other in that order in the text.
+* Parentheses can be used to group terms/phrases into a larger term.
+* The special words `OR`, `AND`, and `NOT` (capitalized!) can be used between terms/phrases as boolean operators.
+* The special word `NEAR` can be used between two terms/phrases to specify that they must appear near each other: within 10 words by default, but you can customize this by appending a “`/`” and a number, e.g. `NEAR/5`.
+
+### Word Matching
+
+Full-text search is _always_ case-insensitive. Its diacritic sensitivity (whether it ignores accent marks) is configured when the FTS index is created. Thus, a `MATCH` expression is not affected by a `COLLATE` clause.
+
+Matching is affected by stemming and stop-words, if those are available in the selected language and enabled in the index.
+
+* **Stemming** causes different forms of the same word to match, so (in English) “bigger” matches “big” and “biggest”.
+* **Stop-words** are common but low-significance words, like English “the” and “are”, that are ignored completely in order to keep down the size of the index.
+
+**STATUS:** (Nov 2017) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
+
+**STATUS:** (v2.0) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
+
 ## Top-Level Query, and `SELECT`
 
 The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary with the following keys:
@@ -171,7 +211,7 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | Key | Value | Default Value |
 |-----|-------|---------------|
 | `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
-| `FROM` | Array of [database/join identifiers](#databasejoin-identifiers) | Database being queried |
+| `FROM` | Array of [database/join identifiers][22] | Database being queried |
 | `WHERE` | Boolean-valued expression | `true` (all documents) |
 | `HAVING` | Expression | `true` |
 | `DISTINCT` | Boolean | `false` |
@@ -198,7 +238,7 @@ Some requirements:
 * Legal values for `JOIN` are `"INNER"`, `"OUTER"`, `"LEFT OUTER"`, and `"CROSS"`. (Case-insensitive)
 * All `AS` values must be unique.
 
-**STATUS:** (March 2017) The `DB`property is not yet implemented; only one database can be queried at a time.
+**STATUS:** (v2.0) The `DB`property is not yet implemented; only one database can be queried at a time.
 
 Example:
 ```json
@@ -211,13 +251,14 @@ Example:
 
 ## Functions
 
-These are N1QL functions. For detailed information about parameters and results, please consult the [N1QL documentation](https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html). 
+These are N1QL functions. For detailed information about parameters and results, please consult the [N1QL documentation][23]. 
 
 **NOTE:** There are some differences from SQL, or at least from SQLite; for example, SQLite has non-aggregate versions of `min` and `max`, but in N1QL (and LiteCore) these are called `least` and `greatest`.
 
 |Category| Name | Operand Count |
 |--------|------|---------------|
-| **Aggregate** | `avg()` | 1 |
+| **Aggregate** | `array_agg()` | 1 |
+| | `avg()` | 1 |
 | | `count()` | 1 |
 | | `max()` | 1 |
 | | `min()` | 1 |
@@ -285,12 +326,26 @@ These are N1QL functions. For detailed information about parameters and results,
 | | `toobject()` | 1 |
 | | `tostring()` | 1 |
 
-## Implementation Status
-
-(Updated August 18, 2017)
-
-Still TBD, probably coming post-2.0:
-
-* Multi-database JOINs
-* Left, outer, cross, natural, ingrown, dovetail JOINs
-* More N1QL functions; many of the remaining ones are useless in a SELECT query (like `random`), but there are a number of array and object operations that can be useful.
+[1]:	#introduction
+[2]:	#example
+[3]:	#leaf-types
+[4]:	#operations
+[5]:	#collation
+[6]:	#match-and-full-text-search
+[7]:	#top-level-query-and-select
+[8]:	#functions
+[9]:	http://www.sqlite.org/lang_expr.html
+[10]:	#collation
+[11]:	#functions
+[12]:	#properties
+[13]:	#parameters
+[14]:	#variables
+[15]:	#top-level-query-and-select
+[16]:	https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+[17]:	https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+[18]:	http://userguide.icu-project.org/collation
+[19]:	https://sqlite.org/fts3.html#full_text_index_queries
+[20]:	https://github.com/jordwest/mecab-docs-en
+[21]:	https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text
+[22]:	#databasejoin-identifiers
+[23]:	https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html
