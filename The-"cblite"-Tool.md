@@ -4,7 +4,7 @@
 |---------|---------|
 | `cblite file` | Display information about the database |
 | `cblite ls` | List the documents in the database |
-| `cblite query` | Run queries, using the [[JSON query syntax|JSON Query Schema]] |
+| `cblite query` | Run queries, using the [[JSON Query Schema]] |
 
 ## Example
 
