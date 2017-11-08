@@ -1,10 +1,16 @@
-`cblite` is a command-line tool for inspecting and querying LiteCore and Couchbase Lite databases. It has three sub-commands:
+`cblite` is a command-line tool for inspecting and querying LiteCore and Couchbase Lite databases. It has the following sub-commands:
 
 | Command | Purpose |
 |---------|---------|
 | `cblite file` | Display information about the database |
 | `cblite ls` | List the documents in the database |
+| `cblite cat` | Display the body of one or more documents |
+| `cblite revs` | List the revisions of a document |
 | `cblite query` | Run queries, using the [[JSON Query Schema]] |
+| `cblite sql` | Run a SQLite query directly |
+| `cblite help` | Display help text |
+
+It has an interactive mode that you start by running `cblite /path/to/database`, i.e. with no subcommand. It will then prompt you for a command, which is a command line without the initial `cblite` or the database-path parameter. Enter `quit` or press Ctrl-D to exit.
 
 ## Example
 
@@ -28,7 +34,8 @@ airline_1191    1-28dbba6e ---       9     0.1K
 airline_1203    1-045b6947 ---      10     0.1K
 (Stopping after 10 docs)
 
-$  cblite query --limit 10 travel-sample.cblite2 '["=", [".type"], "airline"]'
+$  cblite travel-sample.cblite2
+(cblite) query --limit 10 '["=", [".type"], "airline"]'
 ["_id": "airline_10"]
 ["_id": "airline_10123"]
 ["_id": "airline_10226"]
@@ -40,8 +47,7 @@ $  cblite query --limit 10 travel-sample.cblite2 '["=", [".type"], "airline"]'
 ["_id": "airline_1191"]
 ["_id": "airline_1203"]
 (Limit was 10 rows)
-
-$  cblite query --limit 10 travel-sample.cblite2 '{WHAT: [[".name"]], WHERE:  ["=", [".type"], "airline"], ORDER_BY: [[".name"]]}'
+(cblite) query --limit 10 '{WHAT: [[".name"]], WHERE:  ["=", [".type"], "airline"], ORDER_BY: [[".name"]]}'
 ["40-Mile Air"]
 ["AD Aviation"]
 ["ATA Airlines"]
@@ -53,6 +59,8 @@ $  cblite query --limit 10 travel-sample.cblite2 '{WHAT: [[".name"]], WHERE:  ["
 ["Air Cargo Carriers"]
 ["Air Cudlua"]
 (Limit was 10 rows)
+(cblite) ^D
+$
 ```
 
 ## Parameters
@@ -65,7 +73,7 @@ $  cblite query --limit 10 travel-sample.cblite2 '{WHAT: [[".name"]], WHERE:  ["
 
 ### ls
 
-`cblite ls` _[flags]_ _databasepath_
+`cblite ls` _[flags]_ _databasepath_ _[PATTERN]_
 
 | Flag    | Effect  |
 |---------|---------|
@@ -76,6 +84,28 @@ $  cblite query --limit 10 travel-sample.cblite2 '{WHAT: [[".name"]], WHERE:  ["
 | `--seq` | Order by sequence, not docID |
 | `--del` | Include deleted documents |
 | `--conf` | Include _only_ conflicted documents |
+| `--body` | Display document bodies |
+| `--pretty` | Pretty-print document bodies (implies `--body`) |
+| `--json5` | JSON5 syntax, i.e. unquoted dict keys (implies `--body`)|
+
+(PATTERN is an optional pattern for matching docIDs, with shell-style wildcards `*`, `?`)
+
+### cat
+
+`cblite cat` _[flags]_ _databasepath_ _DOCID_ [_DOCID_ ...]
+
+| Flag    | Effect  |
+|---------|---------|
+| `--key KEY` | Display only a single key/value (may be used multiple times) |
+| `--rev` | Show the revision ID(s) |
+| `--raw` | Raw JSON (not pretty-printed) |
+| `--json5` | JSON5 syntax (no quotes around dict keys) |
+
+(DOCID may contain shell-style wildcards `*`, `?`)
+
+### revs
+
+`cblite revs` _databasepath_ _DOCID_
 
 ### query
 
@@ -90,6 +120,6 @@ The _query_ must follow the [[JSON query schema|JSON Query Schema]]. [JSON5](htt
 
 ## Where To Get It
 
-As of this writing (30 Aug 2017) the tool is brand new, and has to be built from the Xcode project. Choose (or create) the `cblite` scheme and build it; then dig through the build output to find the `cblite` binary. You can move the tool anywhere; it has no external dependencies.
+The tool is included in Couchbase Lite 2 builds as of DB18. As of now (Nov 8 2017) it's only included in the iOS/Mac archive, but it will later be included in other platforms as well.
 
-In the future I want this to be added to Couchbase's official builds.
+You can build the tool for Mac OS via the LiteCore Xcode project. Choose (or create) the `cblite` scheme and build it; then dig through the build output to find the `cblite` binary. You can move the tool anywhere; it has no external dependencies.
