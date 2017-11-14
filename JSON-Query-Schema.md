@@ -172,11 +172,13 @@ Some unintuitive results: in a case-sensitive collation, "abc" comes before "ABC
 
 The `MATCH` operator queries a full-text-search (FTS) index. 
 
-Its _first_ parameter is an expression that evaluates to the text to be searched. This must correspond to an existing full-text index, or the query will fail to compile.
+* Its _first_ parameter is the name of the index.
+* Its _second_ parameter is a search string.
 
-**STATUS:** (Nov 2017) The expression must be a property reference, not anything more complex.
+SQLite imposes limitations on how `MATCH` expressions can be used:
 
-Its _second_ parameter is a search string.
+* They have to appear at the top level of a `SELECT`.
+* Each index can only be matched once within any `SELECT`.
 
 ### FTS Search-String Syntax
 
