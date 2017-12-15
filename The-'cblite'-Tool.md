@@ -4,6 +4,7 @@
 |---------|---------|
 | `cblite file` | Display information about the database |
 | `cblite ls` | List the documents in the database |
+| `cblite cp` | Replicate, import or export a database |
 | `cblite cat` | Display the body of one or more documents |
 | `cblite revs` | List the revisions of a document |
 | `cblite query` | Run queries, using the [[JSON Query Schema]] |
@@ -67,6 +68,43 @@ $
 
 (You can run `cblite --help` to get a quick summary.)
 
+### cat
+
+`cblite cat` _[flags]_ _databasepath_ _DOCID_ [_DOCID_ ...]
+
+| Flag    | Effect  |
+|---------|---------|
+| `--key KEY` | Display only a single key/value (may be used multiple times) |
+| `--rev` | Show the revision ID(s) |
+| `--raw` | Raw JSON (not pretty-printed) |
+| `--json5` | JSON5 syntax (no quotes around dict keys) |
+
+(DOCID may contain shell-style wildcards `*`, `?`)
+
+### cp
+
+>**NOTE:** Added on 14 Dec 2017
+
+`cblite cp` _[flags]_ _source_ _destination_
+
+| Flag    | Effect  |
+|---------|---------|
+| `--existing` or `-x` | Fail if _destination_ doesn't already exist.|
+| `--jsonid` _property_ | JSON property to use for document ID* |
+| `--limit` _n_ | Stop after _n_ documents. (Replicator ignores this) |
+| `--careful` | Abort on any error. |
+
+_source_ and _destination_ can be database paths, replication URLs, or JSON file paths. One of them must be a database path ending in `*.cblite2`. The other can be any of the following:
+
+* `*.cblite2` ⟶  Local replication
+* `blip://*`  ⟶  Networked replication
+* `*.json`    ⟶  Imports/exports JSON file
+* `*/`        ⟶  Imports/exports directory of JSON files (one per doc)
+
+\* `--jsonid` works as follows: When _source_ is JSON, this is a property name/path whose value will be used as the document ID. (If omitted, documents are given UUIDs.) When _destination_ is JSON, this is a property name that will be added to the JSON, whose value is the document's ID. (If this flag is omitted, the value defaults to `_id`.)
+
+In interactive mode, the database path is already known, so it's used as the source and `cp` takes only a destination argument. You can optionally call the command `push` or `export`. Or if you use the synonyms `pull` or `import` in interactive mode, the parameter you give is treated as the _source_, while the current database is the _destination_.
+
 ### file
 
 `cblite file` _databasepath_
@@ -90,19 +128,6 @@ $
 
 (PATTERN is an optional pattern for matching docIDs, with shell-style wildcards `*`, `?`)
 
-### cat
-
-`cblite cat` _[flags]_ _databasepath_ _DOCID_ [_DOCID_ ...]
-
-| Flag    | Effect  |
-|---------|---------|
-| `--key KEY` | Display only a single key/value (may be used multiple times) |
-| `--rev` | Show the revision ID(s) |
-| `--raw` | Raw JSON (not pretty-printed) |
-| `--json5` | JSON5 syntax (no quotes around dict keys) |
-
-(DOCID may contain shell-style wildcards `*`, `?`)
-
 ### revs
 
 `cblite revs` _databasepath_ _DOCID_
@@ -118,8 +143,3 @@ $
 
 The _query_ must follow the [[JSON query schema|JSON Query Schema]]. [JSON5](http://json5.org) syntax is allowed. It can be a dictionary {`{ ... }`) containing an entire query specification, or an array (`[ ... ]`) with just a `WHERE` clause. There are examples of each up above.
 
-## Where To Get It
-
-The tool is included in Couchbase Lite 2 builds as of DB18. As of now (Nov 8 2017) it's only included in the iOS/Mac archive, but it will later be included in other platforms as well.
-
-You can build the tool for Mac OS via the LiteCore Xcode project. Choose (or create) the `cblite` scheme and build it; then dig through the build output to find the `cblite` binary. You can move the tool anywhere; it has no external dependencies.
