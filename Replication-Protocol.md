@@ -101,7 +101,7 @@ Note: A sequence ID can be any type of JSON value, so the `since` property MUST 
 
 The changes are _not_ sent as a response to this request, rather as a series of `changes` messages, each containing information about zero or more changes. These are sent in chronological order.
 
-Once all the existing changes have been sent, the end is signaled via an empty `changes` message. Ordinarily, that will be the last message sent. However, if the `continuous` property was set in the `getchanges` request, the recipient will continue to send `changes` messages as new changes are made to its database, until the connection is closed.
+Once all the existing changes have been sent, the end is signaled via an empty `changes` message. Ordinarily, that will be the last message sent. However, if the `continuous` property was set in the `subChanges` request, the recipient will continue to send `changes` messages as new changes are made to its database, until the connection is closed.
 
 The optional `filter` parameter names a filter function known to the recipient that limits which changes are sent. If this is present, any other properties to the request will be passed as parameters to the filter function. The Sync Gateway only recognizes the filter `sync_gateway/bychannel`, which requires the parameter `channels` whose value is a comma-delimited set of channel names.
 
@@ -111,7 +111,7 @@ If a request body is present, it MUST be a JSON dictionary/object. In this dicti
 
 Body: JSON array
 
-Notifies the recipient of a series of changes made to the sender's database. A passive replicator (like Sync Gateway) is triggered to send these by a prior `getchanges` request sent by the client. An active replicator (Couchbase Lite) will send them spontaneously as part of a push replication.
+Notifies the recipient of a series of changes made to the sender's database. A passive replicator (like Sync Gateway) is triggered to send these by a prior `subChanges` request sent by the client. An active replicator (Couchbase Lite) will send them spontaneously as part of a push replication.
 
 The changes are encoded in the message body as a JSON array with one item per change. There can be zero or more changes; a messages with zero changes signifies that delivery has "caught up" and all existing sequences have been sent. This may be followed by more changes as they occur, if the replication is continuous.
 
