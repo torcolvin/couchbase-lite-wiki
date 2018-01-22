@@ -8,6 +8,7 @@
 | `cblite cat` | Display the body of one or more documents |
 | `cblite revs` | List the revisions of a document |
 | `cblite query` | Run queries, using the [[JSON Query Schema]] |
+| `cblite serve` | Starts a (rudimentary) REST API listener |
 | `cblite sql` | Run a SQLite query directly |
 | `cblite help` | Display help text |
 
@@ -143,3 +144,13 @@ In interactive mode, the database path is already known, so it's used as the sou
 
 The _query_ must follow the [[JSON query schema|JSON Query Schema]]. [JSON5](http://json5.org) syntax is allowed. It can be a dictionary {`{ ... }`) containing an entire query specification, or an array (`[ ... ]`) with just a `WHERE` clause. There are examples of each up above.
 
+### serve
+
+`cblite serve` _[flags]_ _databasepath_
+
+| Flag    | Effect  |
+|---------|---------|
+| `--port` _n_ | Sets TCP port number (default is 59840) |
+| `--readonly` | Prevents REST calls from altering the database |
+
+**Note:** Only a subset of the Couchbase Lite REST API is implemented so far! (See [[REST-API]])
