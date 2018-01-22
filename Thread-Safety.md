@@ -81,6 +81,7 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4db_getMaxRevTreeDepth`
     - `c4db_setMaxRevTreeDepth`
     - `c4db_getUUIDs`
+    - `c4db_sharedFleeceEncoder` _(the code that uses the encoder needs to be database-exclusive too)_
 * Transactions (see note below)
     - `c4db_beginTransaction`
     - `c4db_endTransaction`
