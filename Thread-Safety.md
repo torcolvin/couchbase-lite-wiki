@@ -101,6 +101,7 @@ These functions follow the general rule: only one thread at a time can call any 
 * Shared keys (Because FLSharedKeys isn't thread-safe)
     - `c4db_getFLSharedKeys`
     - `c4db_createFleeceEncoder`
+    - `c4db_sharedFleeceEncoder`
     - `c4db_encodeJSON`
     - `c4db_initFLDictKey`
     - `c4doc_bodyAsJSON`
