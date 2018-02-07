@@ -167,11 +167,12 @@ As with `changes`, trailing zeros can be omitted, but the interpretation is diff
 `deleted`: true if the revision is a tombstone _(optional)_  
 `sequence`: Sequence ID, JSON-encoded _(optional unless unsolicited, q.v.)_  
 `history`: Revision history (comma-delimited list of revision IDs)  
+`noconflicts`: true if the revision may not create a conflict _(optional; default is false)_  
 Body: Document JSON
 
 Sends one document revision. The `id`, `rev`, `deleted` properties are optional if corresponding `_id`, `_rev`, `_deleted` properties exist in the JSON body (and vice versa.) The `sequence` property is optional unless this message was unsolicited.
 
-A recipient in conflict-free mode will check whether the `history` array contains the current local revision ID, or if the `history` array is empty and the document does not exist locally. If not, it MUST reject the revision by returning a 409 status.
+If the `noconflicts` flag is set, or if the recipient is in conflict-free mode, it MUST check whether the `history` array contains the current local revision ID, or if the `history` array is empty and the document does not exist locally. If not, it MUST reject the revision by returning a 409 status.
 
 Ordinarily a `rev` message is triggered by a prior response to a `changes` message. However, it MAY be sent unsolicited, _instead_ of in a `changes` message, if all of the following are true:
 
