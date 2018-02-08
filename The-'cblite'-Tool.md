@@ -99,7 +99,7 @@ _source_ and _destination_ can be database paths, replication URLs, or JSON file
 
 * `*.cblite2` ⟶  Local replication
 * `blip://*`  ⟶  Networked replication
-* `*.json`    ⟶  Imports/exports JSON file
+* `*.json`    ⟶  Imports/exports JSON file (one document per line)
 * `*/`        ⟶  Imports/exports directory of JSON files (one per doc)
 
 \* `--jsonid` works as follows: When _source_ is JSON, this is a property name/path whose value will be used as the document ID. (If omitted, documents are given UUIDs.) When _destination_ is JSON, this is a property name that will be added to the JSON, whose value is the document's ID. (If this flag is omitted, the value defaults to `_id`.)
