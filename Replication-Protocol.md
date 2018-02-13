@@ -1,1 +1,1 @@
-Moved to https://github.com/couchbase/couchbase-lite-core/blob/master/modules/docs/pages/replication-protocol.adoc
+Moved to [docs/pages/replication-protocol](https://github.com/couchbase/couchbase-lite-core/blob/master/modules/docs/pages/replication-protocol.adoc)
