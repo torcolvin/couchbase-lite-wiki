@@ -143,7 +143,9 @@ In interactive mode, the database path is already known, so it's used as the sou
 | `--offset` _n_ | Skip first _n_ rows |
 | `--limit` _n_ | Stop after _n_ rows |
 
-The _query_ must follow the [[JSON query schema|JSON Query Schema]]. [JSON5](http://json5.org) syntax is allowed. It can be a dictionary {`{ ... }`) containing an entire query specification, or an array (`[ ... ]`) with just a `WHERE` clause. There are examples of each up above.
+The _query_ must follow the [[JSON query schema|JSON Query Schema]]. It can be a dictionary {`{ ... }`) containing an entire query specification, or an array (`[ ... ]`) with just a `WHERE` clause. There are examples of each up above.
+
+The query must be a single argument; put quotes around it to ensure that and to avoid misinterpretation of special characters. [JSON5](http://json5.org) syntax is allowed. 
 
 ### serve
 
