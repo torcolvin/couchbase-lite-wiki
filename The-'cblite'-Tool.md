@@ -94,6 +94,7 @@ $
 | `--jsonid` _property_ | JSON property to use for document ID* |
 | `--limit` _n_ | Stop after _n_ documents. (Replicator ignores this) |
 | `--careful` | Abort on any error. |
+| `--verbose` or `-v` | Log progress information. Repeat flag for more verbosity. |
 
 _source_ and _destination_ can be database paths, replication URLs, or JSON file paths. One of them must be a database path ending in `*.cblite2`. The other can be any of the following:
 
@@ -150,7 +151,8 @@ The _query_ must follow the [[JSON query schema|JSON Query Schema]]. [JSON5](htt
 
 | Flag    | Effect  |
 |---------|---------|
-| `--port` _n_ | Sets TCP port number (default is 59840) |
-| `--readonly` | Prevents REST calls from altering the database |
+| `--port` _n_ | Set TCP port number (default is 59840) |
+| `--readonly` | Prevent REST calls from altering the database |
+| `--verbose` or `-v` | Log requests. Repeat flag for more verbosity. |
 
 **Note:** Only a subset of the Couchbase Lite REST API is implemented so far! (See [[REST-API]])
