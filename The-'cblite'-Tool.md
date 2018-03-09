@@ -2,15 +2,16 @@
 
 | Command | Purpose |
 |---------|---------|
-| `cblite file` | Display information about the database |
-| `cblite ls` | List the documents in the database |
-| `cblite cp` | Replicate, import or export a database |
 | `cblite cat` | Display the body of one or more documents |
-| `cblite revs` | List the revisions of a document |
+| `cblite cp` | Replicate, import or export a database |
+| `cblite file` | Display information about the database |
+| `cblite help` | Display help text |
+| `cblite logcat` | Display binary log files in readable form |
+| `cblite ls` | List the documents in the database |
 | `cblite query` | Run queries, using the [[JSON Query Schema]] |
+| `cblite revs` | List the revisions of a document |
 | `cblite serve` | Starts a (rudimentary) REST API listener |
 | `cblite sql` | Run a SQLite query directly |
-| `cblite help` | Display help text |
 
 It has an interactive mode that you start by running `cblite /path/to/database`, i.e. with no subcommand. It will then prompt you for a command, which is a command line without the initial `cblite` or the database-path parameter. Enter `quit` or press Ctrl-D to exit.
 
@@ -84,12 +85,12 @@ $
 
 ### cp
 
->**NOTE:** Added on 14 Dec 2017
-
 `cblite cp` _[flags]_ _source_ _destination_
 
 | Flag    | Effect  |
 |---------|---------|
+| `--continuous` | Continuous replication (never stops!) |
+| `--bidi` | Bidirectional (push+pull) replication |
 | `--existing` or `-x` | Fail if _destination_ doesn't already exist.|
 | `--jsonid` _property_ | JSON property to use for document ID* |
 | `--limit` _n_ | Stop after _n_ documents. (Replicator ignores this) |
@@ -110,6 +111,10 @@ In interactive mode, the database path is already known, so it's used as the sou
 ### file
 
 `cblite file` _databasepath_
+
+### logcat
+
+`cblite logcat` _logfilepath_
 
 ### ls
 
