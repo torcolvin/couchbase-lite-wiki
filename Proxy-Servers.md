@@ -1,10 +1,14 @@
 The WebSocket implementation used by the client should support HTTP proxy servers; here are some notes about how to implement this.
 
+## What's an HTTP proxy server?
+
 The proxy server is part of the LAN the client is on. Such a LAN will have no connectivity to the outside Internet, so normal HTTP connections will fail. The only way to reach the Internet is to connect to an HTTP proxy on the LAN and send it requests. The proxy server has Internet connectivity and relays the requests.
 
 (This is unrelated to the proxy servers used as middleware in front of servers. Those live in the data center, not the client LAN, and are usually _reverse_ proxies.)
 
 The client device needs to know what proxy to connect to. Most of the time this is configured automatically using settings received from the DHCP server, but sometimes it needs to be configured manually via the network settings UI. The OS has an API to let apps know the proxy settings. (For example, on Apple platforms it's in `<CFNetwork/CFProxySettings.h>`.)
+
+**Note:** There are other types of client-side proxy servers, but as far as I know, all the others operate at the TCP level (like SOCKS). As long as you're using a system networking API that's above the basic BSD-socket layer, it should know about these proxies and connect to them transparently.
 
 ## Algorithm
 
