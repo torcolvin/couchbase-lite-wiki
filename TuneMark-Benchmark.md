@@ -73,28 +73,28 @@ Range: 9.495 ... 11.335 ms, median: 9.618, std dev: 1
 Range: 351.670 ... 419.830 us/row, median: 356.204, std dev: 37
 ```
 ### Android
-(Nexus 5, Android 6.0.1 API 23; March 05, 2018)
+(Nexus 6P, Android 8.1.0 API 27; April 02, 2018)
 ```
- Import 12189 docs:  Range:   8.299 ...   8.885 sec, Average:   8.502, median:   8.455, std dev: 0.194
-                     Range: 680.878 ... 728.926 µs/doc, Average: 697.488, median: 693.698, std dev:  15.9
-                      Rate: 1442 docs/sec
- Update 1223 docs:   Range:   6.916 ...   8.068 sec, Average:   7.348, median:   7.332, std dev: 0.286
-                      Rate: 167 docs/sec
-                     Range:   5.655 ...   6.597 ms/update, Average:   6.009, median:   5.995, std dev: 0.234
- Query 1111 artists: Range: 188.628 ... 226.216 ms, Average: 199.192, median: 192.351, std dev:  13.1
-                     Range: 169.782 ... 203.615 µs/row, Average: 179.291, median: 173.133, std dev:  11.8
- Query 1886 albums:  Range:  32.399 ...  35.021 sec, Average:  33.212, median:  32.935, std dev: 0.782
-                     Range:  29.162 ...  31.522 ms/artist, Average:  29.893, median:  29.645, std dev: 0.704
- Index by artist:    Range:  79.524 ... 159.922 ms, Average: 136.858, median: 148.905, std dev:  27.9
-                     Range:   6.524 ...  13.120 µs/doc, Average:  11.228, median:  12.216, std dev:  2.29
- Re-query artists:   Range: 190.661 ... 200.828 ms, Average: 194.565, median: 193.455, std dev:  3.49
-                     Range: 171.612 ... 180.763 µs/row, Average: 175.126, median: 174.127, std dev:  3.14
- Re-query albums:    Range:  33.247 ...  36.150 sec, Average:  33.762, median:  33.525, std dev: 0.827
-                     Range:  29.925 ...  32.538 ms/artist, Average:  30.389, median:  30.175, std dev: 0.745
- FTS indexing:       Range:   1.021 ...   1.133 sec, Average:   1.039, median:   1.027, std dev: 0.0324
-                     Range:  83.782 ...  92.937 µs/doc, Average:  85.216, median:  84.226, std dev:  2.65
- FTS query:          Range:   4.196 ...   5.696 ms, Average:   4.571, median:   4.473, std dev: 0.408
-                     Range: 139.865 ... 189.878 µs/row, Average: 152.377, median: 149.115, std dev:  13.6
+Import 12189 docs:  Range:   5.778 ...   6.824 sec, Average:   5.983, median:   5.868, std dev: 0.301
+                    Range: 474.021 ... 559.855 µs/doc, Average: 490.830, median: 481.430, std dev:  24.7
+                    Rate: 2077 docs/sec
+Update 1223 docs:   Range:   5.247 ...   6.348 sec, Average:   5.475, median:   5.378, std dev: 0.299
+                    Rate: 227 docs/sec
+                    Range:   4.290 ...   5.191 ms/update, Average:   4.476, median:   4.397, std dev: 0.245
+Query 1111 artists: Range: 181.347 ... 197.221 ms, Average: 187.343, median: 186.016, std dev:  5.17
+                    Range: 163.229 ... 177.517 µs/row, Average: 168.626, median: 167.431, std dev:  4.66
+Query 1886 albums:  Range:  36.290 ...  38.157 sec, Average:  37.310, median:  37.505, std dev: 0.551
+                    Range:  32.664 ...  34.345 ms/artist, Average:  33.582, median:  33.758, std dev: 0.496
+Index by artist:    Range:  88.260 ... 250.656 ms, Average: 164.537, median: 219.660, std dev:  68.2
+                    Range:   7.241 ...  20.564 µs/doc, Average:  13.499, median:  18.021, std dev:  5.60
+Re-query artists:   Range: 183.881 ... 212.355 ms, Average: 193.551, median: 191.965, std dev:  7.86
+                    Range: 165.510 ... 191.138 µs/row, Average: 174.213, median: 172.786, std dev:  7.07
+Re-query albums:    Range:  36.967 ...  41.439 sec, Average:  37.903, median:  37.717, std dev:  1.21
+                    Range:  33.274 ...  37.299 ms/artist, Average:  34.116, median:  33.948, std dev:  1.09
+FTS indexing:       Range: 670.658 ... 713.697 ms, Average: 703.850, median: 707.974, std dev:  12.2
+                    Range:  55.022 ...  58.553 µs/doc, Average:  57.745, median:  58.083, std dev: 0.997
+FTS query:          Range:   4.535 ...   6.316 ms, Average:   5.268, median:   5.241, std dev: 0.577
+                    Range: 151.167 ... 210.533 µs/row, Average: 175.615, median: 174.689, std dev:  19.2
 ```
 
 ### Android (Xamarin)
