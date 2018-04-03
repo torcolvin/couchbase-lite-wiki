@@ -141,31 +141,81 @@ FTS query:          Range:   8.767 ...  10.768 ms, Average:   8.988, median:   8
                     Range: 324.694 ... 398.812 us/row, Average: 332.871, median: 331.681, std dev:  6.52
 ```
 
-### Windows (.NET)
+### Windows (.NET Core 2.0.5)
 
-(Windows 10 Home 64-bit Desktop  
+(Windows 10 Fall Creator's Update Home 64-bit Desktop  
 Core i5 @ 3.5 Ghz  
 16 GB DDR3 @ 666 Mhz (9-9-9-24)  
 ASRock Z97 Extreme4 Motherboard  
 Crucial MX100 256 GB SATAIII SSD drive  
-July 19, 2017)
+April 3, 2018)
 ```
-Import 12189 docs:  Range: 1.113 ... 1.247 sec, median: 1.142, std dev: 0.157
-                    Range: 91.307 ... 102.345 us/doc, median: 93.681, std dev: 12.9
-Update 1223 docs:   Range: 358.133 ... 396.489 ms, median: 361.169, std dev: 51
-                    Range: 292.832 ... 324.194 us/update, median: 295.314, std dev: 41.7
-Query 1115 artists: Range: 32.607 ... 36.397 ms, median: 33.983, std dev: 5
-                    Range: 29.244 ... 32.643 us/row, median: 30.478, std dev: 4.48
-Index by artist:    Range: 20.035 ... 26.170 ms, median: 22.895, std dev: 3
-                    Range: 1.644 ... 2.147 us/doc, median: 1.878, std dev: 0.246
-Query 1115 artists: Range: 20.256 ... 21.372 ms, median: 20.773, std dev: 3
-                    Range: 18.167 ... 19.167 us/row, median: 18.630, std dev: 2.69
-Query 1887 albums:  Range: 63.121 ... 70.197 ms, median: 67.074, std dev: 9
-                    Range: 56.610 ... 62.957 us/artist, median: 60.156, std dev: 8.07
-FTS indexing:       Range: 121.583 ... 133.806 ms, median: 123.274, std dev: 17
-                    Range: 4.503 ... 4.956 ms/doc, median: 4.566, std dev: 0.63
-FTS query:          Range: 5.377 ... 8.109 ms, median: 5.960, std dev: 1
-                    Range: 199.156 ... 300.319 us/row, median: 220.748, std dev: 37
+Import 12189 docs
+Range: 552.439 ... 635.115 ms, median: 566.635, std dev: 82
+Range: 45.323 ... 52.106 us/doc, median: 46.487, std dev: 6.73
+Update 1223 docs
+Range: 182.228 ... 272.655 ms, median: 197.301, std dev: 40
+Range: 149.001 ... 222.939 us/update, median: 161.325, std dev: 32.7
+Query 1111 artists
+Range: 27.729 ... 53.074 ms, median: 34.407, std dev: 11
+Range: 24.958 ... 47.771 us/row, median: 30.969, std dev: 9.9
+Query 1886 albums
+Range: 4.534 ... 4.694 sec, median: 4.637, std dev: 0.617
+Range: 4.081 ... 4.225 ms/artist, median: 4.174, std dev: 0.555
+Index by artist
+Range: 18.546 ... 24.894 ms, median: 19.714, std dev: 3
+Range: 1.522 ... 2.042 us/doc, median: 1.617, std dev: 0.246
+Re-query artists
+Range: 27.021 ... 28.552 ms, median: 28.054, std dev: 4
+Range: 24.321 ... 25.699 us/row, median: 25.251, std dev: 3.6
+Re-query albums
+Range: 71.287 ... 75.690 ms, median: 73.252, std dev: 10
+Range: 64.164 ... 68.128 us/artist, median: 65.933, std dev: 9
+FTS Indexing
+Range: 88.430 ... 91.601 ms, median: 89.707, std dev: 12
+Range: 7.255 ... 7.515 us/doc, median: 7.360, std dev: 0.984
+FTS Query
+Range: 633.300 ... 939.400 us, median: 731.300, std dev: 0
+Range: 21.110 ... 31.313 us/row, median: 24.377, std dev: 0
+```
+
+### Windows (.NET UWP 6.0.6)
+
+(Windows 10 Fall Creator's Update Home 64-bit Desktop  
+Core i5 @ 3.5 Ghz  
+16 GB DDR3 @ 666 Mhz (9-9-9-24)  
+ASRock Z97 Extreme4 Motherboard  
+Crucial MX100 256 GB SATAIII SSD drive  
+April 3, 2018)
+
+```
+Import 12189 docs
+Range: 553.410 ... 634.646 ms, median: 574.572, std dev: 82
+Range: 45.402 ... 52.067 us/doc, median: 47.139, std dev: 6.73
+Update 1223 docs
+Range: 185.371 ... 235.832 ms, median: 204.367, std dev: 30
+Range: 151.571 ... 192.831 us/update, median: 167.103, std dev: 24.5
+Query 1111 artists
+Range: 30.495 ... 56.525 ms, median: 32.977, std dev: 10
+Range: 27.448 ... 50.878 us/row, median: 29.682, std dev: 9
+Query 1886 albums
+Range: 4.675 ... 4.995 sec, median: 4.798, std dev: 0.647
+Range: 4.208 ... 4.496 ms/artist, median: 4.319, std dev: 0.582
+Index by artist
+Range: 20.211 ... 25.085 ms, median: 22.017, std dev: 3
+Range: 1.658 ... 2.058 us/doc, median: 1.806, std dev: 0.246
+Re-query artists
+Range: 30.455 ... 31.643 ms, median: 30.991, std dev: 4
+Range: 27.412 ... 28.482 us/row, median: 27.895, std dev: 3.6
+Re-query albums
+Range: 82.342 ... 91.624 ms, median: 85.923, std dev: 12
+Range: 74.115 ... 82.470 us/artist, median: 77.338, std dev: 10.8
+FTS Indexing
+Range: 116.299 ... 130.634 ms, median: 117.338, std dev: 17
+Range: 9.541 ... 10.717 us/doc, median: 9.627, std dev: 1.39
+FTS Query
+Range: 743.000 ... 937.000 us, median: 794.500, std dev: 0
+Range: 24.767 ... 31.233 us/row, median: 26.483, std dev: 0
 ```
 
 ### iOS — CBL 1.4
