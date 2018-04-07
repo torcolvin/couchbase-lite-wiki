@@ -24,24 +24,28 @@ The only properties TuneMark currently uses are `Name`, `Album` and `Artist`, bu
 
 ### iOS
 
-(iPhone 6s+, iOS 10.3.2; June 21, 2017)
+(iPhone 6, iOS 11.3; April 6, 2018)
 ```
-Import 12189 docs:  Range:   2.534 ...   2.611 sec, Average:   2.560, median:   2.553, std dev: 0.0173
-                    Range: 207.859 ... 214.202 us/doc, Average: 209.986, median: 209.454, std dev:  1.42
-Update 1223 docs:   Range: 914.047 ... 2265.080 ms, Average: 946.194, median: 948.793, std dev:  15.6
-                    Range: 747.381 ... 1852.069 us/update, Average: 773.666, median: 775.792, std dev:  12.7
-Query 1115 artists: Range: 567.217 ... 605.762 ms, Average: 592.508, median: 594.644, std dev:   8.7
-                    Range: 508.715 ... 543.284 us/row, Average: 531.397, median: 533.313, std dev:   7.8
-Index by artist:    Range:  20.730 ...  28.636 ms, Average:  23.456, median:  23.391, std dev: 0.442
-                    Range:   1.701 ...   2.349 us/doc, Average:   1.924, median:   1.919, std dev: 0.0363
-Query 1115 artists: Range:  26.399 ...  28.078 ms, Average:  27.316, median:  27.377, std dev: 0.297
-                    Range:  23.677 ...  25.182 us/row, Average:  24.498, median:  24.554, std dev: 0.266
-Query 1887 albums:  Range:  82.016 ...  85.412 ms, Average:  83.123, median:  83.083, std dev:  0.24
-                    Range:  73.557 ...  76.603 us/artist, Average:  74.550, median:  74.514, std dev: 0.216
-FTS indexing:       Range: 192.383 ... 195.867 ms, Average: 194.300, median: 194.558, std dev: 0.636
-                    Range:  15.783 ...  16.069 us/doc, Average:  15.941, median:  15.962, std dev: 0.0522
-FTS query:          Range:  10.056 ...  11.166 ms, Average:  10.867, median:  11.018, std dev: 0.227
-                    Range: 372.461 ... 413.548 us/row, Average: 402.465, median: 408.082, std dev:  8.42
+Import 12189 docs:  Range:   1.186 ...   1.690 sec, Average:   1.214, median:   1.203, std dev: 0.0323
+                    Range:  97.300 ... 138.664 us/doc, Average:  99.631, median:  98.666, std dev:  2.65
+                     Rate: 10135 docs/sec
+Update 1223 docs:   Range:   1.041 ...   1.466 sec, Average:   1.062, median:   1.064, std dev: 0.00896
+                     Rate: 1149 docs/sec
+                    Range: 851.415 ... 1198.784 us/update, Average: 868.290, median: 870.325, std dev:  7.33
+Query 1111 artists: Range:  82.111 ... 127.552 ms, Average:  83.677, median:  83.852, std dev:  1.18
+                    Range:  73.907 ... 114.808 us/row, Average:  75.317, median:  75.474, std dev:  1.06
+Query 1886 albums:  Range:  11.562 ...  13.504 sec, Average:  11.803, median:  11.773, std dev: 0.131
+                    Range:  10.407 ...  12.155 ms/artist, Average:  10.623, median:  10.597, std dev: 0.118
+Index by artist:    Range:  44.734 ...  52.680 ms, Average:  45.328, median:  45.342, std dev: 0.448
+                    Range:   3.670 ...   4.322 us/doc, Average:   3.719, median:   3.720, std dev: 0.0368
+Re-query artists:   Range:  53.671 ...  55.846 ms, Average:  54.413, median:  54.516, std dev: 0.282
+                    Range:  48.309 ...  50.267 us/row, Average:  48.977, median:  49.069, std dev: 0.253
+Re-query albums:    Range: 206.455 ... 235.331 ms, Average: 211.156, median: 211.472, std dev:  1.61
+                    Range: 185.828 ... 211.819 us/artist, Average: 190.059, median: 190.344, std dev:  1.45
+FTS indexing:       Range: 400.503 ... 433.702 ms, Average: 404.489, median: 404.713, std dev:  2.45
+                    Range:  32.858 ...  35.581 us/doc, Average:  33.185, median:  33.203, std dev: 0.201
+FTS query:          Range:   2.464 ...   3.526 ms, Average:   2.616, median:   2.603, std dev: 0.141
+                    Range:  82.122 ... 117.543 us/row, Average:  87.209, median:  86.757, std dev:   4.7
 ```
 
 ### iOS (Xamarin)
