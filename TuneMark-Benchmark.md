@@ -125,24 +125,28 @@ FTS query:          Range: 26.118 ... 31.231 ms, median: 26.594, std dev: 2
 
 ### Mac OS
 
-(MacBook Pro (15", late 2013), 2.3GHz Intel Core i7, 16GB RAM, internal Apple SSD, macOS 10.12.6; June 21, 2017)
+(MacBook Pro (15", late 2013), 2.3GHz Intel Core i7, 16GB RAM, internal Apple SSD, macOS 10.13.3; April 6, 2018)
 ```
-Import 12189 docs:  Range:   1.210 ...   1.238 sec, Average:   1.225, median:   1.227, std dev: 0.00516
-                    Range:  99.273 ... 101.571 us/doc, Average: 100.518, median: 100.700, std dev: 0.423
-Update 1223 docs:   Range: 374.795 ... 413.160 ms, Average: 387.855, median: 390.990, std dev:   5.5
-                    Range: 306.456 ... 337.825 us/update, Average: 317.134, median: 319.697, std dev:  4.49
-Query 1115 artists: Range:  29.121 ...  30.685 ms, Average:  30.093, median:  30.132, std dev: 0.325
-                    Range:  26.118 ...  27.520 us/row, Average:  26.990, median:  27.024, std dev: 0.291
-Index by artist:    Range:  18.060 ...  22.018 ms, Average:  19.092, median:  18.982, std dev: 0.384
-                    Range:   1.482 ...   1.806 us/doc, Average:   1.566, median:   1.557, std dev: 0.0315
-Query 1115 artists: Range:  25.413 ...  27.139 ms, Average:  26.105, median:  26.138, std dev:  0.36
-                    Range:  22.792 ...  24.340 us/row, Average:  23.413, median:  23.442, std dev: 0.322
-Query 1887 albums:  Range:  73.152 ...  78.027 ms, Average:  75.374, median:  75.238, std dev:  1.53
-                    Range:  65.607 ...  69.980 us/artist, Average:  67.600, median:  67.478, std dev:  1.37
-FTS indexing:       Range: 118.692 ... 124.893 ms, Average: 121.656, median: 121.341, std dev:  2.03
-                    Range:   9.738 ...  10.246 us/doc, Average:   9.981, median:   9.955, std dev: 0.167
-FTS query:          Range:   8.767 ...  10.768 ms, Average:   8.988, median:   8.955, std dev: 0.176
-                    Range: 324.694 ... 398.812 us/row, Average: 332.871, median: 331.681, std dev:  6.52
+Import 12189 docs:  Range: 426.578 ... 485.405 ms, Average: 454.841, median: 462.388, std dev:  9.69
+                    Range:  34.997 ...  39.823 us/doc, Average:  37.316, median:  37.935, std dev: 0.795
+                     Rate: 26361 docs/sec
+Update 1223 docs:   Range: 320.336 ... 363.441 ms, Average: 334.622, median: 332.976, std dev:  8.32
+                     Rate: 3673 docs/sec
+                    Range: 261.927 ... 297.171 us/update, Average: 273.608, median: 272.262, std dev:   6.8
+Query 1111 artists: Range:  27.942 ...  32.751 ms, Average:  30.006, median:  30.812, std dev:  1.49
+                    Range:  25.151 ...  29.479 us/row, Average:  27.008, median:  27.734, std dev:  1.34
+Query 1886 albums:  Range:   3.354 ...   3.756 sec, Average:   3.475, median:   3.497, std dev: 0.0421
+                    Range:   3.019 ...   3.381 ms/artist, Average:   3.128, median:   3.147, std dev: 0.0379
+Index by artist:    Range:  14.023 ...  16.721 ms, Average:  15.559, median:  15.648, std dev: 0.604
+                    Range:   1.150 ...   1.372 us/doc, Average:   1.276, median:   1.284, std dev: 0.0495
+Re-query artists:   Range:  16.608 ...  19.515 ms, Average:  17.893, median:  18.060, std dev:  0.58
+                    Range:  14.949 ...  17.566 us/row, Average:  16.106, median:  16.256, std dev: 0.522
+Re-query albums:    Range:  65.792 ...  80.442 ms, Average:  71.221, median:  71.276, std dev:  3.84
+                    Range:  59.219 ...  72.405 us/artist, Average:  64.106, median:  64.154, std dev:  3.46
+FTS indexing:       Range:  90.588 ... 110.644 ms, Average:  96.574, median:  95.494, std dev:   5.4
+                    Range:   7.432 ...   9.077 us/doc, Average:   7.923, median:   7.834, std dev: 0.443
+FTS query:          Range: 731.911 ... 1809.565 us, Average: 803.707, median: 766.579, std dev:  79.6
+                    Range:  24.397 ...  60.319 us/row, Average:  26.790, median:  25.553, std dev:  2.65
 ```
 
 ### Windows (.NET Core 2.0.5)
