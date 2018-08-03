@@ -62,7 +62,7 @@ Properties are references to document properties. The property operation name is
 
 Example:  `[".", "name", "first"]`
 
-As shorthand, a property expression can be collapsed into a one-element array, like `[".name.first"]`.
+As shorthand, a property expression can be collapsed into a one-element array, like `[".name.first"]` ... as long as none of the path components contain a "`.`", of course.
 
 A property expression with zero operands, `["."]`, represents the root of the document. (This is commonly used in a `WHAT` list, where it is the equivalent of the SQL `*` specifier.)
 
@@ -222,7 +222,7 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | `LIMIT` | Number | Infinite |
 | `OFFSET` | Number | 0 |
 
-### Database/Join Identifiers
+### Database/Join/Unnest Identifiers
 
 The items in the `FROM` array are dictionaries with the following keys:
 
@@ -232,21 +232,29 @@ The items in the `FROM` array are dictionaries with the following keys:
 | `DB` | String: Database name | Database being queried |
 | `JOIN` | String: Type of join | `"INNER"` (if `ON` is given) |
 | `ON` | Boolean-valued expression: the join constraint | no join |
+| `UNNEST` | Array-valued expression | no unnest |
 
 Some requirements:
-* The first item in the array serves only to alias the default database; it can't have a `JOIN` or `ON` property.
-* The subsequent items _must_ be joins, with `ON` properties.
-* It's an error to have a `JOIN` property but not an `ON`.
-* Legal values for `JOIN` are `"INNER"`, `"OUTER"`, `"LEFT OUTER"`, and `"CROSS"`. (Case-insensitive)
-* All `AS` values must be unique.
+* Every item must have a unique `AS` property value.
+* The first item in the array serves only to alias the default database; it can't have a `JOIN`,  `ON` or `UNNEST` property.
+* The subsequent items _must_ either be joins or unnests.
+* In a join:
+    * There must be an `ON` property.
+    * Legal values for `JOIN` are `"INNER"` (the default), `"OUTER"`, `"LEFT OUTER"`, and `"CROSS"`. (Case-insensitive)
+* In an unnest:
+    * There must be an `UNNEST` property.
+    * There cannot be a `JOIN` or `ON` property.
 
-**STATUS:** (v2.0) The `DB`property is not yet implemented; only one database can be queried at a time.
+**STATUS:** Unnest is new as of August 2018 (post-2.1)
+
+**STATUS:** The `DB` property is not yet implemented; only one database can be queried at a time.
 
 Example:
 ```json
     "FROM": [{"as": "person"},
              {"as": "state", "on": ["=", [".state.abbreviation"],
-                                         [".person.contact.address.state"]]}],
+                                         [".person.contact.address.state"]]},
+             {"as": "interest", "unnest": [".person.interests"]}],
 ```
 
 **Adding a `FROM` clause affects the interpretation of properties.** Since there are usually multiple databases or join sources, property names (paths) in the entire query need to be disambiguated by prefixing the appropriate alias. So in the above example, a document's `abbreviation` property has to be named as `.state.abbreviation`, not just `.abbreviation`.
