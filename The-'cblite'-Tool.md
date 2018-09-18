@@ -8,12 +8,25 @@
 | `cblite help` | Display help text |
 | `cblite logcat` | Display binary log files in readable form |
 | `cblite ls` | List the documents in the database |
+| `cblite put` | Create or update a document |
 | `cblite query` | Run queries, using the [[JSON Query Schema]] |
 | `cblite revs` | List the revisions of a document |
+| `cblite rm` | Delete a document |
 | `cblite serve` | Starts a (rudimentary) REST API listener |
 | `cblite sql` | Run a SQLite query directly |
 
-It has an interactive mode that you start by running `cblite /path/to/database`, i.e. with no subcommand. It will then prompt you for a command, which is a command line without the initial `cblite` or the database-path parameter. Enter `quit` or press Ctrl-D to exit.
+## Interactive Mode
+
+The tool has an interactive mode that you start by running `cblite /path/to/database`, i.e. with no subcommand. It will then prompt you for commands: each command is a command line without the initial `cblite` or the database-path parameter. Enter `quit` or press Ctrl-D to exit.
+
+When starting interactive mode, you can put a few flags before the database path:
+
+| Flag    | Effect  |
+|---------|---------|
+| `--create` | Creates a new database if the path does not exist. Opens database in writeable mode. |
+| `--writeable` | Opens the database in writeable mode, allowing use of the `put` and `rm` subcommands. |
+
+> **These flags were added after version 2.1.**
 
 ## Example
 
@@ -135,9 +148,20 @@ In interactive mode, the database path is already known, so it's used as the sou
 
 (PATTERN is an optional pattern for matching docIDs, with shell-style wildcards `*`, `?`)
 
-### revs
+### put
 
-`cblite revs` _databasepath_ _DOCID_
+> **This command was added after version 2.1.**
+
+`cblite put` _[flags]_ _databasepath_ _DOCID_ _JSON_
+
+| Flag    | Effect  |
+|---------|---------|
+| `--create` | Only create a document; fails if the document exists. |
+| `--update` | Only update an existing document; fails if the document does not exist. |
+
+The document body JSON must be a single argument; put quotes around it to ensure that and to avoid misinterpretation of special characters. JSON5 syntax is allowed.
+
+> NOTE: In the interactive mode, this command will fail unless `cblite` was invoked with the `--writeable` or `--create` flag.
 
 ### query
 
@@ -151,6 +175,18 @@ In interactive mode, the database path is already known, so it's used as the sou
 The _query_ must follow the [[JSON query schema|JSON Query Schema]]. It can be a dictionary {`{ ... }`) containing an entire query specification, or an array (`[ ... ]`) with just a `WHERE` clause. There are examples of each up above.
 
 The query must be a single argument; put quotes around it to ensure that and to avoid misinterpretation of special characters. [JSON5](http://json5.org) syntax is allowed. 
+
+### revs
+
+`cblite revs` _databasepath_ _DOCID_
+
+### rm
+
+> **This command was added after version 2.1.**
+
+`cblite rm` _databasepath_ _DOCID_
+
+> NOTE: In the interactive mode, this command will fail unless `cblite` was invoked with the `--writeable` or `--create` flag.
 
 ### serve
 
