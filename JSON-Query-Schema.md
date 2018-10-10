@@ -261,7 +261,19 @@ Example:
 
 ## Functions
 
-These are N1QL functions. For detailed information about parameters and results, please consult the [N1QL documentation][23]. 
+### Collection Constructors
+
+The function `ARRAY()` creates an array of its arguments after evaluating each one.
+
+The function `OBJECT()` creates an object/dictionary. Its arguments are alternating keys (strings) and values.
+
+Both functions ignore any value argument that evaluates to `MISSING` (similar to JavaScript's `undefined`, e.g. the value of a nonexistent document property.)
+
+**STATUS:** (10/2018) These functions will appear in the next major release after 2.1.
+
+### N1QL Functions
+
+For detailed information about parameters and results, please consult the [N1QL documentation][23]. 
 
 **NOTE:** There are some differences from SQL, or at least from SQLite; for example, SQLite has non-aggregate versions of `min` and `max`, but in N1QL (and LiteCore) these are called `least` and `greatest`.
 
