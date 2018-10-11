@@ -136,6 +136,7 @@ The operations are named after their N1QL/SQL equivalents.
 | | `EVERY` | 3: (variable name, array, satisfies) |
 | | `ANY AND EVERY` | 3: (variable name, array, satisfies) |
 |Properties| `.` | 0+: (path components) [[see above][12]] |
+| | `_.` | 2: (expr, property-path) Evaluates a property (or path) of a dictionary value |
 |Parameters| `$` | 1 (name or position) [[see above][13]] |
 |Variables| `?` | 1+ (name, optional path components) [[see above][14]] |
 |Queries| `SELECT` | 1 [[see below][15]] |
