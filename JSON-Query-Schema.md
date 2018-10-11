@@ -139,7 +139,10 @@ The operations are named after their N1QL/SQL equivalents.
 | | `_.` | 2: (expr, property-path) Evaluates a property (or path) of a dictionary value |
 |Parameters| `$` | 1 (name or position) [[see above][13]] |
 |Variables| `?` | 1+ (name, optional path components) [[see above][14]] |
+|Blobs| `BLOB` | 1: (property path) |
 |Queries| `SELECT` | 1 [[see below][15]] |
+
+**STATUS:** (Oct 2018) The `_.` and `BLOB` operators are post-2.1.
 
 ## Collation
 
