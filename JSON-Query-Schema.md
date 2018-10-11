@@ -50,11 +50,19 @@ As a JSON tree this looks like:
 
 As an operand, a JSON string, number, boolean or `null` represents itself.
 
-Examples: `true`, `null`, `17`, `"foo"`
+Examples: `true`, `false`, `null`, `17`, `"foo"`
 
 An array literal is created using the `"[]"` operation. All of the operands are evaluated and concatenated to make the array.
 
 Example: `["[]", 10, true, "foo"]`
+
+A dictionary literal is created simply by using a JSON dictionary/object. All of the values are evaluated.
+
+Example: `{"name": [".name"], "age": [".age"]}`
+
+**NOTE:** Array and dictionary literals ignore any values that evaluate to `MISSING` (similar to JavaScript's `undefined`.) So in the dictionary example above, if the document had no `age` property, the resulting dictionary would have only a `name` key.
+
+**STATUS:** (10/2018) Array and dictionary literals will appear in the next major release after 2.1.
 
 ### Properties
 
@@ -259,19 +267,7 @@ Example:
 
 **Adding a `FROM` clause affects the interpretation of properties.** Since there are usually multiple databases or join sources, property names (paths) in the entire query need to be disambiguated by prefixing the appropriate alias. So in the above example, a document's `abbreviation` property has to be named as `.state.abbreviation`, not just `.abbreviation`.
 
-## Functions
-
-### Collection Constructors
-
-The function `ARRAY()` creates an array of its arguments after evaluating each one.
-
-The function `OBJECT()` creates an object/dictionary. Its arguments are alternating keys (strings) and values.
-
-Both functions ignore any value argument that evaluates to `MISSING` (similar to JavaScript's `undefined`, e.g. the value of a nonexistent document property.)
-
-**STATUS:** (10/2018) These functions will appear in the next major release after 2.1.
-
-### N1QL Functions
+## N1QL Functions
 
 For detailed information about parameters and results, please consult the [N1QL documentation][23]. 
 
