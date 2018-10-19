@@ -359,6 +359,27 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `tonumber()` | 1 |
 | | `toobject()` | 1 |
 | | `tostring()` | 1 |
+| **Predictive** | `prediction()` [q.v.] | 2-3 |
+
+### `prediction()`
+
+`prediction()` is not standard N1QL. It calls a **predictive** function, usually based on a machine-learning model, which must be registered with LiteCore at runtime before the query is compiled. Its parameters are:
+
+1. The name the predictivefunction was registered with
+2. The function's named inputs; this must be a dictionary and is usually given as a dictionary literal
+3. The name of the function output to use [optional]
+
+If parameter 3 is not given, the function's output will be returned as a dictionary; otherwise only the named output value is returned.
+
+If the model is unable to process the input because a required parameter is missing, or a parameter has the wrong type, the result of the function call is `MISSING`.
+
+Example:
+
+```["prediction()", "mobilenet", {"image": ["BLOB", ".picture"]}, "classLabel"]```
+
+Assuming the MobileNet ML model has been registered as `"mobilenet"`, this will read an attached blob from the document's `picture` property, run it through MobileNet to classify it, and return the label most likely to apply to the image contents, e.g. "siamese cat" or "banana".
+
+**STATUS:** `prediction()` was added in October 2018 (post-2.1). It is only available in the Enterprise Edition (EE) of Couchbase Lite.
 
 [1]:	#1-introduction
 [2]:	#2-example
