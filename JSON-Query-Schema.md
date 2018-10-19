@@ -94,7 +94,7 @@ Example: `["?", "address", "zip"]`
 
 As shorthand, a variable expression can be collapsed into a one-element array, like `["?address"]` or `["?address.zip"]`.
 
-## Operations
+## 4. Operations
 
 The operations are named after their N1QL/SQL equivalents.
 
@@ -144,7 +144,7 @@ The operations are named after their N1QL/SQL equivalents.
 
 **STATUS:** (Oct 2018) The `_.` and `BLOB` operators are post-2.1.
 
-## Collation
+## 5. Collation
 
 The `COLLATE` operator does nothing itself, merely returns the value of its second operand, but it alters the string collation (comparison/sorting) used when evaluating that expression _and nested expressions_.
 
@@ -154,10 +154,10 @@ The first operand is a dictionary that specifies the collation; its keys are:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
-| `UNICODE` | Unicode-aware? | `false` |
-| `CASE` | Case-sensitive? | `true` |
-| `DIAC` | Diacritic (accent) -sensitive? | `true` |
-| `LOCALE` | ISO locale\* string or `null` | `null` |
+| `"UNICODE":` | Unicode-aware? | `false` |
+| `"CASE":` | Case-sensitive? | `true` |
+| `"DIAC":` | Diacritic (accent) -sensitive? | `true` |
+| `"LOCALE":` | ISO locale\* string or `null` | `null` |
 
 \* A **locale** is an ISO-639 [language code][16] plus, optionally, an underscore and an ISO-3166 [country code][17]: `"en"`, `"en_US"`, `"fr_CA"`, etc.
 
@@ -180,7 +180,7 @@ The above applies to the Roman alphabet. For many non-Roman scripts, especially 
 
 Some unintuitive results: in a case-sensitive collation, "abc" comes before "ABC" (lowercase first!), but "abd" comes _after_ "ABC" because the letter mismatch takes priority over the case mismatch. Likewise, "ápple" comes after "Apple" (in most locales) because the diacritic is higher priority than uppercase.
 
-## `MATCH` and Full-Text Search
+## 6. `MATCH` and Full-Text Search
 
 The `MATCH` operator queries a full-text-search (FTS) index. 
 
@@ -218,33 +218,45 @@ Matching is affected by stemming and stop-words, if those are available in the s
 
 **STATUS:** (v2.0) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
 
-## Top-Level Query, and `SELECT`
+## 7. Top-Level Query, and `SELECT`
 
 The `SELECT` statement has so many parameters, all of which are optional, that it makes a lot more sense to encode them as a dictionary with the following keys:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
-| `WHAT` | Array of expressions to return, generally properties | document ID and sequence |
-| `FROM` | Array of [database/join identifiers][22] | Database being queried |
-| `WHERE` | Boolean-valued expression | `true` (all documents) |
-| `HAVING` | Expression | `true` |
-| `DISTINCT` | Boolean | `false` |
-| `GROUP_BY` | Array of expressions or property names | `[]` (no grouping) |
-| `ORDER_BY` | Array of expressions or property names | `[]` (unsorted) |
-| `LIMIT` | Number | Infinite |
-| `OFFSET` | Number | 0 |
+| `"WHAT":` | Array of [column expressions](#the-what-clause-result-columns) to return, generally properties | document ID and sequence |
+| `"FROM":` | Array of [database/join identifiers](#the-from-clause-databasejoinunnest-identifiers) | Database being queried |
+| `"WHERE":` | Boolean-valued expression | `true` (all documents) |
+| `"HAVING":` | Expression | `true` |
+| `"DISTINCT":` | Boolean | `false` |
+| `"GROUP_BY":` | Array of expressions or property names | `[]` (no grouping) |
+| `"ORDER_BY":` | Array of expressions or property names | `[]` (unsorted) |
+| `"LIMIT":` | Number | Infinite |
+| `"OFFSET":` | Number | 0 |
 
-### Database/Join/Unnest Identifiers
+### The `WHAT` Clause: Result Columns
+
+The `WHAT` array defines the columns of a query row, just like the column expressions after `SELECT` in N1QL/SQL syntax. Each item of the array may be:
+
+* A string literal, interpreted as a property path.
+* An expression (array or dictionary). Aggregate functions are allowed here.
+* An array of the form `["AS", <expression>, "<string>"]`, which is interpreted exactly the same as `<expression>`, but has the side effect of setting the column's **title** to `<string>`. 
+
+**Note:** Column titles have no effect on the query but are returned via the `c4query_getColumnTitle()` function. Higher-level bindings may support accessing a query row as a dictionary using the column titles as keys. Columns declared without `AS` have titles based on their property name or top-level operation.
+
+**STATUS:** `AS` is new as of October 2018 (post-2.1)
+
+### The `FROM` Clause: Database/Join/Unnest Identifiers
 
 The items in the `FROM` array are dictionaries with the following keys:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
-| `AS` | Alphanumeric string: an alias to refer to this database or join by | _required_ |
-| `DB` | String: Database name | Database being queried |
-| `JOIN` | String: Type of join | `"INNER"` (if `ON` is given) |
-| `ON` | Boolean-valued expression: the join constraint | no join |
-| `UNNEST` | Array-valued expression | no unnest |
+| `"AS":` | Alphanumeric string: an alias to refer to this database or join by | _required_ |
+| `"DB":` | String: Database name | Database being queried |
+| `"JOIN":` | String: Type of join | `"INNER"` (if `ON` is given) |
+| `"ON":` | Boolean-valued expression: the join constraint | no join |
+| `"UNNEST":` | Array-valued expression | no unnest |
 
 Some requirements:
 * Every item must have a unique `AS` property value.
@@ -271,7 +283,7 @@ Example:
 
 **Adding a `FROM` clause affects the interpretation of properties.** Since there are usually multiple databases or join sources, property names (paths) in the entire query need to be disambiguated by prefixing the appropriate alias. So in the above example, a document's `abbreviation` property has to be named as `.state.abbreviation`, not just `.abbreviation`.
 
-## N1QL Functions
+## 8. N1QL Functions
 
 For detailed information about parameters and results, please consult the [N1QL documentation][23]. 
 
@@ -348,14 +360,14 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `toobject()` | 1 |
 | | `tostring()` | 1 |
 
-[1]:	#introduction
-[2]:	#example
-[3]:	#leaf-types
-[4]:	#operations
-[5]:	#collation
-[6]:	#match-and-full-text-search
-[7]:	#top-level-query-and-select
-[8]:	#functions
+[1]:	#1-introduction
+[2]:	#2-example
+[3]:	#3-leaf-types-literals-properties-parameters-variables
+[4]:	#4-operations
+[5]:	#5-collation
+[6]:	#6-match-and-full-text-search
+[7]:	#7-top-level-query-and-select
+[8]:	#8-n1ql-functions
 [9]:	http://www.sqlite.org/lang_expr.html
 [10]:	#collation
 [11]:	#functions
