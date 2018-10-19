@@ -377,7 +377,7 @@ Example:
 
 ```["prediction()", "mobilenet", {"image": ["BLOB", ".picture"]}, "classLabel"]```
 
-Assuming the MobileNet ML model has been registered as `"mobilenet"`, this will read an attached blob from the document's `picture` property, run it through MobileNet to classify it, and return the label most likely to apply to the image contents, e.g. "siamese cat" or "banana".
+Assuming a trained [MobileNet image classifier][MOBILENET] has been registered as `"mobilenet"`, this will read an attached blob from the document's `picture` property, run it through MobileNet to classify it, and return the label most likely to apply to the image contents, e.g. "siamese cat" or "banana".
 
 **STATUS:** `prediction()` was added in October 2018 (post-2.1). It is only available in the Enterprise Edition (EE) of Couchbase Lite.
 
@@ -404,3 +404,4 @@ Assuming the MobileNet ML model has been registered as `"mobilenet"`, this will 
 [21]:	https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text
 [22]:	#databasejoin-identifiers
 [23]:	https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html
+[MOBILENET]: https://ai.googleblog.com/2017/06/mobilenets-open-source-models-for.html
