@@ -1,6 +1,10 @@
-The LiteCoreREST library adds a small embedded HTTP server to LiteCore, which implements **a subset** of the Couchbase Lite 1.x (and CouchDB and Cloudant and PouchDB) REST API. 
+The LiteCoreREST library adds a small embedded HTTP server to LiteCore, which implements **a subset** of the Couchbase Lite 1.x (and CouchDB and Cloudant and PouchDB) REST API. You can easily run this by using the [[cblite|The 'cblite' Tool]] tool's `serve` subcommand.
 
-At this point (May 2017) it's intended mostly as an aid for automated testing of LiteCore; but it can be extended to the full API, which would allow it to support PhoneGap apps and even serve as a passive endpoint for the 1.x replication protocol. 
+Again, this is not the full REST API; it doesn't expose all functionality, it's not enough for PhoneGap, and it's not enough for compatibility with the 1.x replicator. But it has some uses:
+
+* Automated testing of LiteCore
+* Load testing of Sync Gateway (by starting a bunch of `cblite serve` processes to replicate with it)
+* Automated creation of Couchbase Lite 2 database files from a server, to be bundled into apps
 
 (If you want to cross-reference with the actual code, look at where the handlers are registered in [Listener.cc](https://github.com/couchbase/couchbase-lite-core/blob/master/REST/Listener.cc#L55).)
 
@@ -26,7 +30,11 @@ At this point (May 2017) it's intended mostly as an aid for automated testing of
 | PUT    | /_db_/_id_  | | Creates or updates a document |
 |        | |?rev=_revID_ | Current revision ID (required if doc exists, unless you add a `_rev` property to the JSON body) |
 
-#### `/_replicate`
+## Missing Stuff
 
-* The only properties implemented so far are `source`, `target`, `continuous`, and `cancel`.
-* Local-to-local replication (both `source` and `target` are local db names) isn't supported yet.
+* All HTTP endpoints and "`?`" options not listed above like `_changes`, `_bulk_get`, ...
+* Access to revision history
+* Attachments
+* `/_replicate` properties other than `source`, `target`, `continuous`, and `cancel`
+* Local-to-local replication (where both `source` and `target` are local db names)
+* Queries (obviously there are no views or design docs, but eventually it'd be nice to be able to POST a query in the JSON syntax.)
