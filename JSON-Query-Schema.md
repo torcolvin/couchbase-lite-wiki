@@ -74,8 +74,6 @@ As shorthand, a property expression can be collapsed into a one-element array, l
 
 A property expression with zero operands, `["."]`, represents the root of the document. (This is commonly used in a `WHAT` list, where it is the equivalent of the SQL `*` specifier.)
 
-The special top-level property names `_id` and `_sequence` refer to the document's ID and current sequence number. _[TBD: This may change to a special `meta` object.]_
-
 In a query with a `FROM` clause, where multiple documents are being queried, a property expression's path MUST be prefixed with the alias of the document as its first operand. For example, if the alias were `db`, then `[".", "name"]` would become `[".", "db", "name"]`; `["."]` would become `[".", "db"]`; and `[".", "_id"]` would become `[".", "db", "_id"]`. Of course these can be abbreviated as `[".db.name"]`, etc.
 
 #### Magic Metadata Properties
