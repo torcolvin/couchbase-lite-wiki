@@ -9,6 +9,8 @@
 * [Top-Level Query, and `SELECT`][7]
 * [Functions][8]
 
+>**STATUS:** This is a living document that reflects the latest version of the query syntax, as implemented on the master branch of LiteCore. It may describe features not yet available in a release of Couchbase Lite. Pay attention to "STATUS:" blocks like this one, which point out new features not yet in a release.
+
 ## 1. Introduction
 
 Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like [SQL][9]. This document describes the schema.
