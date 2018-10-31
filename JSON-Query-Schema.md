@@ -372,6 +372,8 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `toobject()` | 1 |
 | | `tostring()` | 1 |
 | **Predictive** | `prediction()` [q.v.] | 2-3 |
+| | `euclidean_distance()` | 2-3 |
+| | `cosine_distance()` | 2 |
 
 ### `prediction()`
 
@@ -391,7 +393,21 @@ Example:
 
 Assuming a trained [MobileNet image classifier][MOBILENET] has been registered as `"mobilenet"`, this will read an attached blob from the document's `picture` property, run it through MobileNet to classify it, and return the label most likely to apply to the image contents, e.g. "siamese cat" or "banana".
 
-**STATUS:** `prediction()` was added in October 2018 (post-2.1). It is only available in the Enterprise Edition (EE) of Couchbase Lite.
+### `euclidean_distance()`
+
+Returns the [_Euclidean distance_][EUCLIDEAN] between two vectors, which is used as a distance metric in predictive queries.
+
+Both parameters must be arrays of numbers, and must be the same length. The result is a non-negative floating-point number.
+
+An optional third parameter is a power to raise the result to. Using `2` provides the common "squared Euclidean" distance.
+
+### `cosine_distance()`
+
+Returns the _cosine distance_ (one minus the [_cosine similarity_][COSINE]) between two vectors, which is used as a distance metric in predictive queries.
+
+Both parameters must be arrays of numbers, must be the same length, and must be non-empty. The result is a floating-point number in the range [-1 … +1].
+
+**STATUS:** `prediction()`, `euclidean_distance()`, and `cosine_distance()` were added in October 2018 (post-2.1). They are only available in the Enterprise Edition (EE) of Couchbase Lite.
 
 [1]:	#1-introduction
 [2]:	#2-example
@@ -417,3 +433,5 @@ Assuming a trained [MobileNet image classifier][MOBILENET] has been registered a
 [22]:	#databasejoin-identifiers
 [23]:	https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html
 [MOBILENET]: https://ai.googleblog.com/2017/06/mobilenets-open-source-models-for.html
+[EUCLIDEAN]: https://en.wikipedia.org/wiki/Euclidean_distance
+[COSINE]: https://en.wikipedia.org/wiki/Cosine_similarity
