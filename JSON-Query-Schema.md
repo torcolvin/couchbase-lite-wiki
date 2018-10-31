@@ -78,6 +78,18 @@ The special top-level property names `_id` and `_sequence` refer to the document
 
 In a query with a `FROM` clause, where multiple documents are being queried, a property expression's path MUST be prefixed with the alias of the document as its first operand. For example, if the alias were `db`, then `[".", "name"]` would become `[".", "db", "name"]`; `["."]` would become `[".", "db"]`; and `[".", "_id"]` would become `[".", "db", "_id"]`. Of course these can be abbreviated as `[".db.name"]`, etc.
 
+#### Magic Metadata Properties
+
+There are some special top-level property names for accessing document metadata:
+
+| Name | Type | Value |
+|------|------|-------|
+| `_id` | string | The document ID |
+| `_sequence` | integer | The sequence number |
+| `_deleted` | boolean | True if the document is deleted |
+
+**STATUS:** (Oct 2018) The `_deleted` property is post-2.1.
+
 ### Parameters
 
 Parameters are placeholders whose values are substituted when the query is run. The parameter name is the single (required) operand of the `"$"` expression.
