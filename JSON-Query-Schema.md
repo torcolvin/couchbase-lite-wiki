@@ -54,6 +54,8 @@ As an operand, a JSON string, number, boolean or `null` represents itself.
 
 Examples: `true`, `false`, `null`, `17`, `"foo"`
 
+The special value `MISSING` (equivalent to SQL's `NULL`) is represented as `["MISSING"]`; i.e. it's a zero-argument operation that returns a constant.
+
 An array literal is created using the `"[]"` operation. All of the operands are evaluated and concatenated to make the array.
 
 Example: `["[]", 10, true, "foo"]`
@@ -112,6 +114,7 @@ The operations are named after their N1QL/SQL equivalents.
 
 |Category| Name | Operand Count |
 |--------|------|---------------|
+| Constants | `MISSING` | 0 |
 |Arithmetic| `+`  | 2+ |
 | | `-`  | 1 or 2 |
 | | `*`  | 2+ |
@@ -132,10 +135,6 @@ The operations are named after their N1QL/SQL equivalents.
 | | `IN` | 2: (value, array) |
 | | `NOT IN` | 2: (value, array) |
 | | `EXISTS` | 1 |
-| | `IS MISSING` | 1 |
-| | `IS NOT MISSING` | 1 |
-| | `IS NULL` | 1 |
-| | `IS NOT NULL` | 1 |
 | | `COLLATE` | 2: (options, expr) [see **[Collation][10]** below] |
 |Logical| `NOT` | 1 |
 | | `AND` | 2+ |
