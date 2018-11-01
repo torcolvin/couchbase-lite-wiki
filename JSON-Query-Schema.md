@@ -323,6 +323,10 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `ifnull()` | 1+ |
 | | `missingif()` | 2 |
 | | `nullif()` | 2 |
+| **Dates** | `millis_to_str()` | 1 |
+| | `millis_to_utc()` | 1 |
+| | `str_to_millis()` | 1 |
+| | `str_to_utc()` | 1 |
 | **Math** | `abs()` | 1 |
 | | `acos()` | 1 |
 | | `asin()` | 1 |
@@ -373,6 +377,8 @@ For detailed information about parameters and results, please consult the [N1QL 
 | **Predictive** | `prediction()` [q.v.] | 2-3 |
 | | `euclidean_distance()` | 2-3 |
 | | `cosine_distance()` | 2 |
+
+**STATUS:** (10/2018) Date and predictive functions are post-2.1.
 
 ### `prediction()`
 
