@@ -89,8 +89,9 @@ There are some special top-level property names for accessing document metadata:
 | `_id` | string | The document ID |
 | `_sequence` | integer | The sequence number |
 | `_deleted` | boolean | True if the document is deleted |
+| `_expiration` | integer or missing | Expiration time (ms since Unix epoch) |
 
-**STATUS:** (Oct 2018) The `_deleted` property is post-2.1.
+**STATUS:** (Oct 2018) The `_deleted` and `_expiration` properties are post-2.1.
 
 ### Parameters
 
