@@ -4,7 +4,7 @@ This document describes how LiteCore stores data in its underlying SQLite databa
 
 If you just want to inspect a database, use the [['cblite'|The 'cblite' Tool]] command-line tool. The `sqlite3` tool isn't very useful, even with the knowledge found below, because (a) most of the interesting data is encoded in binary formats, and (b) most mutating operations will fail because they invoke triggers that use custom functions not available outside LiteCore.
 
-# KeyStores
+## KeyStores
 
 LiteCore's low-level storage layer manages **DataFile**s, which support multiple **KeyStores**, each of which contains **Record**s. Currently LiteCore creates and uses three KeyStores:
 
@@ -30,6 +30,8 @@ CREATE TABLE kv_NAME (
 * `version` stores versioning info. (Only the default KeyStore uses this, for revision IDs in a binary encoding.)
 * `body` is the record's data. The storage layer doesn't interpret this data at all. (In the default KeyStore it's a [[revision tree|Revision Trees]].)
 
+### kvmeta
+
 There is also a `kvmeta` table that just stores the latest sequence number of each KeyStore:
 ```
 CREATE TABLE kvmeta (
@@ -37,7 +39,13 @@ CREATE TABLE kvmeta (
     lastSeq INTEGER DEFAULT 0 )  WITHOUT ROWID;
 ```
 
-# Indexes
+### Expiration
+
+> _Expiration is a post-2.1 feature_
+
+The first time any record in a KeyStore is given an expiration time (TTL), a new column `expiration` is added to its KeyStore's table to record it. This column contains a number (seconds since Unix epoch) in records that expire, and is null otherwise. An index `kv_default_expiration` is also created to allow efficient search of expired records.
+
+## Indexes
 
 In the storage architecture, indexes and queries belong to a KeyStore (not directly to a DataFile), so it's _possible_ for multiple KeyStores to have indexes. However, the higher-level database layer only makes use of indexes on the default (document) KeyStore, and the discussion below assumes that.
 
@@ -45,11 +53,11 @@ In the storage architecture, indexes and queries belong to a KeyStore (not direc
 
 The discussion below describes the schema of an index named "`NAME`".
 
-## Value Indexes
+### Value Indexes
 
 A value index is simply a SQLite index named "`NAME`" on the table `kv_default`. Instead of indexing a column, it indexes an expression, which is translated to SQL from the original LiteCore JSON syntax.
 
-## Full-Text (FTS) Indexes
+### Full-Text (FTS) Indexes
 
 A full-text index is a SQLite FTS4 virtual table named `kv_default::NAME`:
 ```
@@ -59,9 +67,9 @@ CREATE VIRTUAL TABLE "kv_default::NAME" USING fts4("contact.address.street", tok
 
 LiteCore creates some SQL triggers on `kv_default` that update the FTS4 table when a record changes. These are named after the virtual table with `::ins`, `::upd`, `::del` appended.
 
-## Array (UNNEST) Indexes
+### Array (UNNEST) Indexes
 
-> _Array indexes are an Iridium (post-2.1) feature_
+> _Array indexes are a post-2.1 feature_
 
 An array index creates a SQL table named `kv_default:unnest:PATH`, where `PATH` is the property path being indexed. This table contains a row for _each individual array element_ in every document that contains an array at that path.
 
@@ -87,9 +95,9 @@ CREATE INDEX "NAME" ON "kv_default:unnest:PATH" (fl_unnested_value(body));
 ```
 (If there are multiple LiteCore indexes on the same path, but indexing different sub-properties, they share the same index table but of course create separate SQL indexes.)
 
-## Predictive (ML) Indexes
+### Predictive (ML) Indexes
 
-> _Predictive indexes are an Iridium (post-2.1) feature_
+> _Predictive indexes are a post-2.1 feature_
 
 A predictive index is much like an array index.
 ```
