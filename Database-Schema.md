@@ -30,7 +30,7 @@ CREATE TABLE kv_NAME (
 * `version` stores versioning info. (Only the default KeyStore uses this, for revision IDs in a binary encoding.)
 * `body` is the record's data. The storage layer doesn't interpret this data at all. (In the default KeyStore it's a [[revision tree|Revision Trees]].)
 
-### kvmeta
+### Sequence Support
 
 There is also a `kvmeta` table that just stores the latest sequence number of each KeyStore:
 ```
@@ -38,6 +38,9 @@ CREATE TABLE kvmeta (
     name TEXT PRIMARY KEY,
     lastSeq INTEGER DEFAULT 0 )  WITHOUT ROWID;
 ```
+
+Most databases also contain a SQLite index named `kv_default_seqs`, which is created automatically the first time the KeyStore is iterated in sequence order (as during a push replication.)
+
 
 ### Expiration
 
@@ -48,8 +51,6 @@ The first time any record in a KeyStore is given an expiration time (TTL), a new
 ## Indexes
 
 In the storage architecture, indexes and queries belong to a KeyStore (not directly to a DataFile), so it's _possible_ for multiple KeyStores to have indexes. However, the higher-level database layer only makes use of indexes on the default (document) KeyStore, and the discussion below assumes that.
-
-(Most databases also contain a SQLite index named `kv_default_seqs`, which is created automatically the first time a LiteCore query is ordered by sequence.)
 
 The discussion below describes the schema of an index named "`NAME`".
 
