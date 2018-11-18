@@ -23,13 +23,19 @@ ld-linux.so
 
 ## Building
 
-LiteCore makes use of CMake, which is a project generation tool that supports many backends (Makefiles, Ninja, Visual Studio projects, etc).  The supported environment for compilation is using the [clang](https://clang.llvm.org/) compiler in conjunction with the [libc++](https://libcxx.llvm.org/) standard library (both from the LLVM project).  Linux tends to ship with GCC, and CMake tends to try to use it by default, but it will respect the environment variables `CC` and `CXX` to specify alternative compilers for C and C++ respectively.  So to set up the project, ensure that the above deps, clang, and CMake are installed and in the path on the build system and run this command:
+LiteCore makes use of CMake, which is a project generation tool that supports many backends (Makefiles, Ninja, Visual Studio projects, etc).  The supported environment for compilation is using the [clang](https://clang.llvm.org/) compiler in conjunction with the [libc++](https://libcxx.llvm.org/) standard library (both from the LLVM project).  Linux tends to ship with GCC, and CMake tends to try to use it by default, but it will respect the environment variables `CC` and `CXX` to specify alternative compilers for C and C++ respectively. 
+
+Before building, ensure that the above deps, clang, and CMake are installed.
+
+There are some simple shell scripts that build LiteCore, in the `build_cmake/scripts/` directory. Just run the appropriate one for your platform. The build output will appear in `build_cmake/mac/` or `build_cmake/unix/`.
+
+Or if you want to run cmake yourself, enter:
 
 `CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo <path/to/CMakeLists.txt>`
 
-This will generate a `Makefile` that you can then build by simply running `make -j8 LiteCore` (or just `make LiteCore` but the former is faster with the appropriate value after `j`).
+which will generate a `Makefile` that you can then build by simply running `make -j8 LiteCore` (or just `make LiteCore` but the former is faster with the appropriate value after `j`).
 
-The end product of this will be `libLiteCore.so` in the same folder.
+The end product of this will be `libLiteCore.so` (or on macOS, `libLiteCore.dylib`) in the same folder.
 
 ## Deployment
 
@@ -37,7 +43,11 @@ Deployment is the same as any other shared library.  Just ensure that the progra
 
 ## Testing
 
-There are two test suites in the repo:  C4Tests and CppTests.  The former tests the C API / dynamic library interface and the latter tests the internals by linking statically.  You can build them by completing the CMake setup and then running `make C4Tests` and/or `make CppTests`.  The executables will be located in LiteCore/tests/CppTests and C/tests/C4Tests.  You can run either directly.  The recommended way is to run `C4Tests -r list` and `CppTests -r list` with the current working directory set to the location of the test executable.
+There are two test suites in the repo:  C4Tests and CppTests.  The former tests the C API / dynamic library interface and the latter tests the internals by linking statically. To fully test LiteCore, run them both.
+
+You can build them by completing the CMake setup and then running `make C4Tests` and/or `make CppTests`.  The executables will be located in LiteCore/tests/CppTests and C/tests/C4Tests.  You can run either directly.  The recommended way is to run `C4Tests -r list` and `CppTests -r list` with the current working directory set to the root of the repository.
+
+The tests will log a lot of output by default; to turn that off, set the environment variable `LiteCoreTestsQuiet`.
 
 To move these tests to another system, the following directory structure should be used:
 
