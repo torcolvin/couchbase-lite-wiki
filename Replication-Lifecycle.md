@@ -1,4 +1,4 @@
-This is a high-level description of the states the replicator goes through.
+This is a high-level description of the states the Couchbase Lite replicator goes through.
 
 ## The States
 
@@ -16,9 +16,7 @@ This is a high-level description of the states the replicator goes through.
 
 ## Notes on "Offline"
 
-**DISCLAIMER:** The Offline state has not been implemented yet. See [issue #98](https://github.com/couchbase/couchbase-lite-core/issues/98).
-
-There are quite a few causes behind the offline state:
+There are quite a few causes behind the Offline state:
 
 1. Device is in "airplane mode", networking switched off
 2. Out of range of WiFi and/or cell signal
@@ -32,6 +30,10 @@ There are quite a few causes behind the offline state:
 
 The replicator detects these by the errors they produce, like No such host, No route to host, Connection refused, Connection timeout, 502 Bad Gateway, 504 Gateway Timeout. These cause a transition to the Offline state.
 
-While offline, the replicator has a limited ability to detect when conditions might have improved. Changes to causes 1 and 2 can be detected by OS-specific network change events. The others can't, because they don't involve changes in the device's network interfaces. However, a change in network can mean that the problems are resolved (user may have switched WiFi networks or logged into a VPN, for example.)
+**The Offline state is not part of LiteCore:** it's implemented by the per-platform Couchbase Lite code, because its logic requires platform-specific APIs. LiteCore itself does not attempt to handle or recover from errors that indicate an offline state; it simply stops the replicator and reports the error to Couchbase Lite.
 
-While in the Offline state the replicator will listen for network-change events, and attempt to reconnect. It also tries periodically even without an event, using an exponential-backoff schedule.
+### Reconnecting
+
+While offline, the CBL replicator has a limited ability to detect when conditions might have improved. Changes to causes 1 and 2 can be detected by OS-specific network change events. The others can't, because they don't involve changes in the device's network interfaces. However, a change in network can mean that the problems are resolved (user may have switched WiFi networks or logged into a VPN, for example.)
+
+While in the Offline state the replicator will listen for network-change events, and attempt to reconnect. It also tries periodically even without an event, using an exponential-backoff schedule. The flowchart above can be considered to have two arrows transitioning from the Offline to the Connecting state: one is triggered by a timer, the other by an OS network-changed event. The timer's interval begins at 2 seconds, doubles on every transition back from Connecting to Offline (to a maximum of 600 seconds), and resets to 2 seconds on entering the Busy state. However, a one-shot replication will give up after two failed reconnect attempts.
