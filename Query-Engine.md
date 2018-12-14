@@ -35,10 +35,12 @@ Both `UNNEST` and the `ANY`/`EVERY` operators provide a sort of nested query on 
 
 ### Un-indexed
 
-If there's no index, LiteCore uses its `fl_each` SQL function (SQLiteFleeceEach.cc) This is a complicated thing called a _SQLite Virtual Table_. The primary use of virtual tables is to create SQLite tables that aren't implemented in the normal way (this is how FTS works), but they have a secondary use as _table-valued functions_, and that's how we use `fl_each`. A table-valued function can appear in a JOIN clause as though it were a table, and can present rows of data that are specific to each row the query is processing. So what `fl_each` does is make a Fleece array look like a SQL table, like a KeyStore table in fact. Each array element appears as a row with its own `body` column containing the Fleece value.
+If there's no index, LiteCore uses its `fl_each` SQL function (SQLiteFleeceEach.cc) This is a complicated thing called a [_SQLite Virtual Table_](https://www.sqlite.org//vtab.html). The primary use of virtual tables is to create SQLite tables that aren't implemented in the normal way (this is how FTS works), but they have a secondary use as [_table-valued functions_](https://www.sqlite.org//vtab.html#tabfunc2), and that's how we use `fl_each`. A table-valued function can appear in a JOIN clause as though it were a table, and can present rows of data that are specific to each row the query is processing. So what `fl_each` does is make a Fleece array look like a SQL table, like a KeyStore table in fact. Each array element appears as a row with its own `body` column containing the Fleece value.
 
 * An UNNEST clause is translated to a JOIN on an `fl_each` call whose parameters are (like `fl_value`) the document body and the path to the array.
 * An `ANY`/`EVERY` expression is translated into a nested `SELECT` statement whose `FROM` is a similar `fl_each` call, with a test on its row count.
+
+>**Note:** This is super clever, but it's not original with us. It, and also our approach to querying doc properties, were inspired by SQLite's own [JSON extension](https://www.sqlite.org//json1.html).
 
 ### Indexed
 
