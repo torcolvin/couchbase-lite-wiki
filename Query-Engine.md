@@ -3,7 +3,7 @@
 LiteCore executes queries by translating their JSON form into SQL, compiling the SQL into a SQLite 'statement', and then evaluating that statement. Ta-da, that's it!
 
 ...except for the details. There are a number of complications:
-* Document properties are not stored in SQL columns; there's just one blob column called `body`, and the properties are encoded inside that.
+* Document properties are not stored in SQL columns; there's just [one blob column called `body`](https://github.com/couchbase/couchbase-lite-core/wiki/Database-Schema#1-keystores), and the properties are Fleece-encoded inside that.
 * JSON documents can contain arrays; SQL has no notion of this, nor of the `UNNEST` and 'ANY'/`EVERY` features that N1QL uses to query arrays.
 * JSON (and N1QL) has a `null` value that is, confusingly, unlike SQL's `null`.
 
