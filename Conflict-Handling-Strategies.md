@@ -1,3 +1,6 @@
+**CAUTION: This is an old design note describing a bunch of stuff that is not implemented. Please treat it as a historical document, not as a reference to anything in LiteCore. --Jens, Dec. 2018**
+
+
 A key part of a replication algorithm is how conflicts are handled. To recap: a **conflict** is two or more different **revisions** of a document that have a **common ancestor** revision (usually a common parent.) A conflict is created when two databases make different changes to the same revision of a document, without knowing about each other’s changes, and then later replication brings both of the conflicting revisions to the same database.
 
 ## 1. Overview
