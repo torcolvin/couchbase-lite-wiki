@@ -1,14 +1,18 @@
-LiteCore stores each document as a **revision tree**, much like a version control system (although LiteCore is *not* a version control system\*.) Normally this tree is linear, with the current revision its leaf and a history of ancestor revisions below it. If there are conflicts, the tree will have branches, with each leaf being a conflicting revision.
+**This is an internal design doc. You don't need to know any of this unless you work on LiteCore, and even then only if you need to know about the details of document storage.** If you just want to inspect a database, use the 'cblite' command-line tool.
+
+LiteCore stores each document as a **revision tree**, much like a version control system (although LiteCore is *not* a version control system.) Normally this tree is linear, with the current revision its leaf and a history of ancestor revisions below it. If there are conflicts, the tree will have branches, with each leaf being a conflicting revision.
 
 Each document’s revision tree is self-contained within the `body` column of a single SQLite row in the `kv_default` table. Couchbase Lite 1.x’s practice of storing revisions as separate rows turned out to be too expensive.
 
 This document describes LiteCore’s representation of revisions and trees as C++ objects, beneath the C API layer.
 
-> \* Unlike a version control system, LiteCore
-> - does not promise to save the contents of non-leaf revisions
-> - does not promise to save the entire tree back to the original creation of the document.
-> 
-> It only saves this data for as long as it's deemed to be needed for conflict resolution during replication.
+## Disclaimer: LiteCore Is Not A Version-Control System
+
+Unlike a version control system like git or SVN, LiteCore
+- does not promise to save the contents of non-leaf revisions
+- does not promise to save the entire tree back to the original creation of the document.
+ 
+It only saves this data for as long as it's deemed to be needed for conflict resolution during replication.
 
 ## Attributes Of A Revision
 
