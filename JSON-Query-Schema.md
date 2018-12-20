@@ -121,7 +121,7 @@ The operations are named after their N1QL/SQL equivalents.
 | | `*`  | 2+ |
 | | `/`  | 2 |
 | | `%`  | 2 |
-|String| `||`  | 2+ |
+|String| `\|\|`  | 2+ |
 |Relational| `=` | 2 |
 | | `!=` | 2 |
 | | `<` | 2 |
