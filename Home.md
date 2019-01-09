@@ -14,10 +14,12 @@
 
 ## For Couchbase Lite Implementors
 
+* [C API Documentation](https://couchbase.github.io/couchbase-lite-core/C/html/modules.html) -- Doxygen-generated documentation of the C API called by Couchbase Lite
 * [[Proxy Servers]] -- LiteCore doesn't deal with them, but someone has to...
 
 ## Internal Design Documents
 
+* [Class Overview](https://github.com/couchbase/couchbase-lite-core/blob/master/docs/overview/index.md) -- A tour of the implementation's internal C++ classes
 * [[Database Schema]] -- What's in the SQLite database
 * [[Query Engine]] -- How we implemented N1QL-like queries
 * [[Replication Lifecycle]] -- The state machine the replicator goes through
