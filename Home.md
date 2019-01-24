@@ -1,7 +1,7 @@
 
 ## Generally Useful Pages
 
-* [[Build And Deploy On Linux]] -- More Linux instructions (beyond what's in the [README](../../blob/master/README.md#building-it).)
+* [[Build And Deploy On Linux]] -- More Linux instructions (beyond what's in the [README](../blob/master/README.md#building-it).)
 * [[JSON Query Schema]] -- LiteCore's query syntax
 * [[REST API]] -- If you enable this unsupported listener, here's its API
 * [The cblite Tool](https://github.com/couchbaselabs/cblite) -- Super useful command-line tool for inspecting databases
