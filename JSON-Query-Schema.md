@@ -301,83 +301,81 @@ For detailed information about parameters and results, please consult the [N1QL 
 
 **NOTE:** There are some differences from SQL, or at least from SQLite; for example, SQLite has non-aggregate versions of `min` and `max`, but in N1QL (and LiteCore) these are called `least` and `greatest`.
 
-|Category| Name | Operand Count |
-|--------|------|---------------|
-| **Aggregate** | `array_agg()` | 1 |
-| | `avg()` | 1 |
-| | `count()` | 1 |
-| | `max()` | 1 |
-| | `min()` | 1 |
-| | `sum()` | 1 |
-| **Arrays** | `array_avg()` | 1 |
-| | `array_contains()` | 2 |
-| | `array_count()` | 1 |
-| | `array_ifnull()` | 1 |
-| | `array_length()` | 1 |
-| | `array_max()` | 1 |
-| | `array_min()` | 1 |
-| | `array_sum()` | 1 |
-| **Comparisons** | `greatest()` | 2+ |
-| | `least()` | 2+ |
-| **Conditionals** | `ifmissing()` | 2+ |
-| | `ifmissingornull()` | 1+ |
-| | `ifnull()` | 1+ |
-| | `missingif()` | 2 |
-| | `nullif()` | 2 |
-| **Dates** | `millis_to_str()` | 1 |
-| | `millis_to_utc()` | 1 |
-| | `str_to_millis()` | 1 |
-| | `str_to_utc()` | 1 |
-| **Math** | `abs()` | 1 |
-| | `acos()` | 1 |
-| | `asin()` | 1 |
-| | `atan()` | 1 |
-| | `atan2()` | 2 |
-| | `ceil()` | 1 |
-| | `cos()` | 1 |
-| | `degrees()` | 1 |
-| | `e()` | 0 |
-| | `exp()` | 1 |
-| | `ln()` | 1 |
-| | `log()` | 1 |
-| | `floor()` | 1 |
-| | `pi()` | 0 |
-| | `power()` | 2 |
-| | `radians()` | 1 |
-| | `round()` | 1–2 |
-| | `sign()` | 1 |
-| | `sin()` | 1 |
-| | `sqrt()` | 1 |
-| | `tan()` | 1 |
-| | `trunc()` | 1–2 |
-| **Patterns** | `regexp_contains()` | 2 |
-| | `regexp_like()` | 2 |
-| | `regexp_position()` | 2 |
-| | `regexp_replace()` | 3-4 |
-| | `rank()` | 1 |
-| **Strings** | `contains()` | 2 |
-| | `length()` | 1 |
-| | `lower()` | 1 |
-| | `ltrim()` | 1–2 |
-| | `rtrim()` | 1–2 |
-| | `trim()` | 1–2 |
-| | `upper()` | 1 |
-| **Types** | `isarray()` | 1 |
-| | `isatom()` | 1 |
-| | `isboolean()` | 1 |
-| | `isnumber()` | 1 |
-| | `isobject()` | 1 |
-| | `isstring()` | 1 |
-| | `type()` | 1 |
-| | `toarray()` | 1 |
-| | `toatom()` | 1 |
-| | `toboolean()` | 1 |
-| | `tonumber()` | 1 |
-| | `toobject()` | 1 |
-| | `tostring()` | 1 |
-| **Predictive** | `prediction()` [q.v.] | 2-3 |
-| | `euclidean_distance()` | 2-3 |
-| | `cosine_distance()` | 2 |
+|Category| Name | Operand Count | Notes |
+|--------|------|---------------|-------|
+| **Aggregate** | `array_agg()` | 1 | Collects values into an array |
+| | `avg()` | 1 | |
+| | `count()` | 1 | |
+| | `max()` | 1 | |
+| | `min()` | 1 | |
+| | `sum()` | 1 | |
+| **Arrays** | `array_avg()` | 1 | Average value of numbers in an array |
+| | `array_contains()` | 2 | (_array_, _item_) |
+| | `array_count()` | 1 | Number of non-null items in array |
+| | `array_ifnull()` | 1 | The first non-null item in an array |
+| | `array_length()` | 1 | Full length of array |
+| | `array_max()` | 1 | Maximum number in an array |
+| | `array_min()` | 1 | Minimum number in an array |
+| | `array_sum()` | 1 | |
+| **Comparisons** | `greatest()` | 2+ | Maximum numeric argument (like SQL `max`) |
+| | `least()` | 2+ | Minimum numeric argument (like SQL `min`)  |
+| **Conditionals** | `ifmissing()` | 2+ | Returns 1st non-`missing` arg |
+| | `ifmissingornull()` | 1+ | Returns 1st arg not `missing` or `null` |
+| | `ifnull()` | 1+ | Returns 1st non-`null` arg |
+| | `missingif()` | 2 | returns `missing` if arg 1 == arg 2, else returns arg 1 |
+| | `nullif()` | 2 | returns `null` if arg 1 == arg 2, else returns arg 1 |
+| **Dates** | `millis_to_str()` | 1 | Converts Unix timestamp in milliseconds to ISO-8601 date string in _local_ time zone |
+| | `millis_to_utc()` | 1 | Converts Unix timestamp in milliseconds to ISO-8601 date string in UTC |
+| | `str_to_millis()` | 1 | Parses ISO-8601 date string to Unix timestamp in milliseconds |
+| | `str_to_utc()` | 1 | Normalizes ISO-8601 date string to UTC timezone |
+| **Math** | `abs()` | 1 | |
+| | `acos()` | 1 | Note: All trig functions use radians |
+| | `asin()` | 1 | |
+| | `atan()` | 1 | |
+| | `atan2()` | 2 | |
+| | `ceil()` | 1 | |
+| | `cos()` | 1 | |
+| | `degrees()` | 1 | Converts radians to degrees |
+| | `e()` | 0 | |
+| | `exp()` | 1 | |
+| | `ln()` | 1 | |
+| | `log()` | 1 | |
+| | `floor()` | 1 | |
+| | `pi()` | 0 | |
+| | `power()` | 2 | |
+| | `radians()` | 1 | Converts degrees to radians |
+| | `round()` | 1–2 | Optional 2nd argument gives number of decimal places to round to (default 0) |
+| | `sign()` | 1 | Returns -1, 0 or 1, reflecting sign of argument |
+| | `sin()` | 1 | |
+| | `sqrt()` | 1 | |
+| | `tan()` | 1 | |
+| | `trunc()` | 1–2 | Optional 2nd argument gives number of decimal places to truncate to (default 0) |
+| **Patterns** | `regexp_contains()` | 2 | Args are (_string_, _pattern_) |
+| | `regexp_like()` | 2 | Synonym for `regexp_contains` |
+| | `regexp_position()` | 2 | Returns byte offset of 1st match, else -1 |
+| | `regexp_replace()` | 3-4 | Args are (_string_, _pattern_, _replacement_) and optional _limit_ |
+| | `rank()` | 1 | Returns ranking of FTS matches |
+| **Strings** | `contains()` | 2 | |
+| | `length()` | 1 | |
+| | `lower()` | 1 | |
+| | `ltrim()` | 1 | Removes leading whitespace |
+| | `rtrim()` | 1 | Removes trailing whitespace |
+| | `trim()` | 1–2 | Removes leading & trailing whitespace |
+| | `upper()` | 1 | |
+| **Types** | `isarray()` | 1 | |
+| | `isatom()` | 1 | "Atom" means boolean, number, or string |
+| | `isboolean()` | 1 | |
+| | `isnumber()` | 1 | |
+| | `isobject()` | 1 | |
+| | `isstring()` | 1 | |
+| | `type()` | 1 | Returns one of `'missing'`, `'null'`, `'boolean'`, `'number'`, `'string'`, `'binary'`, `'array'`, `'object'` |
+| | `toatom()` | 1 | See N1QL docs |
+| | `toboolean()` | 1 | See N1QL docs |
+| | `tonumber()` | 1 | See N1QL docs |
+| | `tostring()` | 1 | See N1QL docs |
+| **Predictive** | `prediction()` [q.v.] | 2-3 | |
+| | `euclidean_distance()` | 2-3 | |
+| | `cosine_distance()` | 2 | |
 
 **STATUS:** (10/2018) Date and predictive functions are post-2.1.
 
