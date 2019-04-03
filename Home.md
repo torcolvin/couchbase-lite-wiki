@@ -15,6 +15,7 @@
 ## For Couchbase Lite Implementors
 
 * [C API Documentation](https://couchbase.github.io/couchbase-lite-core/C/html/modules.html) -- Doxygen-generated documentation of the C API called by Couchbase Lite
+* [Using Fleece](https://github.com/couchbaselabs/fleece/wiki/Using-Fleece) -- the JSON-like storage format and API used for documents
 * [[Proxy Servers]] -- LiteCore doesn't deal with them, but someone has to...
 
 ## Internal Design Documents
