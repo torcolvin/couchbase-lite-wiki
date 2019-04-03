@@ -21,6 +21,8 @@
 
 * [Class Overview](https://github.com/couchbase/couchbase-lite-core/blob/master/docs/overview/index.md) -- A tour of the implementation's internal C++ classes
 * [[Database Schema]] -- What's in the SQLite database
+* [[Revision Trees]] -- Deep innards of how documents are stored
 * [[Query Engine]] -- How we implemented N1QL-like queries
 * [[Replication Lifecycle]] -- The state machine the replicator goes through
-* [[Revision Trees]] -- Deep innards of how documents are stored
+* [Actor School](https://github.com/couchbaselabs/BLIP-Cpp/blob/master/docs/Actors.md) -- The Actor concurrency library the replicator classes use
+* [BLIP](https://github.com/couchbaselabs/BLIP-Cpp/blob/master/docs/BLIP%20Protocol.md) -- The network protocol underlying the replicator
