@@ -141,10 +141,8 @@ The operations are named after their N1QL/SQL equivalents.
 | | `AND` | 2+ |
 | | `OR` | 2+ |
 |Functions| _name_`()` | Depends on [function][11] |
-|Conditional| `CASE` | 2+: (expr, when1, ...) |
-| | `WHEN` | 2: (cond, value) |
-| | `ELSE` | 1: (value) |
-|Collections| `ANY` | 3: (variable name, array, satisfies) |
+|Conditional| `CASE` | 3+: (expr, when1, then1 ...) [see [below][CASE]] |
+| | `ANY` | 3: (variable name, array, satisfies) |
 | | `EVERY` | 3: (variable name, array, satisfies) |
 | | `ANY AND EVERY` | 3: (variable name, array, satisfies) |
 |Properties| `.` | 0+: (path components) [[see above][12]] |
@@ -155,6 +153,16 @@ The operations are named after their N1QL/SQL equivalents.
 |Queries| `SELECT` | 1 [[see below][15]] |
 
 **STATUS:** (Oct 2018) The `_.` and `BLOB` operators are post-2.1.
+
+### 4.1. CASE
+
+The `CASE` operator needs a bit of explanation.
+
+* The first operand is the expression to test (which directly follows the `CASE` keyword in N1QL/SQL), or `null` if there is none.
+* The second operand is the first expression to compare with (directly following `WHEN`.)
+* The third operand is the result to use if the first expression matches (directly following `THEN`.)
+* After that can come zero or more pairs of extra 'when' and 'then' expressions.
+* If there's one operand left over (i.e. the operation has an even number of operands) it's interpreted as the `ELSE` result.
 
 ## 5. Collation
 
@@ -436,6 +444,7 @@ Both parameters must be arrays of numbers, must be the same length, and must be 
 [21]:	https://developer.apple.com/documentation/foundation/nslinguistictagger/tokenizing_natural_language_text
 [22]:	#databasejoin-identifiers
 [23]:	https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html
+[CASE]: #41-case
 [MOBILENET]: https://ai.googleblog.com/2017/06/mobilenets-open-source-models-for.html
 [EUCLIDEAN]: https://en.wikipedia.org/wiki/Euclidean_distance
 [COSINE]: https://en.wikipedia.org/wiki/Cosine_similarity
