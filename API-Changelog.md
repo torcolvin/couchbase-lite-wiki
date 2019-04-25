@@ -1,3 +1,10 @@
+## March/April 2019 (master branch)
+
+* `c4queryenum_seek` now allows a `rowIndex` of `-1`. This seeks back to _before_ the first row, returning the enumerator to the state it was when created.
+* Added `c4queryenum_restart`, which is just a synonym for `c4queryenum_seek(e, -1)`.
+* Added `c4log_willLog` which quickly tells whether a given log domain and log level will produce output. Can be tested before a call to `C4Log` if obtaining or formatting the parameters would be expensive.
+* Deprecated the `kC4DB_SharedKeys` flag -- it's now ignored, because databases now always use the shared-keys optimization.
+
 ## April 2019 (`feature/cbl_c` branch)
 
 _These changes are not on the master branch yet!_ They're being made to support the forthcoming CBL C binding, but are generally useful for the other bindings too.
