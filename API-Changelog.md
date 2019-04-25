@@ -7,7 +7,7 @@
 
 ## April 2019 (`feature/cbl_c` branch)
 
-_These changes are not on the master branch yet!_ They're being made to support the forthcoming CBL C binding, but are generally useful for the other bindings too.
+_These changes are not on the master branch yet!_
 
 * **Ref-counting changes:**
   - Added `c4db_release`, a better-named synonym of `c4db_free`.
