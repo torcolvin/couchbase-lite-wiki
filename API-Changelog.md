@@ -1,3 +1,11 @@
+## April 30, 2019 (master branch)
+
+* The Fleece function `FLJSON5_ToJSON` has added two more parameters, which return an error message and the position of the error in the input text.
+
+## April 29, 2019 (`feature/cbl_c` branch)
+
+* Added an error parameter to `c4doc_getExpiration`.
+
 ## March/April 2019 (master branch)
 
 * `c4queryenum_seek` now allows a `rowIndex` of `-1`. This seeks back to _before_ the first row, returning the enumerator to the state it was when created.
