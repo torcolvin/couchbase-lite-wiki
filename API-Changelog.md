@@ -1,4 +1,12 @@
-## April 30, 2019 (master branch)
+## May 28, 2019
+
+* **Merged the `feature/cbl_c` branch into master!** See below for the API changes.
+
+## May 2, 2019
+
+* Added `c4key_setPassword`, which converts a password into an AES256 key. Please switch to using this instead of running PBKDF yourself, so we can ensure cross-platform compatibility.
+
+## April 30, 2019
 
 * The Fleece function `FLJSON5_ToJSON` has added two more parameters, which return an error message and the position of the error in the input text.
 
@@ -6,7 +14,11 @@
 
 * Added an error parameter to `c4doc_getExpiration`.
 
-## March/April 2019 (master branch)
+## April 25, 2019
+
+* Added `c4query_new2`, which takes a `language` parameter that can be JSON or N1QL. c4query_new is kept for backward compatibility but is semi-deprecated.
+
+## March/April 2019
 
 * `c4queryenum_seek` now allows a `rowIndex` of `-1`. This seeks back to _before_ the first row, returning the enumerator to the state it was when created.
 * Added `c4queryenum_restart`, which is just a synonym for `c4queryenum_seek(e, -1)`.
@@ -14,8 +26,6 @@
 * Deprecated the `kC4DB_SharedKeys` flag -- it's now ignored, because databases now always use the shared-keys optimization.
 
 ## April 2019 (`feature/cbl_c` branch)
-
-_These changes are not on the master branch yet!_
 
 * **Ref-counting changes:**
   - Added `c4db_release`, a better-named synonym of `c4db_free`.
