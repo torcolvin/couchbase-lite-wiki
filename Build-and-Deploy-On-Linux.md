@@ -1,41 +1,41 @@
-Disclaimer:  LiteCore is not a directly supported / delivered product, but rather a product that is consumed by Couchbase Lite.  That being said, it is tested extensively as part of the Couchbase Lite build and testing process.  This document describes the basics of using the library.
+## Disclaimer (READ THIS)
 
-For arbitrary reasons, I have chosen x86 Linux as an example but the concepts will apply to any platform.  
+**LiteCore is not a supported / delivered product**, rather a component of Couchbase Lite. We don't recommend you use it directly. [Couchbase Lite for C](https://github.com/couchbaselabs/couchbase-lite-C) also has a C API but is easier to use and better supported.
+
+That being said, you may need to build LiteCore if you are contributing fixes or improvements, or as part of building your own Couchbase Lite. So here's how.
+
+For arbitrary reasons, we have chosen x86 Linux as an example but the concepts will apply to any platform.  
 
 ## Dependencies
 
-Here is a list of all dependencies for LiteCore on Linux:
-
-Compilation or Download needed<br>
-[libsqlite3](https://www.sqlite.org/download.html)<br>
-[libc++](https://libcxx.llvm.org/)<br>
-[libbsd](https://libbsd.freedesktop.org/releases/)<br>
-[libcrypto](https://github.com/openssl/openssl)<br>
-
-Likely already installed:
-libm.so<br>
-libgcc_s.so<br>
-libc.so<br>
-libpthread.so<br>
-libdl.so<br>
-librt.so<br>
-ld-linux.so
+* A C++ compiler and standard library. [Clang](https://clang.llvm.org/) and [libc++](https://libcxx.llvm.org/) are preferred because that's what we use for building Couchbase Lite, but GCC 7 or later will work too.
+* The [CMake](https://cmake.org) build tool.
+* [ICU](http://site.icu-project.org) (International Components for Unicode) libraries -- usually called `libicu-dev` in package managers like apt.
+* zlib
 
 ## Building
 
-LiteCore makes use of CMake, which is a project generation tool that supports many backends (Makefiles, Ninja, Visual Studio projects, etc).  The supported environment for compilation is using the [clang](https://clang.llvm.org/) compiler in conjunction with the [libc++](https://libcxx.llvm.org/) standard library (both from the LLVM project).  Linux tends to ship with GCC, and CMake tends to try to use it by default, but it will respect the environment variables `CC` and `CXX` to specify alternative compilers for C and C++ respectively. 
+The typical CMake build process is:
 
-Before building, ensure that the above deps, clang, and CMake are installed.
+1. (First time) Create a directory for the build products and intermediate files (can be anywhere)
+2. `cd` to that directory
+3. Run `cmake` giving the path to the root project directory -- this creates or updates the makefiles
+4. Run `make` (usually with arguments `-j` and the number of parallel threads to run)
+
+The end product of this will be `libLiteCore.so` (or on macOS, `libLiteCore.dylib`) in the same folder.
 
 There are some simple shell scripts that build LiteCore, in the `build_cmake/scripts/` directory. Just run the appropriate one for your platform. The build output will appear in `build_cmake/mac/` or `build_cmake/unix/`.
 
-Or if you want to run cmake yourself, enter:
+To use Clang when the default compiler is GCC, put `CC=clang CXX=clang++` at the start of the `cmake` command.
 
-`CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo <path/to/CMakeLists.txt>`
+To create a debug build, add the `cmake` argument -DCMAKE_BUILD_TYPE=Debug`.
 
-which will generate a `Makefile` that you can then build by simply running `make -j8 LiteCore` (or just `make LiteCore` but the former is faster with the appropriate value after `j`).
+For example:
 
-The end product of this will be `libLiteCore.so` (or on macOS, `libLiteCore.dylib`) in the same folder.
+    $ mkdir -p /tmp/build
+    $ cd /tmp/build
+    $ CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug /path/to/couchbase-lite-core
+    $ make -j 8
 
 ## Deployment
 
