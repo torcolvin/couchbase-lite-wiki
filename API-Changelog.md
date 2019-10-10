@@ -1,3 +1,7 @@
+## October 9, 2019 (`feature/xsockets` branch)
+
+* Added `c4db_startHousekeeping()`, which starts a background task that automatically purges expired documents, so the client doesn't need to call `c4db_purgeExpiredDocs()` any more.
+
 ## October 2, 2019 (`feature/xsockets` branch)
 
 To speed up builds (especially rebuilds after touching a header) I moved declarations around to reduce the number of public headers being `#include`d during compilation. Mostly this shouldn't affect clients.
