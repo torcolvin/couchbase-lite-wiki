@@ -1,3 +1,7 @@
+## October 17, 2019 (`feature/xsockets` branch)
+
+* Added `c4_runAsyncTask()`, which asynchronously calls a function on a background thread (or on a GCD queue, on Apple platforms.)
+
 ## October 9, 2019 (`feature/xsockets` branch)
 
 * Added `c4db_startHousekeeping()`, which starts a background task that automatically purges expired documents, so the client doesn't need to call `c4db_purgeExpiredDocs()` any more.
