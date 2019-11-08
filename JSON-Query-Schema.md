@@ -8,6 +8,7 @@
 * [`MATCH` and Full-Text Search][6]
 * [Top-Level Query, and `SELECT`][7]
 * [Functions][8]
+* [Indexes](#9-Indexes)
 
 >**STATUS:** This is a living document that reflects the latest version of the query syntax, as implemented on the master branch of LiteCore. It may describe features not yet available in a release of Couchbase Lite. Pay attention to "STATUS:" blocks like this one, which point out new features not yet in a release.
 
@@ -408,6 +409,38 @@ Returns the _cosine distance_ (one minus the [_cosine similarity_][COSINE]) betw
 Both parameters must be arrays of numbers, must be the same length, and must be non-empty. The result is a floating-point number in the range [-1 … +1].
 
 **Note:** `prediction()`, `euclidean_distance()`, and `cosine_distance()` are only available in the Enterprise Edition (EE) of Couchbase Lite.
+
+
+## 9. Indexes
+
+Indexes aren't, strictly speaking, part of queries, but they use similar syntax. An index specifier is a JSON dictionary with the following keys:
+
+| Key  | Required? | Value |
+|------|-----------|-------|
+| WHAT | Yes | Array of one or more expressions to index, generally document properties. |
+| WHERE | No | Expression that returns a "truthy" value for the documents to be indexed. |
+
+For backward compatibility an index specifier may also be an array, which is interpreted as though it were the value of a `WHAT` clause.
+
+**STATUS:** (Nov 2019) The `WHERE` clause, and the dictionary form of the specifier, are experimental. In all current releases the specifier _must_ be an array.
+
+The effective use of indexes to optimize queries is sort of a black art. Fortunately there is a lot of information in books and online, and most of that advice applies here too.
+
+### The `WHAT` Clause
+
+The `WHAT` clause of course determines what will be indexed. The index is sorted by these expression(s), in the same way as a query is sorted by its `ORDER BY` clause; so if there are multiple expressions, the first is the primary, the second the secondary, etc. 
+
+The `DESC` operator can be wrapped around an expression to specify a descending sort; this can accelerate queries that use descending order or that use the `max()` function.
+
+In a **full-text index**, the expression determines the text that will be indexed for each document, so it should evaluate to a string. (If it doesn't, that document is ignored.) Full-text indexes only support a single expression.
+
+### The `WHERE` Clause
+
+The optional `WHERE` clause creates a _partial index_ that includes only some of the documents in the database. A partial index is smaller, and faster to create/update, but it can only be used by a query whose own `WHERE` clause contains an equivalent condition.
+
+Since many real-world queries look for only a particular type of document, indexes used by such queries can take advantage of a `WHERE` clause that tests the document type. For example, an index of flight arrival times might look like `{"WHAT": [[".arrival_time"]], "WHERE": ["=", [".type"], "flight"]}`.
+
+**Full-text indexes** do not support `WHERE` clauses (yet).
 
 [1]:	#1-introduction
 [2]:	#2-example
