@@ -66,8 +66,6 @@ Example: `{"name": [".name"], "age": [".age"]}`
 
 **NOTE:** Array and dictionary literals ignore any values that evaluate to `MISSING` (similar to JavaScript's `undefined`.) So in the dictionary example above, if the document had no `age` property, the resulting dictionary would have only a `name` key.
 
-**STATUS:** (10/2018) Array and dictionary literals will appear in the next major release after 2.1.
-
 ### Properties
 
 Properties are references to document properties. The property operation name is `"."`; its operands are a path from the document root to the property being named.
@@ -90,8 +88,6 @@ There are some special top-level property names for accessing document metadata:
 | `_sequence` | integer | The sequence number |
 | `_deleted` | boolean | True if the document is deleted |
 | `_expiration` | integer or missing | Expiration time (ms since Unix epoch) |
-
-**STATUS:** (Oct 2018) The `_deleted` and `_expiration` properties are post-2.1.
 
 ### Parameters
 
@@ -152,8 +148,6 @@ The operations are named after their N1QL/SQL equivalents.
 |Blobs| `BLOB` | 1: (property path) |
 |Queries| `SELECT` | 1 [[see below][15]] |
 
-**STATUS:** (Oct 2018) The `_.` and `BLOB` operators are post-2.1.
-
 ### 4.1. CASE
 
 The `CASE` operator needs a bit of explanation.
@@ -168,7 +162,7 @@ The `CASE` operator needs a bit of explanation.
 
 The `COLLATE` operator does nothing itself, merely returns the value of its second operand, but it alters the string collation (comparison/sorting) used when evaluating that expression _and nested expressions_.
 
-**STATUS:** (Nov 2017) String matching operators (`LIKE`,  `contains()`, regex functions) don't yet obey collations. None of them are Unicode-aware, and `LIKE` is always case-insensitive while the others are case-sensitive. ([^296](https://github.com/couchbase/couchbase-lite-core/issues/296))
+**STATUS:** (Nov 2019) The regular-expression functions don't yet obey collations. ([^296](https://github.com/couchbase/couchbase-lite-core/issues/296))
 
 The first operand is a dictionary that specifies the collation; its keys are:
 
@@ -234,9 +228,9 @@ Matching is affected by stemming and stop-words, if those are available in the s
 * **Stemming** causes different forms of the same word to match, so (in English) “bigger” matches “big” and “biggest”.
 * **Stop-words** are common but low-significance words, like English “the” and “are”, that are ignored completely in order to keep down the size of the index.
 
-**STATUS:** (Nov 2017) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
+**STATUS:** (Nov 2019) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
 
-**STATUS:** (v2.0) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
+**STATUS:** (Nov 2019) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
 
 ## 7. Top-Level Query, and `SELECT`
 
@@ -264,8 +258,6 @@ The `WHAT` array defines the columns of a query row, just like the column expres
 
 **Note:** Column titles have no effect on the query but are returned via the `c4query_getColumnTitle()` function. Higher-level bindings may support accessing a query row as a dictionary using the column titles as keys. Columns declared without `AS` have titles based on their property name or top-level operation.
 
-**STATUS:** `AS` is new as of October 2018 (post-2.1)
-
 ### The `FROM` Clause: Database/Join/Unnest Identifiers
 
 The items in the `FROM` array are dictionaries with the following keys:
@@ -289,9 +281,7 @@ Some requirements:
     * There must be an `UNNEST` property.
     * There cannot be a `JOIN` or `ON` property.
 
-**STATUS:** Unnest is new as of August 2018 (post-2.1)
-
-**STATUS:** The `DB` property is not yet implemented; only one database can be queried at a time.
+**STATUS:** (Nov 2019) The `DB` property is not yet implemented; only one database can be queried at a time.
 
 Example:
 ```json
@@ -385,8 +375,6 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `euclidean_distance()` | 2-3 | |
 | | `cosine_distance()` | 2 | |
 
-**STATUS:** (10/2018) Date and predictive functions are post-2.1.
-
 ### `prediction()`
 
 `prediction()` is not standard N1QL. It calls a **predictive** function, usually based on a machine-learning model, which must be registered with LiteCore at runtime before the query is compiled. Its parameters are:
@@ -419,7 +407,7 @@ Returns the _cosine distance_ (one minus the [_cosine similarity_][COSINE]) betw
 
 Both parameters must be arrays of numbers, must be the same length, and must be non-empty. The result is a floating-point number in the range [-1 … +1].
 
-**STATUS:** `prediction()`, `euclidean_distance()`, and `cosine_distance()` were added in October 2018 (post-2.1). They are only available in the Enterprise Edition (EE) of Couchbase Lite.
+**Note:** `prediction()`, `euclidean_distance()`, and `cosine_distance()` are only available in the Enterprise Edition (EE) of Couchbase Lite.
 
 [1]:	#1-introduction
 [2]:	#2-example
