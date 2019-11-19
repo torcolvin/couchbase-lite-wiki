@@ -56,6 +56,8 @@ Big improvements to C4Replicator, which can now take on a lot of the work that w
 
 * Added `C4ReplicatorParameters.dontStart`. If true, the replicator will not start until you call the new function `c4repl_start()`. This allows you to store the replicator reference before any progress callbacks are called.
 
+**NOTE:** This parameter is for backward compatibility and doesn't exist on the `feature/xsockets` branch; the behavior there is that the replicator _always_ waits for `c4repl_start()`.
+
 ## August 15, 2019 (`feature/xsockets` branch)
 
 * Added new `C4NetworkErrorCode` constants: `kC4NetErrTLSCertRevoked`, `kC4NetErrTLSCertNameMismatch`.
@@ -80,7 +82,7 @@ Big improvements to C4Replicator, which can now take on a lot of the work that w
 
 * The Fleece function `FLJSON5_ToJSON` has added two more parameters, which return an error message and the position of the error in the input text.
 
-## April 29, 2019 (`feature/cbl_c` branch)
+## April 29, 2019
 
 * Added an error parameter to `c4doc_getExpiration`.
 
@@ -95,7 +97,7 @@ Big improvements to C4Replicator, which can now take on a lot of the work that w
 * Added `c4log_willLog` which quickly tells whether a given log domain and log level will produce output. Can be tested before a call to `C4Log` if obtaining or formatting the parameters would be expensive.
 * Deprecated the `kC4DB_SharedKeys` flag -- it's now ignored, because databases now always use the shared-keys optimization.
 
-## April 2019 (`feature/cbl_c` branch)
+## April 2019
 
 * **Ref-counting changes:**
   - Added `c4db_release`, a better-named synonym of `c4db_free`.
