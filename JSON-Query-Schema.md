@@ -355,6 +355,7 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `regexp_replace()` | 3-4 | Args are (_string_, _pattern_, _replacement_) and optional _limit_ |
 | | `rank()` | 1 | Returns ranking of FTS matches |
 | **Strings** | `contains()` | 2 | |
+| | `concat()` | 2+ | |
 | | `length()` | 1 | |
 | | `lower()` | 1 | |
 | | `ltrim()` | 1 | Removes leading whitespace |
@@ -375,6 +376,8 @@ For detailed information about parameters and results, please consult the [N1QL 
 | **Predictive** | `prediction()` [q.v.] | 2-3 | |
 | | `euclidean_distance()` | 2-3 | |
 | | `cosine_distance()` | 2 | |
+
+**STATUS:** (Nov 2019) The `concat()` function is a new addition. It is equivalent to the `||` operator but can take more than two parameters.
 
 ### `prediction()`
 
