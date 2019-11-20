@@ -14,9 +14,11 @@
 
 ## 1. Introduction
 
-Queries are expressed to LiteCore as JSON, so they can be easily transformed and converted to internal representations like [SQL][9]. This document describes the schema.
+Couchbase Lite's query builder API generates an intermediate representation of the query, which is then given to LiteCore to translate to SQL and execute. That representation is expressed as a JSON schema; this document describes it.
 
-A query is described as a sort of parse tree. Each **node** of the tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
+>**STATUS:** At this time (Nov 2019) it is not possible to use this JSON syntax directly in Couchbase Lite, except for [Couchbase Lite For C][CBL_C].
+
+A query is described in JSON as a sort of parse tree. Each **node** of the tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
 
 A node is represented in JSON as an array, where the first element is a string naming the operation, and the other elements represent the operands (often nested arrays); for example `["=", ["+", 2, 2], 5]`. (If you know LISP or any functional languages, this should look pretty familiar!)
 
@@ -472,3 +474,4 @@ Since many real-world queries look for only a particular type of document, index
 [MOBILENET]: https://ai.googleblog.com/2017/06/mobilenets-open-source-models-for.html
 [EUCLIDEAN]: https://en.wikipedia.org/wiki/Euclidean_distance
 [COSINE]: https://en.wikipedia.org/wiki/Cosine_similarity
+[CBL_C]: https://github.com/couchbaselabs/couchbase-lite-C
