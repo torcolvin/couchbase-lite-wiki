@@ -31,7 +31,7 @@ The `QueryParser` translates a document property reference into a call to the cu
 
 ### Data Types Inside Queries
 
-SQLite only has four data types (NULL, number, text, blob). But fortunately it provides an API to tag a `sqlite3_value` with an application-defined 8-bit "subtype".
+SQLite only has five data types (NULL, integer, float, text, blob). But fortunately it provides an API to tag a `sqlite3_value` with an application-defined 8-bit "subtype".
 
 * Booleans are represented as the numbers 0 and 1 with the subtype `kFleeceIntBoolean` (0x68).
 * Arrays and Dictionaries are represented as SQLite blobs containing their Fleece encoding, with no subtype.
@@ -40,7 +40,7 @@ SQLite only has four data types (NULL, number, text, blob). But fortunately it p
 
 The works OK inside a query except for some edge cases -- for example, the results of SQLite expressions don't have tags, so `==` results in an integer `0` or `1`, not a (tagged) `false` or `true`.
 
-Unfortunately the subtype tags are lost when values are _returned_ from a SQLite query (probably because they were a later addition to the API.) So we're back to the regular four SQLite types. To work around this, all projected values (the expressions right after `SELECT`) are wrapped in a call to `fl_result()`. This function converts tagged bools, blobs and nulls into equivalent Fleece-encoded blobs. Then the exterior part of query handling, the `SQLiteQueryEnumerator`, handles all blob-typed values by Fleece-decoding them.
+Unfortunately the subtype tags are lost when values are _returned_ from a SQLite query (probably because they were a later addition to the API.) So we're back to the regular five SQLite types. To work around this, all projected values (the expressions right after `SELECT`) are wrapped in a call to `fl_result()`. This function converts tagged bools, blobs and nulls into equivalent Fleece-encoded blobs. Then the exterior part of query handling, the `SQLiteQueryEnumerator`, handles all blob-typed values by Fleece-decoding them.
 
 ## Querying Inside Arrays
 
