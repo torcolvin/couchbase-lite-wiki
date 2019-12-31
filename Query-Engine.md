@@ -27,9 +27,22 @@ The `QueryParser` translates a document property reference into a call to the cu
 
 1. Interprets the first parameter, a blob, as a document body, finds the current revision, and gets a Fleece pointer to it. 
 2. Uses Fleece's `Path` class to traverse the key-path given in the second parameter.
-3. Returns a SQLite value corresponding to the property value. If the value is an array, dictionary or data, it's encoded into Fleece and returned as a SQL blob (with a special tag marking it as Fleece-encoded.)
+3. Returns a SQLite value (`sqlite3_value*`) corresponding to the property value. 
 
-## Handling Arrays
+### Data Types Inside Queries
+
+SQLite only has four data types (NULL, number, text, blob). But fortunately it provides an API to tag a `sqlite3_value` with an application-defined 8-bit "subtype".
+
+* Booleans are represented as the numbers 0 and 1 with the subtype `kFleeceIntBoolean` (0x68).
+* Arrays and Dictionaries are represented as SQLite blobs containing their Fleece encoding, with no subtype.
+* Blob data is represented as a SQLite blob with the subtype `kPlainBlobSubtype` (0x66).
+* A JSON `null` (as opposed to a SQL `NULL`, which as per N1QL we call `MISSING`) is represented as a zero-length SQLite blob with the subtype `kFleeceNullSubtype` (0x67).
+
+The works OK inside a query except for some edge cases -- for example, the results of SQLite expressions don't have tags, so `==` results in an integer `0` or `1`, not a (tagged) `false` or `true`.
+
+Unfortunately the subtype tags are lost when values are _returned_ from a SQLite query (probably because they were a later addition to the API.) So we're back to the regular four SQLite types. To work around this, all projected values (the expressions right after `SELECT`) are wrapped in a call to `fl_result()`. This function converts tagged bools, blobs and nulls into equivalent Fleece-encoded blobs. Then the exterior part of query handling, the `SQLiteQueryEnumerator`, handles all blob-typed values by Fleece-decoding them.
+
+## Querying Inside Arrays
 
 Both `UNNEST` and the `ANY`/`EVERY` operators provide a sort of nested query on an array. LiteCore has two ways to translate this to SQL, depending on whether there is a [LiteCore index on that array](Database-Schema#array-unnest-indexes).
 
