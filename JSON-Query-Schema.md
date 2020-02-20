@@ -81,6 +81,8 @@ A property expression with zero operands, `["."]`, represents the root of the do
 
 In a query with a `FROM` clause, where multiple documents are being queried, a property expression's path MUST be prefixed with the alias of the document as its first operand. For example, if the alias were `db`, then `[".", "name"]` would become `[".", "db", "name"]`; `["."]` would become `[".", "db"]`; and `[".", "_id"]` would become `[".", "db", "_id"]`. Of course these can be abbreviated as `[".db.name"]`, etc.
 
+If the query's `WHAT` clause uses the `AS` operator to declare a [result alias][RESULTALIASES], that alias can be used as a top-level property name (potentially hiding a document property with the same name!)
+
 #### Magic Metadata Properties
 
 There are some special top-level property names for accessing document metadata:
@@ -257,9 +259,19 @@ The `WHAT` array defines the columns of a query row, just like the column expres
 
 * A string literal, interpreted as a property path.
 * An expression (array or dictionary). Aggregate functions are allowed here.
-* An array of the form `["AS", <expression>, "<string>"]`, which is interpreted exactly the same as `<expression>`, but has the side effect of setting the column's **title** to `<string>`. 
+* An array of the form `["AS", <expression>, "<string>"]`, which is interpreted exactly the same as `<expression>`, but has the side effects of defining `<string>` as an **result alias** for `<expression>`, and setting the column's **title** to `<string>`.
 
-**Note:** Column titles have no effect on the query but are returned via the `c4query_getColumnTitle()` function. Higher-level bindings may support accessing a query row as a dictionary using the column titles as keys. Columns declared without `AS` have titles based on their property name or top-level operation.
+#### Result Aliases
+
+A result alias can be used in the `WHERE` clause as a shortcut for its expression, as though it were a document property. (This happens even if there is a document property with the same name; the alias shadows it.)
+
+Example: `{"WHAT":[["AS", ["+", [".x"], [".y"]], "sum"]], "WHERE": [">", [".sum"], 10]}`
+
+**STATUS:** (Feb 2020): Result aliases were added in version 2.7.
+
+#### Column Titles
+
+Column titles have no effect on the query but are returned via the `c4query_getColumnTitle()` C function. A column declared without `AS` has a default title based on the property path if any, or otherwise a made-up name like `$1`. Higher-level bindings may support accessing a query row as a dictionary using the column titles as keys.
 
 ### The `FROM` Clause: Database/Join/Unnest Identifiers
 
@@ -471,6 +483,7 @@ Since many real-world queries look for only a particular type of document, index
 [22]:	#databasejoin-identifiers
 [23]:	https://developer.couchbase.com/documentation/server/4.5/n1ql/n1ql-language-reference/functions.html
 [CASE]: #41-case
+[RESULTALIASES]: #result-aliases
 [MOBILENET]: https://ai.googleblog.com/2017/06/mobilenets-open-source-models-for.html
 [EUCLIDEAN]: https://en.wikipedia.org/wiki/Euclidean_distance
 [COSINE]: https://en.wikipedia.org/wiki/Cosine_similarity
