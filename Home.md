@@ -5,6 +5,7 @@
 * [[JSON Query Schema]] -- LiteCore's query syntax
 * [[REST API]] -- If you enable this unsupported listener, here's its API
 * [The cblite Tool](https://github.com/couchbaselabs/cblite) -- Super useful command-line tool for inspecting databases
+* [[TLS and Crypto Terminology]] -- a glossary
 
 ## Useful For QE And Support
 
