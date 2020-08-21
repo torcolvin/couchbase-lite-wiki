@@ -1,12 +1,12 @@
-The LiteCoreREST library adds a small embedded HTTP server to LiteCore, which implements **a subset** of the Couchbase Lite 1.x (and CouchDB and Cloudant and PouchDB) REST API. You can easily run this by using the [[cblite|The 'cblite' Tool]] tool's `serve` subcommand.
+The LiteCoreREST library adds a small embedded HTTP server to LiteCore, which implements **a subset** of the Couchbase Lite 1.x (and CouchDB and Cloudant and PouchDB) REST API. You can easily run this by using the [cblite][CBLITE] tool's `serve` subcommand.
 
-Again, this is not the full REST API; it doesn't expose all functionality, it's not enough for PhoneGap, and it's not enough for compatibility with the 1.x replicator. But it has some uses:
+Again, this is not the full REST API; it doesn't expose all functionality, it's not enough for Cordova/PhoneGap, and it's not enough for compatibility with the 1.x (or CouchDB or PouchDB) replicator. But it has some uses:
 
 * Automated testing of LiteCore
 * Load testing of Sync Gateway (by starting a bunch of `cblite serve` processes to replicate with it)
 * Automated creation of Couchbase Lite 2 database files from a server, to be bundled into apps
 
-(If you want to cross-reference with the actual code, look at where the handlers are registered in [Listener.cc](https://github.com/couchbase/couchbase-lite-core/blob/master/REST/Listener.cc#L55).)
+(If you want to cross-reference with the actual code, look at where the handlers are registered in [Listener.cc](https://github.com/couchbase/couchbase-lite-core/blob/master/REST/RESTListener.cc#L76).)
 
 ## API
 
@@ -37,4 +37,6 @@ Again, this is not the full REST API; it doesn't expose all functionality, it's 
 * Attachments
 * `/_replicate` properties other than `source`, `target`, `continuous`, and `cancel`
 * Local-to-local replication (where both `source` and `target` are local db names)
-* Queries (obviously there are no views or design docs, but eventually it'd be nice to be able to POST a query in the JSON syntax.)
+* Queries (obviously there are no views or design docs, but eventually it'd be nice to be able to POST a query in the JSON syntax or N1QL.)
+
+[CBLITE]: https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/README.cblite.md
