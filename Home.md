@@ -11,7 +11,7 @@
 
 * [[Debugging Replicators Stuck In Busy]] -- some tips for using logging to investigate a pesky source of bugs
 * [[Legacy Attachment Handling]] -- backwards compatibility with the old `_attachments` when replicating with Sync Gateway
-* [[Replication Protocol]] -- Specification of the WebSocket-based protocol
+* [Replication Protocol](https://github.com/couchbase/couchbase-lite-core/blob/master/modules/docs/pages/replication-protocol.adoc) -- Specification of the WebSocket-based protocol
 
 ## For Couchbase Lite Implementors
 
