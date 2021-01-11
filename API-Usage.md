@@ -6,7 +6,7 @@ This is a list of all LiteCore functions being used by the Couchbase Lite implem
 
 ## Objective-C
 
-> `SRCDIR=couchbase/couchbase-lite-ios/Objective-C`  
+> `SRCDIR="couchbase/couchbase-lite-ios/Objective-C/ couchbaselabs/couchbase-lite-ios-ee/Sources/Objective-C/"`  
 
 ```
 c4_dumpInstances
@@ -20,9 +20,21 @@ c4blob_keyToString
 c4blob_openReadStream
 c4blob_openWriteStream
 
+c4cert_copyData
+c4cert_createRequest
 c4cert_fromData
+c4cert_getPublicKey
+c4cert_getValidTimespan
 c4cert_isSelfSigned
+c4cert_load
+c4cert_nextInChain
 c4cert_release
+c4cert_retain
+c4cert_release
+c4cert_save
+c4cert_signRequest
+c4cert_subjectName
+c4cert_subjectNameComponent
 
 c4db_beginTransaction
 c4db_close
@@ -46,6 +58,7 @@ c4db_nextDocExpiration
 c4db_openNamed
 c4db_purgeDoc
 c4db_purgeExpiredDocs
+c4db_rekey
 c4db_release
 c4db_setCookie
 
@@ -78,6 +91,17 @@ c4docobs_free
 c4error_getMessage
 c4error_make
 
+c4keypair_generate
+c4keypair_persistentWithPublicKey
+c4keypair_removePersistent
+
+c4listener_free
+c4listener_getConnectionStatus
+c4listener_getPort
+c4listener_getURLs
+c4listener_shareDB
+c4listener_start
+
 c4log_getDomain
 c4log_getDomainName
 c4log_getLevel
@@ -86,6 +110,9 @@ c4log_setCallbackLevel
 c4log_setLevel
 c4log_writeToBinaryFile
 c4log_writeToCallback
+
+c4pred_registerModel
+c4pred_unregisterModel
 
 c4query_columnCount
 c4query_columnTitle
@@ -106,6 +133,7 @@ c4repl_isDocumentPending
 c4repl_new
 c4repl_newLocal
 c4repl_setHostReachable
+c4repl_newWithSocket
 c4repl_setOptions
 c4repl_setSuspended
 c4repl_start
@@ -116,8 +144,10 @@ c4rev_getGeneration
 c4slice_free
 c4slog
 
+c4socket_closeRequested
 c4socket_closed
 c4socket_completedWrite
+c4socket_fromNative
 c4socket_gotHTTPResponse
 c4socket_opened
 c4socket_received
