@@ -267,6 +267,7 @@ c4query_fullTextMatched
 c4query_new
 c4query_release
 c4query_run
+
 c4queryenum_close
 c4queryenum_free
 c4queryenum_getRowCount
