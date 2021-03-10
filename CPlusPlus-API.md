@@ -6,8 +6,8 @@ The opaque types declared c4Base.h, like `C4Database` and `C4Document`, are now 
 
 This means that the APIs are pretty interchangeable. The C functions just call into the C++ methods. The significant differences are:
 
-* The C++ methods **throw exceptions** (of type `litecore::error`), while the C functions catch those exceptions and return them as `C4Error`.
 * The C++ methods return ref-counted objects as `Retained<T>`, not raw pointers.
+* The C++ methods throw exceptions (of type `litecore::error`), while the C functions catch those exceptions and return them as `C4Error`.
 * The C++ methods use the C++ slice classes, `fleece::slice` and `fleece::alloc_slice`.
 
 ## Using The API
@@ -17,7 +17,7 @@ It's pretty easy. You just need to
 1. Add these directories to the compiler's header search path:
    * `couchbase-lite-core/C/Cpp_include/`
    * `couchbase-lite-core/vendor/fleece/Fleece/Support/`
-2. Include LiteCOre headers as `.hh` files instead of `.h`, i.e. `c4Database.hh`
+2. Include LiteCore headers as `.hh` files instead of `.h`, i.e. `c4Database.hh`
 
 ## Storing References To Ref-Counted Objects
 
@@ -33,3 +33,34 @@ If you're using the C++ API, it's best to avoid the C functions that create obje
 Retained<C4Document> doc = c4db_getDoc(db, "foo"_sl, true, kDocGetCurrentRev, &error);  // BAD!
 ```
 which will leak the document object. `Retained` will retain the document when it's assigned, and release it when it's done with it ... but nothing will release the reference created by `c4db_getDoc` itself. Don't do this, use the above form instead.
+
+## Error Handling
+
+As mentioned above, the C++ API throws exceptions. You'll notice an absence of "`C4Error *outError`" parameters. Some methods have a `noexcept` keyword; those are guaranteed not to throw anything, but all others can.
+
+The exact exception types thrown are internal classes (`litecore::error` and `fleece::FleeceException`). In your code it's best to just catch any `std::exception`. You can call `C4ErrorFromException()` (declared in c4Base.hh) inside a `catch` block to get the current exception as a `C4Error`. For example:
+
+```c++
+try {
+    Retained<C4Document> doc = db->getDocument("foo");
+    do_something_with(doc);
+} catch (const std::exception &x) {
+    C4Error error = C4ErrorFromException(x);
+    somehow_report_error(error);
+}
+```
+
+In reporting the error, you may find the C4Error methods `message()`, `description()` and `backtrace()` useful; all return `std::string`.
+
+Conversely, you might sometimes need to _throw_ a LiteCore error yourself. The `C4ThrowError()` function lets you do this.
+
+## TBD
+
+The method naming is not as compatible with the C API as it should be. I'll clean this up in the near future.
+
+The following APIs are not yet available as C++:
+* C4Cert
+* C4KeyPair
+* C4Listener
+* C4PredictiveModel
+* C4Socket
