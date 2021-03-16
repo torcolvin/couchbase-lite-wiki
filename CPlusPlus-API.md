@@ -19,6 +19,12 @@ It's pretty easy. You just need to
    * `couchbase-lite-core/vendor/fleece/Fleece/Support/`
 2. Include LiteCore headers as `.hh` files instead of `.h`, i.e. `c4Database.hh`
 
+### C4Document
+
+`C4Document` is sort of troublesome because the C API declares it as a real struct with public fields, not just an opaque type. Making it work as a ref-counted C++ object was a bit messy. This shouldn't matter to clients, _except_ that if a compilation unit ends up `#include`ing c4Document.h before any of the C++ `.hh` headers, `struct C4Document` will get declared C-style instead of C++-style, and things will go wrong. At the moment this will probably manifest as an error about an unknown type `C4Document_C`. If this happens, look at your order of `#include`s.
+
+In the C++ API I've chosen not to expose the public fields. Instead, there are getter methods `docID()`, `revID()`, `flags()`, `sequence()` and `selectedRev()`.
+
 ## Storing References To Ref-Counted Objects
 
 Some of the C++ classes are ref-counted (inherit from `fleece::RefCounted`.) These should be stored in `Retained<T>` values, not as raw pointers. (It's OK to pass a raw pointer _to_ a function/method, though.) For example:
