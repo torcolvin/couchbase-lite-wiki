@@ -14,7 +14,7 @@
 
 ## 1. Introduction
 
-Couchbase Lite's query builder API generates an intermediate representation of the query, which is then given to LiteCore to translate to SQL and execute. That representation is expressed as a JSON schema; this document describes it.
+Couchbase Lite's query builder API generates an intermediate representation of the query, which is then given to LiteCore to translate to SQL and execute. Its N1QL parser produces the same intermediate representation. That representation is expressed as a JSON schema; this document describes it.
 
 >**STATUS:** At this time (Nov 2019) it is not possible to use this JSON syntax directly in Couchbase Lite, except for [Couchbase Lite For C][CBL_C].
 
@@ -167,7 +167,7 @@ The `CASE` operator needs a bit of explanation.
 
 The `COLLATE` operator does nothing itself, merely returns the value of its second operand, but it alters the string collation (comparison/sorting) used when evaluating that expression _and nested expressions_.
 
-**STATUS:** (Nov 2019) The regular-expression functions don't yet obey collations. ([^296](https://github.com/couchbase/couchbase-lite-core/issues/296))
+**NOTE:** The regular-expression functions did not obey collations prior to version 2.7.
 
 The first operand is a dictionary that specifies the collation; its keys are:
 
@@ -369,7 +369,7 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `regexp_replace()` | 3-4 | Args are (_string_, _pattern_, _replacement_) and optional _limit_ |
 | | `rank()` | 1 | Returns ranking of FTS matches |
 | **Strings** | `contains()` | 2 | |
-| | `concat()` | 2+ | |
+| | `concat()` | 2+ | like `||` but takes more parameters [Nov 2019] |
 | | `length()` | 1 | |
 | | `lower()` | 1 | |
 | | `ltrim()` | 1 | Removes leading whitespace |
@@ -390,8 +390,6 @@ For detailed information about parameters and results, please consult the [N1QL 
 | **Predictive** | `prediction()` [q.v.] | 2-3 | |
 | | `euclidean_distance()` | 2-3 | |
 | | `cosine_distance()` | 2 | |
-
-**STATUS:** (Nov 2019) The `concat()` function is a new addition. It is equivalent to the `||` operator but can take more than two parameters.
 
 ### `prediction()`
 
@@ -457,7 +455,7 @@ The optional `WHERE` clause creates a _partial index_ that includes only some of
 
 Since many real-world queries look for only a particular type of document, indexes used by such queries can take advantage of a `WHERE` clause that tests the document type. For example, an index of flight arrival times might look like `{"WHAT": [[".arrival_time"]], "WHERE": ["=", [".type"], "flight"]}`.
 
-**Full-text indexes** do not support `WHERE` clauses (yet).
+**STATUS:** (Nov 2019) The `WHERE` clause is experimental. It is not yet supported in full-text indexes.
 
 [1]:	#1-introduction
 [2]:	#2-example
