@@ -104,7 +104,7 @@ As shorthand, a parameter expressions can be collapsed into a one-element array,
 
 ### Variables
 
-Variables are placeholders used in a `ANY` and `EVERY` expression to represent the collection item being iterated over. The (required) first operand of the `"?"` expression is the variable's name, and the (optional) extra operands are a property path relative to the variable's value.
+Variables are placeholders used in a `ANY` and `EVERY` expression to represent the array/dictionary item being iterated over. The (required) first operand of the `"?"` expression is the variable's name, and the (optional) extra operands are a property path relative to the variable's value.
 
 Example: `["?", "address", "zip"]`
 
@@ -233,9 +233,9 @@ Matching is affected by stemming and stop-words, if those are available in the s
 * **Stemming** causes different forms of the same word to match, so (in English) “bigger” matches “big” and “biggest”.
 * **Stop-words** are common but low-significance words, like English “the” and “are”, that are ignored completely in order to keep down the size of the index.
 
-**STATUS:** (Nov 2019) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
+>**STATUS:** (Nov 2019) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
 
-**STATUS:** (Nov 2019) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
+>**STATUS:** (Nov 2019) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
 
 ## 7. Top-Level Query, and `SELECT`
 
@@ -267,7 +267,7 @@ A result alias can be used in the `WHERE` clause as a shortcut for its expressio
 
 Example: `{"WHAT":[["AS", ["+", [".x"], [".y"]], "sum"]], "WHERE": [">", [".sum"], 10]}`
 
-**STATUS:** (Feb 2020): Result aliases were added in version 2.7.
+>**STATUS:** (Feb 2020): Result aliases were added in version 2.7.
 
 #### Column Titles
 
@@ -296,7 +296,7 @@ Some requirements:
     * There must be an `UNNEST` property.
     * There cannot be a `JOIN` or `ON` property.
 
-**STATUS:** (April 2021) The `COLLECTION` property is ignored unless Collections are implemented in LiteCore; currently that's only on the branch `feature/collections`.
+>**STATUS:** (April 2021) The `COLLECTION` property is ignored unless Collections are enabled in LiteCore; currently that's only on the branch `feature/collections`.
 
 Example:
 ```json
@@ -437,7 +437,7 @@ Indexes aren't, strictly speaking, part of queries, but they use similar syntax.
 
 For backward compatibility an index specifier may also be an array, which is interpreted as though it were the value of a `WHAT` clause.
 
-**STATUS:** (Nov 2019) The `WHERE` clause, and the dictionary form of the specifier, are experimental. In all current releases the specifier _must_ be an array.
+>**STATUS:** (Nov 2019) The `WHERE` clause, and the dictionary form of the specifier, are experimental. In all current releases the specifier _must_ be an array.
 
 The effective use of indexes to optimize queries is sort of a black art. Fortunately there is a lot of information in books and online, and most of that advice applies here too.
 
@@ -455,7 +455,7 @@ The optional `WHERE` clause creates a _partial index_ that includes only some of
 
 Since many real-world queries look for only a particular type of document, indexes used by such queries can take advantage of a `WHERE` clause that tests the document type. For example, an index of flight arrival times might look like `{"WHAT": [[".arrival_time"]], "WHERE": ["=", [".type"], "flight"]}`.
 
-**STATUS:** (Nov 2019) The `WHERE` clause is experimental. It is not yet supported in full-text indexes.
+>**STATUS:** (Nov 2019) The `WHERE` clause is experimental. It is not yet supported in full-text indexes.
 
 [1]:	#1-introduction
 [2]:	#2-example
