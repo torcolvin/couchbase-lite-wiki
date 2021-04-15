@@ -280,7 +280,7 @@ The items in the `FROM` array are dictionaries with the following keys:
 | Key | Value | Default Value |
 |-----|-------|---------------|
 | `"AS":` | Alphanumeric string: an alias to refer to this database or join by | _required_ |
-| `"DB":` | String: Database name | Database being queried |
+| `"COLLECTION":` | String: Collection name | Collection being queried |
 | `"JOIN":` | String: Type of join | `"INNER"` (if `ON` is given) |
 | `"ON":` | Boolean-valued expression: the join constraint | no join |
 | `"UNNEST":` | Array-valued expression | no unnest |
@@ -296,7 +296,7 @@ Some requirements:
     * There must be an `UNNEST` property.
     * There cannot be a `JOIN` or `ON` property.
 
-**STATUS:** (Nov 2019) The `DB` property is not yet implemented; only one database can be queried at a time.
+**STATUS:** (April 2021) The `COLLECTION` property is ignored unless Collections are implemented in LiteCore; currently that's only on the branch `feature/collections`.
 
 Example:
 ```json
