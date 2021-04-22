@@ -17,8 +17,9 @@
 
 * [C API Documentation](https://couchbase.github.io/couchbase-lite-core/C/html/modules.html) -- Doxygen-generated documentation of the C API called by Couchbase Lite
 * [[API Changelog]] -- Chronological list of LiteCore C API changes
-* [Using Fleece](https://github.com/couchbaselabs/fleece/wiki/Using-Fleece) -- the JSON-like storage format and API used for documents
+* [Using Fleece](https://github.com/couchbaselabs/fleece/wiki/Using-Fleece) and [Advanced Fleece](https://github.com/couchbaselabs/fleece/wiki/Advanced-Fleece) -- the JSON-like storage format and API used for documents
 * [Shared Keys In Fleece](https://github.com/couchbaselabs/fleece/blob/master/SharedKeys.md) -- describes an often-confusing optimization of Fleece
+* [Slices](https://github.com/couchbaselabs/fleece/wiki/Slices) -- a core data structure used by LiteCore and Fleece
 * [[Proxy Servers]] -- LiteCore doesn't deal with them, but someone has to...
 
 ## Internal Design Documents
