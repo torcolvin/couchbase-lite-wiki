@@ -16,6 +16,7 @@
 ## For Couchbase Lite Implementors
 
 * [C API Documentation](https://couchbase.github.io/couchbase-lite-core/C/html/modules.html) -- Doxygen-generated documentation of the C API called by Couchbase Lite
+* [[C++ API Documentation|CPlusPlus API]] -- there's a shiny new C++ API equivalent to the C one, if you swing that way
 * [[API Changelog]] -- Chronological list of LiteCore C API changes
 * [Using Fleece](https://github.com/couchbaselabs/fleece/wiki/Using-Fleece) and [Advanced Fleece](https://github.com/couchbaselabs/fleece/wiki/Advanced-Fleece) -- the JSON-like storage format and API used for documents
 * [Shared Keys In Fleece](https://github.com/couchbaselabs/fleece/blob/master/SharedKeys.md) -- describes an often-confusing optimization of Fleece
