@@ -132,8 +132,8 @@ The operations are named after their N1QL/SQL equivalents.
 | | `BETWEEN` | 3: (value, min, max) |
 | | `IS` | 2 |
 | | `IS NOT` | 2 |
+| | `IS VALUED` | 1: is neither NULL nor MISSING |
 | | `LIKE` | 2 |
-| | `MATCH` | 2 |
 | | `IN` | 2: (value, array) |
 | | `NOT IN` | 2: (value, array) |
 | | `EXISTS` | 1 |
@@ -349,10 +349,13 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `ceil()` | 1 | |
 | | `cos()` | 1 | |
 | | `degrees()` | 1 | Converts radians to degrees |
+| | `div()` | 2 | Real number division. div(x, y) = (double)x/(double)y |
 | | `e()` | 0 | |
 | | `exp()` | 1 | |
+| | `idiv()` | 2 | Integer number division. idiv(x, y) = (int)x/(int)y |
 | | `ln()` | 1 | |
 | | `log()` | 1 | |
+| | `meta()` | 0-1 | Returns object that contains all the meta properties. The optional argument is the database alias. |
 | | `floor()` | 1 | |
 | | `pi()` | 0 | |
 | | `power()` | 2 | |
@@ -367,6 +370,7 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `regexp_like()` | 2 | Synonym for `regexp_contains` |
 | | `regexp_position()` | 2 | Returns byte offset of 1st match, else -1 |
 | | `regexp_replace()` | 3-4 | Args are (_string_, _pattern_, _replacement_) and optional _limit_ |
+| | `match()` | 2 | FTS match |
 | | `rank()` | 1 | Returns ranking of FTS matches |
 | **Strings** | `contains()` | 2 | |
 | | `concat()` | 2+ | like `||` but takes more parameters [Nov 2019] |
@@ -376,17 +380,19 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `rtrim()` | 1 | Removes trailing whitespace |
 | | `trim()` | 1–2 | Removes leading & trailing whitespace |
 | | `upper()` | 1 | |
-| **Types** | `isarray()` | 1 | |
-| | `isatom()` | 1 | "Atom" means boolean, number, or string |
-| | `isboolean()` | 1 | |
-| | `isnumber()` | 1 | |
-| | `isobject()` | 1 | |
-| | `isstring()` | 1 | |
-| | `type()` | 1 | Returns one of `'missing'`, `'null'`, `'boolean'`, `'number'`, `'string'`, `'binary'`, `'array'`, `'object'` |
-| | `toatom()` | 1 | See N1QL docs |
-| | `toboolean()` | 1 | See N1QL docs |
-| | `tonumber()` | 1 | See N1QL docs |
-| | `tostring()` | 1 | See N1QL docs |
+| **Types** | `isarray()`/`is_array()` | 1 | |
+| | `isatom()`/`is_atom()` | 1 | "Atom" means boolean, number, or string |
+| | `isboolean()`/`is_boolean()` | 1 | |
+| | `isnumber()`/`is_number()` | 1 | |
+| | `isobject()`/`is_object()` | 1 | |
+| | `isstring()`/`is_string()` | 1 | |
+| | `type()`/`typename()` | 1 | Returns one of `'missing'`, `'null'`, `'boolean'`, `'number'`, `'string'`, `'binary'`, `'array'`, `'object'` |
+| | `toarray()`/`to_array()` | 1 | 
+| | `toatom()`/`to_atom()` | 1 | See N1QL docs |
+| | `toboolean()`/`to_boolean()` | 1 | See N1QL docs |
+| | `tonumber()`/`to_number()` | 1 | See N1QL docs |
+| | `toobject()`/`to_object()` | |
+| | `tostring()`/`to_string()` | 1 | See N1QL docs |
 | **Predictive** | `prediction()` [q.v.] | 2-3 | |
 | | `euclidean_distance()` | 2-3 | |
 | | `cosine_distance()` | 2 | |
