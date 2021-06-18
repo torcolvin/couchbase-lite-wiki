@@ -16,7 +16,7 @@
 
 Couchbase Lite's query builder API generates an intermediate representation of the query, which is then given to LiteCore to translate to SQL and execute. Its N1QL parser produces the same intermediate representation. That representation is expressed as a JSON schema; this document describes it.
 
->**STATUS:** At this time (Nov 2019) it is not possible to use this JSON syntax directly in Couchbase Lite, except for [Couchbase Lite For C][CBL_C].
+>**STATUS:** At this time (June 2021) it is not possible to use this JSON syntax directly in Couchbase Lite, except for [Couchbase Lite For C][CBL_C].
 
 A query is described in JSON as a sort of parse tree. Each **node** of the tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
 
@@ -26,7 +26,7 @@ A few operations, like `SELECT` and `COLLATE`, take a set of _named_ operands. T
 
 Most of the operation names are SQL / N1QL keywords or math symbols, but there are also operations to represent document property paths (`"."`), query parameters (`"$"`), etc.
 
-**NOTE:** This schema is case-insensitive, like SQL and N1QL. All operation names, function names, and `SELECT` keys can be upper- or lower-case or any mixture.
+**NOTE:** This schema is case-insensitive, like SQL and N1QL. All operation names, function names, and `SELECT` keys can be upper- or lower-case or any mixture. However, document property names are case-sensitive.
 
 ## 2. Example
 
@@ -233,9 +233,9 @@ Matching is affected by stemming and stop-words, if those are available in the s
 * **Stemming** causes different forms of the same word to match, so (in English) “bigger” matches “big” and “biggest”.
 * **Stop-words** are common but low-significance words, like English “the” and “are”, that are ignored completely in order to keep down the size of the index.
 
->**STATUS:** (Nov 2019) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
+>**STATUS:** (June 2021) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
 
->**STATUS:** (Nov 2019) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
+>**STATUS:** (June 2021) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
 
 ## 7. Top-Level Query, and `SELECT`
 
@@ -266,8 +266,6 @@ The `WHAT` array defines the columns of a query row, just like the column expres
 A result alias can be used in the `WHERE` clause as a shortcut for its expression, as though it were a document property. (This happens even if there is a document property with the same name; the alias shadows it.)
 
 Example: `{"WHAT":[["AS", ["+", [".x"], [".y"]], "sum"]], "WHERE": [">", [".sum"], 10]}`
-
->**STATUS:** (Feb 2020): Result aliases were added in version 2.7.
 
 #### Column Titles
 
@@ -347,7 +345,7 @@ For detailed information about parameters and results, please consult the [N1QL 
 | | `acos()` | 1 | Note: All trig functions use radians |
 | | `asin()` | 1 | |
 | | `atan()` | 1 | |
-| | `atan2()` | 2 | |
+| | `atan2()` | 2 | Parameter order is (y, x) in version 3+; was (x, y) in version 2 |
 | | `ceil()` | 1 | |
 | | `cos()` | 1 | |
 | | `degrees()` | 1 | Converts radians to degrees |
@@ -445,7 +443,7 @@ Indexes aren't, strictly speaking, part of queries, but they use similar syntax.
 
 For backward compatibility an index specifier may also be an array, which is interpreted as though it were the value of a `WHAT` clause.
 
->**STATUS:** (Nov 2019) The `WHERE` clause, and the dictionary form of the specifier, are experimental. In all current releases the specifier _must_ be an array.
+>**STATUS:** (June 2021) The `WHERE` clause, and the dictionary form of the specifier, are experimental. In all current releases the specifier _must_ be an array.
 
 The effective use of indexes to optimize queries is sort of a black art. Fortunately there is a lot of information in books and online, and most of that advice applies here too.
 
@@ -463,7 +461,7 @@ The optional `WHERE` clause creates a _partial index_ that includes only some of
 
 Since many real-world queries look for only a particular type of document, indexes used by such queries can take advantage of a `WHERE` clause that tests the document type. For example, an index of flight arrival times might look like `{"WHAT": [[".arrival_time"]], "WHERE": ["=", [".type"], "flight"]}`.
 
->**STATUS:** (Nov 2019) The `WHERE` clause is experimental. It is not yet supported in full-text indexes.
+>**STATUS:** (June 2021) The `WHERE` clause is experimental. It is not yet supported in full-text indexes.
 
 [1]:	#1-introduction
 [2]:	#2-example
