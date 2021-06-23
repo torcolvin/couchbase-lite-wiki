@@ -30,7 +30,7 @@ uint64_t count = db->getDocumentCount();
 uint64_t count = C4Database::openNamed(name, config)->getDocumentCount();
 ```
 
-If you'd like to see some real-world code that uses the C++ API, look at the [Couchbase Lite For C implementation][CBL_C_SAMPLE.
+If you'd like to see some real-world code that uses the C++ API, look at the [Couchbase Lite For C implementation][CBL_C_SAMPLE].
 
 ## High-Level API Differences
 
@@ -129,4 +129,4 @@ The following APIs are not yet available as C++:
 
 
 
-CBL_C_SAMPLE: https://github.com/couchbaselabs/couchbase-lite-C/blob/master/src/CBLDatabase_Internal.hh
+[CBL_C_SAMPLE]: https://github.com/couchbaselabs/couchbase-lite-C/blob/master/src/CBLDatabase_Internal.hh
