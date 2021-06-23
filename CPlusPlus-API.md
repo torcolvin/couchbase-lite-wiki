@@ -6,7 +6,7 @@ The opaque types in the C API, like `C4Database` and `C4Query`, are now bona fid
 
 This means that the APIs are pretty interchangeable. The types are the same, and the C functions just call into the C++ methods. But the C++ code can be a lot simpler! For example:
 
-#### C Code:
+#### C code:
 ```c
 C4Error error;
 C4Database *db = c4db_openNamed(C4Str(name), &config, &error);
@@ -17,11 +17,17 @@ uint64_t count = c4db_getDocumentCount(db);
 c4db_release(db);
 ```
 
-#### Equivalent C++ Code:
+#### Equivalent C++ code:
 
 ```c++
 Retained<C4Database> db = C4Database::openNamed(name, config);
 uint64_t count = db->getDocumentCount();
+```
+
+#### Even shorter equivalent C++ Code:
+
+```c++
+uint64_t count = C4Database::openNamed(name, config)->getDocumentCount();
 ```
 
 
