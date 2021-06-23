@@ -30,6 +30,7 @@ uint64_t count = db->getDocumentCount();
 uint64_t count = C4Database::openNamed(name, config)->getDocumentCount();
 ```
 
+If you'd like to see some real-world code that uses the C++ API, look at the [Couchbase Lite For C implementation][CBL_C_SAMPLE.
 
 ## High-Level API Differences
 
@@ -48,16 +49,26 @@ uint64_t count = C4Database::openNamed(name, config)->getDocumentCount();
   - 👍 Slice classes have lots of utility methods and conversions that simplify your code.
 
 
-## Using The API
+## Adopting The C++ API
 
-It's pretty easy. You just need to 
+### Preparations
 
-1. Add these directories to the compiler's header search path:
+1. Add the following directories to the compiler's C++ header search path:
    * `couchbase-lite-core/C/Cpp_include/`
    * `couchbase-lite-core/vendor/fleece/Fleece/Support/`
-2. In your source files, change your LiteCore "`#include`"s to `.hh` instead of `.h`, i.e. `c4Database.hh`
+2. In your source and header files, change all your LiteCore "`#include`"s to `.hh` instead of `.h`, i.e. `c4Database.hh`
 3. Switch to linking with a LiteCore static library, not a dynamic library
 
+### Converting Your Code
+
+Some of these topics, like smart pointers and exceptions, are covered in more detail in later sections.
+
+* **Adopt smart pointers.** When you assign a ref-counted object like a `C4Database*` to a variable, change that variable's type from "`T`" to "`Retained<T>`". (You _don't_ need to change function parameters. Passing a `T*` is fine.) 
+* **Change LiteCore function calls to method calls.** Look through the corresponding `.hh` header to find the equivalent method, and then change your function call into a method call. The general pattern is to change `c4widget_spin(widget)` to `widget->spin()`.
+* **Remove "`&error`" parameters.** If a function took a final `C4Error*` parameter, remove the corresponding argument. You can probably remove your local `C4Error` variable too.
+* **Replace error handling code with `try...catch` blocks.** In almost all cases you can rip out the code following a call that checks for an error return and deals with it. But in its place, you do have to ensure you have a C++ `try...catch` block somewhere up the call chain, probably in your top-level code that implements a public platform API. Those `catch` blocks can usually contain boilerplate that translates the caught exception into a platform exception or error.
+* **Adopt `alloc_slice`.** The C++ API uses this instead of `C4SliceResult`. It's very much like `Retained<>` for slices: it automatically handles the ref-counting for you.
+* **Simplify use of slices.** The C++ `slice` class and its subclass `alloc_slice` have a pretty rich API that can simplify your code: conversions to and from other types, searching, subranges, comparisons... Take a look at `fleece/slice.hh`.
 
 ## A Note On C4Document
 
@@ -115,3 +126,7 @@ The method naming is not as compatible with the C API as it should be. I'll clea
 The following APIs are not yet available as C++:
 * C4PredictiveModel
 * C4Socket
+
+
+
+CBL_C_SAMPLE: https://github.com/couchbaselabs/couchbase-lite-C/blob/master/src/CBLDatabase_Internal.hh
