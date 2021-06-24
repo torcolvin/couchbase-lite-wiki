@@ -1,6 +1,6 @@
 # Intro To LiteCore
 
-**Couchbase Lite Core**, or **LiteCore**, is the shared cross-platform implementation of Couchbase Lite’s functionality. LiteCore itself is written in C++ and exposes C++ and C APIs. Each Couchbase Lite implementation wraps around LiteCore’s API to provide an idiomatic API in its platform’s language.
+**Couchbase Lite Core**, or **LiteCore**, is the shared cross-platform implementation of Couchbase Lite’s functionality. LiteCore itself is written in C++ and exposes C and [[C++|CPlusPlus API]] APIs. Each Couchbase Lite implementation wraps around LiteCore’s API to provide an idiomatic API in its platform’s language.
 
 > Important: LiteCore itself is not Couchbase Lite! It is not a product, we do not support 3rd parties using it directly, and its “public” API is public only to Couchbase Lite. We do have an [official Couchbase Lite implementation with a C/C++ API](https://github.com/couchbaselabs/couchbase-lite-C) for developers to use.
 
@@ -172,3 +172,7 @@ freon_error MyDatabaseWrapper::purge(freon_string docID) {
 ```
 
 Except for these top-level bridges, you shouldn’t often need to use `try...catch`. If you find you need to run cleanup code, consider using “RAII” idioms — this is a C++ term for helper classes that own resources and clean them up in their destructors. An example is `std::unique_ptr`, which owns a memory allocation and deletes it automatically.
+
+# What Next?
+
+The [[Home]] page of the wiki has a lot of links to other documentation.
