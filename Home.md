@@ -15,6 +15,7 @@
 
 ## For Couchbase Lite Implementors
 
+* [[Intro]] To LiteCore -- start here if you're new
 * [C API Documentation](https://couchbase.github.io/couchbase-lite-core/C/html/modules.html) -- Doxygen-generated documentation of the C API called by Couchbase Lite
 * 🆕 [[C++ API Overview|CPlusPlus API]] -- there's a shiny new C++ API equivalent to the C one, if you swing that way
 * [[API Changelog]] -- Chronological list of LiteCore C API changes
