@@ -2,6 +2,8 @@ This document describes how LiteCore stores data in its underlying SQLite databa
 
 **You don't need to know any of this unless you work on LiteCore, or want to troubleshoot a database at a very low level.** If you just want to inspect a database, use the [['cblite'|The 'cblite' Tool]] command-line tool. The `sqlite3` tool isn't very useful, even with the knowledge found below, because (a) most of the interesting data is encoded in binary formats, and (b) most mutating operations will fail because they invoke triggers that use custom functions not available outside LiteCore.
 
+>**NOTE:** This describes version 2.x. There is a newer version of this document [in the source tree](https://github.com/couchbase/couchbase-lite-core/blob/master/docs/overview/Schema.md) that includes changes for 3.0 and beyond.
+
 ## 1. KeyStores
 
 LiteCore's low-level storage layer manages **DataFile**s, which support multiple **KeyStores**, each of which contains **Record**s. Currently LiteCore creates and uses three KeyStores:
