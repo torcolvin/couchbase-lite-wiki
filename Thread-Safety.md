@@ -119,7 +119,7 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4docobs_create`
 * Queries
     - `c4query_new`
-    - `c4query_free`
+    - `c4query_release`
     - `c4query_explain`
     - `c4query_run`
     - `c4query_fullTextMatched`
@@ -130,6 +130,7 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4queryenum_seek`
     - `c4queryenum_refresh`
     - `c4queryenum_close`
+    - `c4queryenum_release`
 * Replication
     - `c4repl_new`
     - `c4repl_newWithSocket`
