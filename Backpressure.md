@@ -2,11 +2,11 @@
 
 Jens Alfke — 11 November 2021
 
-[Backpressure](https://medium.com/@jayphelps/backpressure-explained-the-flow-of-data-through-software-2350b3e77ce7) is an important consideration in the replicator's design and implementation. It helps prevent producers from getting too far ahead of consumers and bloating memory usage.
+[Backpressure](https://medium.com/@jayphelps/backpressure-explained-the-flow-of-data-through-software-2350b3e77ce7) is an important consideration in the [Couchbase Lite replicator's](https://github.com/couchbase/couchbase-lite-core/blob/master/docs/overview/Replicator.md) design and implementation. It helps prevent producers from getting too far ahead of consumers and bloating memory usage.
 
 ## Back-what?
 
-Whenever you have a multi-threaded or async producer-consumer system, the two sides can be working at different rates. If the consumer works faster than the producer, that’s fine: it’ll just be idle part of the time waiting for data. But if the _producer_ is faster, it’ll keep producing more and more data that the consumer hasn’t gotten to yet. Since that data is presumably getting buffered, the memory usage of the process keeps going up until it either starts swapping or is killed by the OS. Not good. This actually happened in some versions of Couchbase Lite 1.x and led to a few customer reports of crashes.
+Whenever you have a multi-threaded or async producer-consumer system, the two sides can be working at different rates. If the consumer works faster than the producer, that’s fine: it’ll just be idle part of the time waiting for data. But if the _producer_ is faster, it’ll keep producing more and more data that the consumer hasn’t gotten to yet. Since that data is presumably getting buffered, the memory usage of the process keeps going up until it either starts swapping or is killed by the OS. Not good. This actually happened in some versions of Couchbase Lite 1.x and led to a few customer reports of OOM crashes.
 
 > (If you haven’t already clicked the link above and watched the embedded video of “I Love Lucy” and the candy factory conveyer belt, do it! It’s a perfect example of this problem.)
 
@@ -33,7 +33,7 @@ The “⇉” double arrows represent async connections that need to allow the r
 This shows up in several different ways in the implementation.
 
 * In the `C4Socket` and `WebSocket` interfaces, the consumer calls back to the producer to tell it when it’s finished processing some number of bytes. The producer keeps a counter of unprocessed bytes: when it writes _n_ bytes to the consumer it adds _n_ to the counter, and when the consumer tells it it’s finished _m_ bytes, it subtracts _m_. When the counter exceeds some threshold, that’s backpressure, and the producer stops writing.
-* The BLIP protocol has a much-simplified version of TCP’s flow control for handling large messages. Every few hundred KB the receiving side will send an `ACK` frame back to the sender telling it how many bytes of the message it’s processed. If the sender finds it’s sent significantly more bytes than it’s received `ACK`s for, it pauses until it gets an `ACK`.
+* Our [BLIP](https://github.com/couchbase/couchbase-lite-core/blob/master/Networking/BLIP/docs/BLIP%20Protocol.md) protocol has a much-simplified version of TCP’s flow control for handling large messages. Every few hundred KB the receiving side will send an `ACK` frame back to the sender telling it how many bytes of the message it’s processed. If the sender finds it’s sent significantly more bytes than it’s received `ACK`s for, it pauses until it gets an `ACK`.
 * The `Puller` has a pool of `IncomingRev` objects, each of which can process one incoming revision at a time. When an `IncomingRev`’s revision has been inserted into the database, the object is recycled back into the pool. When the pool is empty, that means the `IncomingRevs` and `Inserter` are at capacity, and the Puller stops handling incoming BLIP `rev` messages.
 * The `Pusher` and `Puller` both have some counters that keep track of pending operations. For example, `Pusher::_changeListsInFlight` is the number of `changes` messages that have been sent to the peer that haven’t yet gotten responses. If this reaches `kMaxChangeListsInFlight` (5), the Pusher stops asking the `ChangesFeed` for more changes from the database.
 
