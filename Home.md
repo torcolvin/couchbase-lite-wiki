@@ -6,6 +6,7 @@
 * [[REST API]] -- If you enable this unsupported listener, here's its API
 * [The cblite Tool](https://github.com/couchbaselabs/cblite) -- Super useful command-line tool for inspecting databases
 * [[TLS and Crypto Terminology]] -- a glossary
+* [[Backpressure]] and the replicator
 
 ## Useful For QE And Support
 
