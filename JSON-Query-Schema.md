@@ -7,6 +7,8 @@
 * [Collation][5]
 * [`MATCH` and Full-Text Search][6]
 * [Top-Level Query, and `SELECT`][7]
+  * [The `WHAT` Clause](#the-what-clause-result-columns)
+  * [The `FROM` Clause](#the-from-clause-databasejoinunnest-identifiers)
 * [Functions][8]
 * [Indexes](#9-Indexes)
 
@@ -279,6 +281,7 @@ The items in the `FROM` array are dictionaries with the following keys:
 |-----|-------|---------------|
 | `"AS":` | Alphanumeric string: an alias to refer to this database or join by | _required_ |
 | `"COLLECTION":` | String: Collection name | Default collection |
+| `"SCOPE":` | String: Scope name | Default scope |
 | `"JOIN":` | String: Type of join | `"INNER"` (if `ON` is given) |
 | `"ON":` | Boolean-valued expression: the join constraint | no join |
 | `"UNNEST":` | Array-valued expression | no unnest |
@@ -294,11 +297,18 @@ Some requirements:
     * There must be an `UNNEST` property.
     * There cannot be a `JOIN` or `ON` property.
 
+**Adding a `FROM` clause affects the interpretation of properties.** Since there are usually multiple databases or join sources, property names (paths) in the entire query need to be disambiguated by prefixing the appropriate alias. So in the example below, a document's `abbreviation` property has to be named as `.state.abbreviation`, not just `.abbreviation`.
+
+#### Scope and Collections in `FROM`
+
 If `COLLECTION` is given, the special value `"_"` (just an underscore) may be used to refer to the default collection. The name of the database (i.e. the directory name without the `.cblite2` extension) may also be used to refer to the default collection.
 
->**STATUS:** (June 2021) As Collections is still an unsupported feature, the use of the `COLLECTION` property with values that don't name the default collection is also unsupported. It's recommended if you're generating JSON that you just leave out the property.
+If `SCOPE` is given, `COLLECTION` must also be present and must name a non-default collection. Alternatively, the scope name can be given as a prefix of the `COLLECTION` value, followed by a "`.`": e.g. `"COLLECTION":"fooscope.barcoll"`.
 
-Example:
+>**STATUS:** (January 2022) As Collections is still an unsupported feature, the use of the `SCOPE` property, or the `COLLECTION` property with values that don't name the default collection, is unsupported. It's recommended if you're generating JSON that you just leave out these properties.
+
+#### Example of `FROM`
+
 ```json
     "FROM": [{"as": "person"},
              {"as": "state", "on": ["=", [".state.abbreviation"],
@@ -306,7 +316,7 @@ Example:
              {"as": "interest", "unnest": [".person.interests"]}],
 ```
 
-**Adding a `FROM` clause affects the interpretation of properties.** Since there are usually multiple databases or join sources, property names (paths) in the entire query need to be disambiguated by prefixing the appropriate alias. So in the above example, a document's `abbreviation` property has to be named as `.state.abbreviation`, not just `.abbreviation`.
+Note how document property names are prefixed with aliases, like `.state.abbreviation` instead of just `.abbreviation`. This is required once aliases are introduced in a `FROM` clause, to avoid ambiguity.
 
 ## 8. N1QL Functions
 
