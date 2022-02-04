@@ -35,3 +35,4 @@
 * [[Replication Lifecycle]] -- The state machine the replicator goes through
 * [Actor School](https://github.com/couchbase/couchbase-lite-core/blob/master/Networking/BLIP/docs/Actors.md) -- The Actor concurrency library the replicator classes use
 * [BLIP](https://github.com/couchbase/couchbase-lite-core/blob/master/Networking/BLIP/docs/BLIP%20Protocol.md) -- The network protocol underlying the replicator
+* [[Logging Goals]] - A document describing why and at what times we should be logging things
