@@ -37,6 +37,13 @@ These functions can be called at any time, **as long as their parameters remain 
     - `c4db_copy`
     - `c4db_retain`
     - `c4db_free` (as long as it was balanced by a prior `c4db_retain`; it's really "release")
+* Collections
+    - `c4db_getDefaultCollection`
+    - `c4coll_isValid`
+    - `c4coll_getSpec`
+    - `c4coll_getDatabase`
+    - `c4coll_retain`
+    - `c4coll_release`
 * Documents
     - `c4raw_free`
     - `c4rev_getGeneration`
@@ -82,6 +89,16 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4db_setMaxRevTreeDepth`
     - `c4db_getUUIDs`
     - `c4db_sharedFleeceEncoder` _(the code that uses the encoder needs to be database-exclusive too)_
+* Collection Actions
+    - `c4db_hasCollection`
+    - `c4db_getCollection`
+    - `c4db_createCollection`
+    - `c4db_deleteCollection`
+    - `c4db_collectionNames`
+    - `c4coll_enumerateChanges`
+    - `c4coll_enumerateAllDocs`
+* Scope Actions
+    - `c4db_scopeNames`
 * Transactions (see note below)
     - `c4db_beginTransaction`
     - `c4db_endTransaction`
@@ -98,6 +115,15 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4doc_setExpiration`
     - `c4doc_getExpiration`
     - `c4db_purgeDoc`
+    - `c4coll_getDocumentCount`
+    - `c4coll_getLastSequence`
+    - `c4coll_getDoc`
+    - `c4coll_getDocBySequence`
+    - `c4coll_putDoc`
+    - `c4coll_moveDoc`
+    - `c4coll_purgeDoc`
+    - `c4coll_setDocExpiration`
+    - `c4coll_getDocExpiration`
 * Shared keys (Because FLSharedKeys isn't thread-safe)
     - `c4db_getFLSharedKeys`
     - `c4db_createFleeceEncoder`
@@ -114,9 +140,13 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4exp_purgeExpired`
     - `c4exp_close`
     - `c4exp_free`
+    - `c4coll_purgeExpiredDocs`
+    - `c4coll_nextDocExpiration`
 * Database observers
     - `c4dbobs_create`
+    - `c4dbobs_createFromCollection`
     - `c4docobs_create`
+    - `c4docobs_createWithCollection`
 * Queries
     - `c4query_new`
     - `c4query_release`
@@ -131,6 +161,9 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4queryenum_refresh`
     - `c4queryenum_close`
     - `c4queryenum_release`
+    - `c4coll_createIndex`
+    - `c4coll_deleteIndex`
+    - `c4coll_getIndexesInfo`
 * Replication
     - `c4repl_new`
     - `c4repl_newWithSocket`
