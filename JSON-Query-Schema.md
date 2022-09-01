@@ -279,7 +279,7 @@ The items in the `FROM` array are dictionaries with the following keys:
 
 | Key | Value | Default Value |
 |-----|-------|---------------|
-| `"AS":` | Alphanumeric string: an alias to refer to this database or join by | _required_ |
+| `"AS":` | Alphanumeric string: an alias to refer to this database or join by | Derive from `COLLECTION` |
 | `"COLLECTION":` | String: Collection name | Default collection |
 | `"SCOPE":` | String: Scope name | Default scope |
 | `"JOIN":` | String: Type of join | `"INNER"` (if `ON` is given) |
@@ -287,7 +287,7 @@ The items in the `FROM` array are dictionaries with the following keys:
 | `"UNNEST":` | Array-valued expression | no unnest |
 
 Some requirements:
-* Every item must have a unique `AS` property value.
+* Every item must have an effective unique `AS` property value. If the `AS` property is missing in the `FROM` clause, it will be derived from `COLLECTION`.
 * The first item in the array serves only to alias the default database; it can't have a `JOIN`,  `ON` or `UNNEST` property.
 * The subsequent items _must_ either be joins or unnests.
 * In a join:
