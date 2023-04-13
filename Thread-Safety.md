@@ -54,6 +54,8 @@ These functions can be called at any time, **as long as their parameters remain 
     - `c4dbobs_getChanges`
     - `c4dbobs_free`
     - `c4docobs_free`
+* Query observers
+    - `c4queryobs_create`
 * Replication
     - `c4repl_isValidDatabaseName`
     - `c4repl_parseURL`
@@ -161,6 +163,7 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4queryenum_refresh`
     - `c4queryenum_close`
     - `c4queryenum_release`
+    - `c4queryobs_*` (except `c4queryobs_create` which is thread-safe)
     - `c4coll_createIndex`
     - `c4coll_deleteIndex`
     - `c4coll_getIndexesInfo`
