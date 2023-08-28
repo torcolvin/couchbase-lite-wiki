@@ -31,7 +31,7 @@ A CBL document that looks like this:
 { name: "Widget 124C41+",
   photos: {
     thumbnail: {
-      _cbltype: "blob",
+      @type: "blob",
       digest: "E3548AF60A3A407CA67389653ED82C09",
       type: "image/jpeg",
       length: 4321 }
@@ -43,7 +43,7 @@ will be sent to Sync Gateway in this form:
 { name: "Widget 124C41+",
   photos: {
     thumbnail: {
-      _cbltype: "blob",
+      @type: "blob",
       digest: "E3548AF60A3A407CA67389653ED82C09",
       type: "image/jpeg",
       length: 4321 }
