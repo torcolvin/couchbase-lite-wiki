@@ -163,7 +163,7 @@ These functions follow the general rule: only one thread at a time can call any 
     - `c4queryenum_refresh`
     - `c4queryenum_close`
     - `c4queryenum_release`
-    - `c4queryobs_*` (except `c4queryobs_create` and c4queryobs_enable(false) which are thread-safe)
+    - `c4queryobs_*` (except `c4queryobs_create` and `c4queryobs_enable(false)` which are thread-safe)
     - `c4coll_createIndex`
     - `c4coll_deleteIndex`
     - `c4coll_getIndexesInfo`
