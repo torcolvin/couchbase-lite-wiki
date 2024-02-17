@@ -159,11 +159,13 @@ The operations are named after their N1QL/SQL equivalents.
 
 The `CASE` operator needs a bit of explanation.
 
-* The first operand is the expression to test (which directly follows the `CASE` keyword in N1QL/SQL), or `null` if there is none.
+* The first operand is the expression to test (which directly follows the `CASE` keyword in N1QL/SQL).
 * The second operand is the first expression to compare with (directly following `WHEN`.)
 * The third operand is the result to use if the first expression matches (directly following `THEN`.)
 * After that can come zero or more pairs of extra 'when' and 'then' expressions.
 * If there's one operand left over (i.e. the operation has an even number of operands) it's interpreted as the `ELSE` result.
+
+Alternatively, the expression to test may be `null`; in that case, each of the odd-numbered "when" operands is checked for truthiness instead of being compared against the test expression.
 
 ## 5. Collation
 
