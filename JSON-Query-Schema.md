@@ -16,11 +16,14 @@
 
 ## 1. Introduction
 
-Couchbase Lite's query builder API generates an intermediate representation of the query, which is then given to LiteCore to translate to SQL and execute. Its N1QL parser produces the same intermediate representation. That representation is expressed as a JSON schema; this document describes it.
+There are two ways to create queries in Couchbase Lite:
 
->**STATUS:** At this time (June 2021) it is not possible to use this JSON syntax directly in Couchbase Lite, except for [Couchbase Lite For C][CBL_C].
+1. The legacy QueryBuilder API
+2. The newer API that takes a query string in N1QL / SQL++ syntax.
 
-A query is described in JSON as a sort of parse tree. Each **node** of the tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
+Both of these produce an intermediate representation of the query, a sort of Abstract Syntax Tree (AST) expressed in JSON. That's what this document describes. LiteCore then translates this into SQL that can be executed by SQLite.
+
+Each **node** of the parse tree describes an **operation** and a list of **operands** (children). The operations can be arithmetic, comparison, logical, etc. The number of operands depends on the operation; for example, `NOT` has exactly one, `-` has one or two (negation or subtraction), `AND` has two or more.
 
 A node is represented in JSON as an array, where the first element is a string naming the operation, and the other elements represent the operands (often nested arrays); for example `["=", ["+", 2, 2], 5]`. (If you know LISP or any functional languages, this should look pretty familiar!)
 
@@ -237,9 +240,9 @@ Matching is affected by stemming and stop-words, if those are available in the s
 * **Stemming** causes different forms of the same word to match, so (in English) “bigger” matches “big” and “biggest”.
 * **Stop-words** are common but low-significance words, like English “the” and “are”, that are ignored completely in order to keep down the size of the index.
 
->**STATUS:** (June 2021) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
+>**STATUS:** (August 2024) Stemming is currently available for Danish, Dutch, English, Finnish, French, German, Hungarian, Italian, Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish. Stop-words are used in English and French.
 
->**STATUS:** (June 2021) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
+>**STATUS:** (August 2024) The FTS indexer considers words to be sequences of Unicode alphabetic characters separated by non-alphabetic characters. This is true of most languages, but many Asian languages like Japanese, Chinese and Thai do not normally use whitespace to separate words; FTS will not work with such text. (Finding word breaks in these languages is difficult and will require 3rd party libraries like [Mecab][20] or Apple’s [NSLinguisticTagger][21].)
 
 ## 7. Top-Level Query, and `SELECT`
 
@@ -306,8 +309,6 @@ Some requirements:
 If `COLLECTION` is given, the special value `"_"` (just an underscore) may be used to refer to the default collection. The name of the database (i.e. the directory name without the `.cblite2` extension) may also be used to refer to the default collection.
 
 If `SCOPE` is given, `COLLECTION` must also be present and must name a non-default collection. Alternatively, the scope name can be given as a prefix of the `COLLECTION` value, followed by a "`.`": e.g. `"COLLECTION":"fooscope.barcoll"`.
-
->**STATUS:** (January 2022) As Collections is still an unsupported feature, the use of the `SCOPE` property, or the `COLLECTION` property with values that don't name the default collection, is unsupported. It's recommended if you're generating JSON that you just leave out these properties.
 
 #### Example of `FROM`
 
@@ -408,6 +409,7 @@ For detailed information about parameters and results, please consult the [N1QL 
 | **Predictive** | `prediction()` [q.v.] | 2-3 | |
 | | `euclidean_distance()` | 2-3 | |
 | | `cosine_distance()` | 2 | |
+| **Vector** | `approx_vector_distance()` [q.v.] | 2-5 | |
 
 ### `prediction()`
 
@@ -441,7 +443,19 @@ Returns the _cosine distance_ (one minus the [_cosine similarity_][COSINE]) betw
 
 Both parameters must be arrays of numbers, must be the same length, and must be non-empty. The result is a floating-point number in the range [-1 … +1].
 
-**Note:** `prediction()`, `euclidean_distance()`, and `cosine_distance()` are only available in the Enterprise Edition (EE) of Couchbase Lite.
+### `approx_vector_distance()`
+
+This triggers a search of a pre-existing vector index. Its parameters are the same as on Server:
+
+`approx_vector_distance(indexed_property, target_vector, [metric], [num_probes], [accurate])`
+
+- `indexed_property` is an expression evaluating to a vector value. There MUST exist a vector index on this exact property.
+- `target_vector` must also evaluate to a vector value; this is typically a query parameter.
+- `metric` is the name of the distance metric. It default to `euclidean2`.
+- `num_probes` is the number of centroids to probe. It defaults to the value given when the index was created.
+- `accurate` is only for Server compatibility. It defaults to false, and if given must have a value of `false`.
+
+**Note:** The prediction and vector functions are only available in the Enterprise Edition (EE) of Couchbase Lite.
 
 
 ## 9. Indexes
@@ -455,7 +469,7 @@ Indexes aren't, strictly speaking, part of queries, but they use similar syntax.
 
 For backward compatibility an index specifier may also be an array, which is interpreted as though it were the value of a `WHAT` clause.
 
->**STATUS:** (June 2021) The `WHERE` clause, and the dictionary form of the specifier, are experimental. In all current releases the specifier _must_ be an array.
+>**STATUS:** (August 2024) The `WHERE` clause, and the dictionary form of the specifier, are experimental. In all current releases the specifier _must_ be an array.
 
 The effective use of indexes to optimize queries is sort of a black art. Fortunately there is a lot of information in books and online, and most of that advice applies here too.
 
@@ -473,7 +487,7 @@ The optional `WHERE` clause creates a _partial index_ that includes only some of
 
 Since many real-world queries look for only a particular type of document, indexes used by such queries can take advantage of a `WHERE` clause that tests the document type. For example, an index of flight arrival times might look like `{"WHAT": [[".arrival_time"]], "WHERE": ["=", [".type"], "flight"]}`.
 
->**STATUS:** (June 2021) The `WHERE` clause is experimental. It is not yet supported in full-text indexes.
+>**STATUS:** (August 2024) The `WHERE` clause is still experimental. It is not yet supported in full-text indexes.
 
 [1]:	#1-introduction
 [2]:	#2-example
