@@ -40,11 +40,18 @@ Again, this is not the full REST API; it doesn't expose all functionality, it's 
 | PUT    | /_db_/_id_  | | Creates or updates a document |
 |        | |?rev=_revID_ | Current revision ID (required if doc exists, unless you add a `_rev` property to the JSON body) |
 
+## Scopes & Collections
+
+Following Sync Gateway's lead, the way to access a non-default collection is to append it to the /_db_ path component, with a dot in between. If it's in a non-default scope, the scope goes before the collection, again separated by a dot.
+
+For example: `GET /dbname.mycollection/mydoc`, or `GET /dbname.myscope.mycollection/mydoc`
+
 ## Missing Stuff
 
 * All HTTP endpoints and "`?`" options not listed above
 * Access to revision history
 * Attachments
+* MIME multipart formats (good riddance!)
 * `/_replicate` properties other than `source`, `target`, `continuous`, and `cancel`
 * Local-to-local replication (where both `source` and `target` are local db names)
 * Queries (obviously there are no views or design docs, but eventually it'd be nice to be able to POST a query in the JSON syntax or N1QL.)
