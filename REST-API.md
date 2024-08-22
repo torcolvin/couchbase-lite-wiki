@@ -15,7 +15,7 @@ Again, this is not the full REST API; it doesn't expose all functionality, it's 
 | GET    | /  | | Server info, like the version |
 | GET    | /_all_dbs | | List of all database names |
 | POST   | /_replicate | | Start a replication; parameters in JSON body. [See note below] |
-| GET    | /_active_tasks | | Info on active replications |
+| GET    | /_active_tasks | | Info on active replications and waiting `_changes` feeds |
 | GET    | /_db_  | | Database doc count, current sequence, etc. |
 | DELETE | /_db_       | | Deletes a database |
 | PUT    | /_db_       | | Creates a database |
