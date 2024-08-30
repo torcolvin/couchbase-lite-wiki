@@ -33,6 +33,7 @@ Again, this is not the full REST API; it doesn't expose all functionality, it's 
 |        |                | ?include_docs=true | Adds doc bodies to results |
 |        |                | ?active_only=true | Suppresses deleted documents |
 |        |                | ?descending=true | Reverses sort order (descending sequence) |
+| POST   | /_db_/_query| | Runs a N1QL/SQL++ query. Body must be JSON object with `query` string and optional `params` dict. |
 | GET    | /_db_/_id_  | | Returns document body |
 |        | |?rev=_revID_ | Revision ID to get (optional) | 
 | DELETE | /_db_/_id_  | | Deletes a document |
@@ -54,6 +55,5 @@ For example: `GET /dbname.mycollection/mydoc`, or `GET /dbname.myscope.mycollect
 * MIME multipart formats (good riddance!)
 * `/_replicate` properties other than `source`, `target`, `continuous`, and `cancel`
 * Local-to-local replication (where both `source` and `target` are local db names)
-* Queries (obviously there are no views or design docs, but eventually it'd be nice to be able to POST a query in the JSON syntax or N1QL.)
 
 [CBLITE]: https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/README.cblite.md
