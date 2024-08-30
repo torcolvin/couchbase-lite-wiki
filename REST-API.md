@@ -14,7 +14,7 @@ Again, this is not the full REST API; it doesn't expose all functionality, it's 
 |--------|------|-----------|-------------|
 | GET    | /  | | Server info, like the version |
 | GET    | /_all_dbs | | List of all database names |
-| POST   | /_replicate | | Start a replication; parameters in JSON body. [See note below] |
+| POST   | /_replicate | | Start a replication; parameters in JSON body (see below) |
 | GET    | /_active_tasks | | Info on active replications and waiting `_changes` feeds |
 | GET    | /_db_  | | Database doc count, current sequence, etc. |
 | DELETE | /_db_       | | Deletes a database |
@@ -33,7 +33,7 @@ Again, this is not the full REST API; it doesn't expose all functionality, it's 
 |        |                | ?include_docs=true | Adds doc bodies to results |
 |        |                | ?active_only=true | Suppresses deleted documents |
 |        |                | ?descending=true | Reverses sort order (descending sequence) |
-| POST   | /_db_/_query| | Runs a N1QL/SQL++ query. Body must be JSON object with `query` string and optional `params` dict. |
+| POST   | /_db_/_query| | N1QL/SQL++ query (see below) (CBL 3.3+) |
 | GET    | /_db_/_id_  | | Returns document body |
 |        | |?rev=_revID_ | Revision ID to get (optional) | 
 | DELETE | /_db_/_id_  | | Deletes a document |
@@ -47,13 +47,34 @@ Following Sync Gateway's lead, the way to access a non-default collection is to 
 
 For example: `GET /dbname.mycollection/mydoc`, or `GET /dbname.myscope.mycollection/mydoc`
 
+## Queries (`/db/_query`)
+
+Properties of the JSON request body:
+
+- `query`: The N1QL/SQL++ query string. The `FROM` clause must match the database name or be `_`.
+- `params`: An object mapping query parameter names (without the `$`) to values. Omit if there are no parameters.
+
+## Replication (`/_replicate`)
+
+Properties of the JSON request body:
+
+- `source`: Required! The source database
+- `target`: Required! The destination database
+- `bidi`: Set to `true` for bidirectional push/pull replication
+- `continuous`: Set to `true` for continuous replication
+- `collections`: Optional array of collection names
+- `cancel`: Set to `true` to stop an active replication with the same parameters
+- `user`: Username for HTTP Basic auth to remote server
+- `password`: Password for HTTP Basic auth to remote server
+
+Either `source` or `target` must be a local database name; the other must be a remote `ws:` or `wss:` sync URL.
+
 ## Missing Stuff
 
 * All HTTP endpoints and "`?`" options not listed above
 * Access to revision history
 * Attachments
 * MIME multipart formats (good riddance!)
-* `/_replicate` properties other than `source`, `target`, `continuous`, and `cancel`
 * Local-to-local replication (where both `source` and `target` are local db names)
 
 [CBLITE]: https://github.com/couchbaselabs/couchbase-mobile-tools/blob/master/README.cblite.md
