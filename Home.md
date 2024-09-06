@@ -18,9 +18,9 @@
 
 * [[Intro]] To LiteCore -- start here if you're new
 * [C API Documentation](https://couchbase.github.io/couchbase-lite-core/C/html/modules.html) -- Doxygen-generated documentation of the C API called by Couchbase Lite
-* 🆕 [[C++ API Overview|CPlusPlus API]] -- there's a shiny new C++ API equivalent to the C one, if you swing that way
+* [[C++ API Overview|CPlusPlus API]] -- there's a shiny new C++ API equivalent to the C one, if you swing that way
 * [[API Changelog]] -- Chronological list of LiteCore C API changes
-* [[Reference Counting]] -- How to use ref-counted types in C and C++
+* 🆕 [[Reference Counting]] -- How to use ref-counted types in C and C++
 * [Using Fleece](https://github.com/couchbaselabs/fleece/wiki/Using-Fleece) and [Advanced Fleece](https://github.com/couchbaselabs/fleece/wiki/Advanced-Fleece) -- the JSON-like storage format and API used for documents
 * [Shared Keys In Fleece](https://github.com/couchbaselabs/fleece/blob/master/SharedKeys.md) -- describes an often-confusing optimization of Fleece
 * [Slices](https://github.com/couchbaselabs/fleece/wiki/Slices) -- a core data structure used by LiteCore and Fleece
