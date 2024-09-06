@@ -6,7 +6,7 @@ A ref-counted object has an internal counter in it, which reflects how many vali
 
 You never explicitly delete a ref-counted object; instead when you're done with it you **release** it, which decrements the counter. When the counter reaches zero, we know nothing is using the object anymore, so the object is automatically freed. Since release may free the object, _never_ use that pointer again afterwards. It's dead to you.
 
-If you need to store another reference to the same object somewhere, you retain the object, which increments the counter. That second reference also requires a release call when it's no longer used.
+If you need to store another reference to the same object somewhere, you **retain** the object, which increments the counter. That second reference also requires a release call when it's no longer used.
 
 > Note: As a convenience, it's always safe to retain or release a NULL pointer; it's a no-op.
 
@@ -19,7 +19,7 @@ We have several categories of ref-counted objects:
 
 * In the C API:
   - Types like `C4Database*` are opaque references that have associated functions like `c4db_retain()` and `c4db_release()`.
-  - Fleece types like `FLDoc`, `FLMutableDict` `FLMutableArray`, which have their associated retain/release functions.
+  - Some Fleece types like `FLDoc`, `FLMutableDict` `FLMutableArray`, are ref-counted and have their associated retain/release functions.
   - `FLSliceResult` is a ref-counted block of memory, often used as a string, with associated functions `FLSliceResult_Retain()` and `FLSliceResult_Release()`.
 * In the C++ API:
   - Any subclass of `fleece::RefCounted`, which includes the LiteCore classes `C4Database` etc. These are always stored in a `Retained<>`.
@@ -32,9 +32,9 @@ We have several categories of ref-counted objects:
 
 ## In C
 
-In C APIs, retain and release are functions that take a reference. There are separate functions for each type of object; in fact, the existence of functions with "retain" and "release" in their names is a clue that the type they're passed is ref-counted.
+In C APIs, retain and release are functions that take a pointer. There are separate functions for each type of object; in fact, the existence of functions with "retain" and "release" in their names is a clue that the type they're passed is ref-counted.
 
-The most common way you obtain a reference is by an API call that returns one, like `c4db_openNamed()`. Since the call is passing ownership of the reference to you, you're responsible for calling release when done.
+The most common way you obtain a reference is by an API call that returns one, like `c4db_openNamed()`, whose doc-comment points out that you're responsible for releasing the result. Since the call is _passing ownership_ of the reference to you, you're responsible for calling release when done:
 
 ```C
 // Temporarily using a ref-counted result:
@@ -54,8 +54,6 @@ A more complicated case is where you have an existing reference variable and wan
 
 The order is important: if you swap steps 1 and 2, then if the new value happens to be the same as the old value, the initial release could delete the object, which would be Very Bad.
 
-> Note: This three-step tango is _not_ thread-safe, and making it thread-safe would be more difficult than it appears. Never mutate a reference variable when another thread might have access to it!
-
 ```C
 // Updating a stored ref-counted reference:
 typedef struct { C4Foo* foo; } mystruct;
@@ -67,11 +65,14 @@ void updateFoo(mystruct *s, C4Foo* newFoo) {
 }
 ```
 
-Note that this works even if either of `newFoo` and/or `s->foo` are NULL, or if they point to the same object.
+This works even if either of `newFoo` and/or `s->foo` are NULL, or if they point to the same object.
+
+> Note: This three-step tango is _not_ thread-safe (and making it thread-safe would be more difficult than it appears.) Never mutate a reference variable when another thread might have access to it!
+
 
 ## In C++
 
-In C++ APIs, we [almost] never call retain/release directly. Instead we use "smart pointer" types that do it automatically: these are `Retained<>` and `RetainedConst<>`, as well as `alloc_slice`, `MutableDict`, `MutableArray`. These all do the 'three-step tango' described above when you assign to them, and they release their value in their destructor.
+In C++ APIs, we don't call retain/release directly. Instead we use "smart pointer" types that do it automatically: these are `Retained<>` and `RetainedConst<>`, as well as `alloc_slice`, `MutableDict`, `MutableArray`. These all do the 'three-step tango' described above when you assign to them, and they release their value in their destructor.
 
 ```c++
 // Temporarily using a ref-counted result:
@@ -90,7 +91,7 @@ void mystruct::updateFoo(C4Foo* newFoo) {
 }
 ```
 
-> Note: Another benefit of `Retained<>` (and the other smart pointers) is that they're automatically initialized to NULL, making uninitialized-variable bugs impossible.
+> Note: Another benefit of `Retained<>` (and the other smart pointers) is that they're automatically initialized to NULL, not garbage like a raw pointer.
 
 ### Passing parameters
 
@@ -99,7 +100,7 @@ A question that sometimes comes up is whether you should pass a ref-counted type
 - Passing a smart pointer is guaranteed to be safe, but it's expensive (at the micro-level.) The implicit retain/release calls involve atomic operations that take hundreds of CPU cycles. [Citation Needed]
 - Passing a raw pointer is very fast ... but there is an edge case where it can bite you: if the function passed the pointer makes a call that releases the caller's reference. 
 
-We generally use the fast option.
+We generally use the fast option: pass a raw pointer.
 
 ### Using `new`
 
