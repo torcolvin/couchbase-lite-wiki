@@ -256,9 +256,9 @@ The `SELECT` statement has so many parameters, all of which are optional, that i
 | `"HAVING":` | Expression | `true` |
 | `"DISTINCT":` | Boolean | `false` |
 | `"GROUP_BY":` | Array of expressions or property names | `[]` (no grouping) |
-| `"ORDER_BY":` | Array of expressions or property names | `[]` (unsorted) |
-| `"LIMIT":` | Number | Infinite |
-| `"OFFSET":` | Number | 0 |
+| `"ORDER_BY":` | Array of expressions or property names; may use `["DESC", expr]` | `[]` (unsorted) |
+| `"LIMIT":` | Numeric expression | Infinite |
+| `"OFFSET":` | Numeric expression | 0 |
 
 ### The `WHAT` Clause: Result Columns
 
