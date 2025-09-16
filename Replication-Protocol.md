@@ -12,7 +12,7 @@ This document specifies the replication protocol in use by Couchbase Mobile
 
 1. **[Connections and Messaging][Connections]**
 2. **[RPC Messages][Messages]**
-3. **[Versioning][Versioning]**
+3. **[Versioning: Revision IDs, Histories, Sequences][Versioning]**
 4. **[Checkpoints][Checkpoints]**
 5. **[The Replication Algorithm][Algorithm]**
 
@@ -48,7 +48,7 @@ individually; for instance, the changes to support scopes & collections
 are marked with "*[3.1+]*".
 
 > [!NOTE]
-> As of this writing, protocol `CBMobile_4` is in development, for use by Couchbase Lite 4 and Sync Gateway 4. This version adds support for version vectors, as described in the section Revision IDs and Histories.
+> As of this writing, protocol `CBMobile_4` is in development, for use by Couchbase Lite 4 and Sync Gateway 4. This version adds support for version vectors, as described in the [Versioning][Versioning] section.
 
 ### BLIP
 
