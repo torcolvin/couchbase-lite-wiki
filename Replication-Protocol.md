@@ -239,6 +239,14 @@ document ID followed by [revision ID][Versioning] followed by the deletion state
 The sequence IDs MUST be in forward chronological order but are
 otherwise opaque (and may be any JSON data type, not just integers.)
 
+`deleted` is normally either 1 or missing, but can have other values:
+
+- 2 means access to this document has been revoked by the server
+- 4 means the document was removed from all channels the user has access to
+
+Either of those can be OR'ed with 1 to indicate that the document is also deleted,
+i.e. a tombstone revision is available. If not, the receiver should purge the document.
+
 The document body size in bytes MAY be appended to the array as a
 fifth item if it’s known. (This is understood to be approximate, since
 the sender’s database may not store the body in exactly the same form
