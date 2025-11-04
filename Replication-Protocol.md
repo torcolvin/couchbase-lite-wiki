@@ -139,10 +139,11 @@ Each item in the `checkpoint_ids` array is the client ID string to use when look
 | -------------------- | ------------------------------------------------------------ |
 | Body | A JSON array of checkpoint values |
 
-The values in the response array will be ordered according to the order in the request message.  There are two special entries in this case, however:
+The values in the response array will be ordered according to the order in the request message. Their interpretation is:
 
-- An entry which is an empty dictionary (`{}`) means that there is no existing checkpoint for the given client ID.  
-- An entry which is `null` means that the collection does not exist in the remote, and the replication SHOULD NOT proceed.
+- A non-empty object is a saved checkpoint, plus the added property `_rev` whose value is the revision ID.
+- An empty object (`{}`) means that there is no existing checkpoint for the given client ID.  
+- `null` means that the collection does not exist in the remote, and the replication SHOULD NOT proceed.
 
 #### `setCheckpoint`
 
