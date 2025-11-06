@@ -182,6 +182,7 @@ The response SHOULD NOT be sent until the new checkpoint has been stored durably
 |`activeOnly`| Set to `true` if the requestor doesn’t want to be sent tombstones. _(optional)_|
 |`versioning`| `rev-trees` (default) or `version-vectors` — see the [Versioning][Versioning] section. *[4.0+]* |
 |`sendReplacementRevs`| If `true`, the recipient SHOULD send replacement revs rather than `norev` when the body of a requested rev is unavailable and a newer revision is available. _(optional)_ |
+|`revocations`| Set to `true` if the requestor wants to be notified of documents whose access has been revoked. _(optional)_ |
 |_other properties_| Named parameters for the filter function _(optional)_|
 |Body| `{“docIDs”: […]}` _(optional)_ |
 
