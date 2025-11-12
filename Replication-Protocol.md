@@ -29,7 +29,7 @@ Since both peers can send messages, the protocol isn’t *technically* “client
 ### Connecting and Versioning
 
 The client opens a WebSocket connection to the server at path
-`/`*dbname*`/_blipsync` (where _dbname_ is the name of the database.)
+`/$dbname/_blipsync` (where `$dbname`` is the name of the database.)
 This begins as an HTTP UPGRADE request, and goes through authentication as
 usual, then upgrades to WebSocket protocol.
 
@@ -174,15 +174,18 @@ The response SHOULD NOT be sent until the new checkpoint has been stored durably
 
 | Request             | Description                                                  |
 | -------------------- | ------------------------------------------------------------ |
+|`activeOnly`| Set to `true` if the requestor doesn’t want to be sent tombstones. _(optional)_|
+|`batch`| Maximum number of changes to send in a single `change` message _(optional)_|
 |`collection`| Index of the collection to operate on for this message. *[3.1+]* |
-|`since`| Latest sequence ID already known to the requestor, JSON-encoded _(optional)_|
+|`channels`| If `filter` is `sync_gateway/by_channel`, this is a comma-delimited list of channel names to filter documents. (optional)|
 |`continuous`| Set to `true` if the requestor wants change notifications to be sent indefinitely _(optional)_|
 |`filter`| The name of a filter function known to the recipient _(optional)_|
-|`batch`| Maximum number of changes to send in a single `change` message _(optional)_|
-|`activeOnly`| Set to `true` if the requestor doesn’t want to be sent tombstones. _(optional)_|
-|`versioning`| `rev-trees` (default) or `version-vectors` — see the [Versioning][Versioning] section. *[4.0+]* |
-|`sendReplacementRevs`| If `true`, the recipient SHOULD send replacement revs rather than `norev` when the body of a requested rev is unavailable and a newer revision is available. _(optional)_ |
+|`future`| If `true`, send only changes that occur after the request is received. Overrides the `since` property. _(optional)_|
+|`requestPlus`| If `true` and a non-continuous replication, be sure to wait for all changes that exist at the time of the request and might not be cached. (optional) |
 |`revocations`| Set to `true` if the requestor wants to be notified of documents whose access has been revoked. _(optional)_ |
+|`sendReplacementRevs`| If `true`, the recipient SHOULD send replacement revs rather than `norev` when the body of a requested rev is unavailable and a newer revision is available. _(optional)_ |
+|`since`| Latest sequence ID already known to the requestor, JSON-encoded _(optional)_|
+|`versioning`| `rev-trees` (default) or `version-vectors` — see the [Versioning][Versioning] section. *[4.0+]*. This value is ignored by Sync Gateway, and protocol `BLIP_3+CBMobile_3` will receive revtrees and `BLIP_3+CBMobile_4` will receive version vectors. |
 |_other properties_| Named parameters for the filter function _(optional)_|
 |Body| `{“docIDs”: […]}` _(optional)_ |
 
@@ -347,13 +350,14 @@ all of the proposed revisions.
 
 | Request             | Description                                                  |
 | -------------------- | ------------------------------------------------------------ |
-|`collection`| Index of the collection to operate on for this message. *[3.1+]* |
+|`collection`| Index of the collection to operate on for this message. Required in *[3.1+]* |
 |`id`| Document ID _(optional)_|
 |`rev`| Revision ID _(optional)_ -- see the [Versioning][Versioning] section. |
 |`replacedRev`| If the revision sent is not the revision originally requested, but is a replacementRev, this is the originally requested Revision ID. _(optional)_|
-|`deleted`| true if the revision is a tombstone _(optional)_|
+|`deleted`| `1` or `true` if the revision is a tombstone _(optional)_|
 |`sequence`| Sequence ID, JSON-encoded _(optional unless unsolicited, q.v.)_. If this is a replacementRev, this will be the sequence of the original requested rev.|
 |`history`| Revision history (list of revision IDs) -- see the [Versioning][Versioning] section. |
+|`revTree`| If using version vectors, this is the full revision tree of the same document, and will replace the revision tree history on the recipient. (optional)  *[4.0+]* |
 |`noconflicts`| `true` if the revision may not create a conflict _(optional; default is false)_ |
 |`deltaSrc`| The revisionID that the body is a JSON delta from. If not included, the body is a complete revision. _(optional)_ |
 |Body| Document JSON|
@@ -542,6 +546,12 @@ Every collection instance uses sequence IDs to track changes to documents. They 
 
 Thus, a client keeps track of the server collection’s latest sequence as part of its checkpoint state, and sends that sequence back to the server in the `subChanges` message.
 
+If a sequence number is a string from Sync Gateway, the format can be a colon separated list of 64-bit integers. The significant numeric sequence number is the last one and can be compared against a integer sequence number. Equivalent examples:
+
+- `10`
+- `3:5:10`
+- `3::10`
+
 > [!IMPORTANT]
 > A sequence ID is *usually* a positive integer, but it can be any type of JSON value, so sequences MUST be sent as JSON-encoded. In particular, if a sequence ID is a
 string, it MUST have double-quotes and any necessary escape characters added.
@@ -619,64 +629,49 @@ local doc changes, returning to step 1 when changes occur
 
 #### Push interaction diagram
 
-```
-┌────────────┐                                                                         ┌────────────────┐
-│   Pusher   │                                                                         │      Peer      │
-└────────────┘                                                                         └────────────────┘
-       │                                                                                        │
-       ├────────────────────────────getCheckpoint RQ [clientID]─────────────────────────────────▶
-       │                                                                                        │
-       │                                                                                        │
-       ◀───────────────────────────getCheckpoint RSP: [checkpoint]──────────────────────────────┤
-       │                                                                                        │
-       │                                                                                        │
-       ├─────────────────────────changes RQ [{docId, revId, ..}, {..}]──────────────────────────▶
-       │                                                                                        │
-       │                                                                                        │
-       ◀─────────────────────────────changes RSP [rev1, rev2, ..]───────────────────────────────┤
-       │                                                                                        │
-       │                                                                                        │
-       ├─────────────────────────changes RQ [{docId, revId, ..}, {..}]──────────────────────────▶
-       │                                                                                        │
-       │                                                                                        │
-       ◀─────────────────────────────changes RSP [rev5, rev6, ..]───────────────────────────────┤
-       │                                                                                        │
-       │                                                                                        │
-       ├─────────────────────────changes RQ [] (empty indicates finished)───────────────────────▶
-       │                                                                                        │
-       │                                                                                        │
-       ◀ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ changes RSP: NoReply─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─│
-       │                                                                                        │
-       │                                                                                        │
-       ├──────────────────────────────rev RQ [{docId, rev1, body}]──────────────────────────────▶
-       │                                                                                        │
-       │                                     getAttachment RQ                                   │
-       ◀───────────────────────────────────────[digest]─────────────────────────────────────────┤
-       │                                                                                        │
-       │                                                                                        │
-       ├──────────────────────────────────getAttachment RSP [body]──────────────────────────────▶
-       │                                                                                        │
-       │                                                                                        │
-       ◀──────────────────────────────────getAttachment RQ [digest]─────────────────────────────┤
-       │                                                                                        │
-       │                                                                                        │
-       ├───────────────────────────────────getAttachment RSP [body]─────────────────────────────▶
-       │                                                                                        │
-       │                                                                                        │
-       ◀───────────────────────────────────────rev RSP []───────────────────────────────────────┤
-       │                                                                                        │
-       │                                                                                        │
-       │                                setCheckpoint RQ [clientID,                             │
-       ├────────────────────────────────────────checkpoint]─────────────────────────────────────▶
-       │                                                                                        │
-       │                                                                                        │
-       ◀───────────────────────────setCheckpoint RSP: [checkpoint]──────────────────────────────┤
-       │                                                                                        │
-       │                                                                                        │
-       ▣ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ Close Socket─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─▶
-       │                                                                                        │
-       │                                                                                        │
-       ▼                                                                                        ▼
+```mermaid
+sequenceDiagram
+    participant Pusher
+    participant Peer
+
+    rect rgb(230, 250, 255)
+    note over Pusher,Peer: 🧭 Get Latest Checkpoints
+    Pusher->>Peer: getCheckpoint RQ [clientID]
+    Peer-->>Pusher: getCheckpoint RSP [checkpoint]
+    end
+
+    rect rgb(240, 255, 240)
+    note over Pusher,Peer: 🔄 Send document changes
+    Pusher->>Peer: changes RQ [{docId, revId, ..}, {..}]
+    Peer-->>Pusher: changes RSP [rev1, rev2, ..]
+
+    Pusher->>Peer: changes RQ [{docId, revId, ..}, {..}]
+    Peer-->>Pusher: changes RSP [rev5, rev6, ..]
+
+    Pusher->>Peer: changes RQ [] (empty indicates finished)
+    Peer-->>Pusher: changes RSP: NoReply
+    end
+
+    rect rgb(255, 250, 240)
+    note over Pusher,Peer: 📄 Send document with attachment
+    Pusher->>Peer: rev RQ [{docId, rev1, body}]
+    Peer-->>Pusher: getAttachment RQ [digest]
+    Pusher->>Peer: getAttachment RSP [body]
+    Peer-->>Pusher: getAttachment RQ [digest]
+    Pusher->>Peer: getAttachment RSP [body]
+    Peer-->>Pusher: rev RSP []
+    end
+
+    rect rgb(250, 240, 255)
+    note over Pusher,Peer: 🧭 Set Checkpoint
+    Pusher->>Peer: setCheckpoint RQ [clientID, checkpoint]
+    Peer-->>Pusher: setCheckpoint RSP [checkpoint]
+    end
+
+    rect rgb(255, 240, 240)
+    note over Pusher,Peer: 🔚 Connection Closed
+    Pusher->>Peer: Close Socket
+    end
 ```
 
 ### Pull
@@ -708,74 +703,56 @@ client in continuous mode keeps listening
 10. Server in continuous mode watches for local doc changes, returning
 to step 2 when changes occur
 
-#### Pull interaction digram
+#### Pull interaction diagram
 
-```
-┌────────────┐                                                                        ┌────────────────┐
-│   Puller   │                                                                        │      Peer      │
-└────────────┘                                                                        └────────────────┘
-      │                                                                                        │
-      │                                                                                        │
-      ├────────────────────────────getCheckpoint RQ [clientID]─────────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀───────────────────────────getCheckpoint RSP: [checkpoint]──────────────────────────────┤
-      │                                                                                        │
-      │                                                                                        │
-      ├─────────────────────────subChanges RQ [since, continuous]──────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ subChanges RSP: NoReply ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─│
-      │                                                                                        │
-      │                                                                                        │
-      ◀─────────────────────────changes RQ [{docId, revId, ..}, {..}]──────────────────────────┤
-      │                                                                                        │
-      │                                                                                        │
-      ├─────────────────────────────changes RSP [rev1, rev2, ..]───────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀─────────────────────────changes RQ [{docId, revId, ..}, {..}]──────────────────────────┤
-      │                                                                                        │
-      │                                                                                        │
-      ├─────────────────────────────changes RSP [rev5, rev6, ..]───────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀─────────────────────────changes RQ [] (empty indicates finished)───────────────────────┤
-      │                                                                                        │
-      │                                                                                        │
-      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ changes RSP: NoReply─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀──────────────────────────────rev RQ [{docId, rev1, body}]──────────────────────────────┤
-      │                                                                                        │
-      │                                     getAttachment RQ                                   │
-      ├───────────────────────────────────────[digest]─────────────────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀──────────────────────────────────getAttachment RSP [body]──────────────────────────────┤
-      │                                                                                        │
-      │                                                                                        │
-      ├──────────────────────────────────getAttachment RQ [digest]─────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀───────────────────────────────────getAttachment RSP [body]─────────────────────────────┤
-      │                                                                                        │
-      │                                                                                        │
-      ├───────────────────────────────────────rev RSP []───────────────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      │                                setCheckpoint RQ [clientID,                             │
-      ├────────────────────────────────────────checkpoint]─────────────────────────────────────▶
-      │                                                                                        │
-      │                                                                                        │
-      ◀───────────────────────────setCheckpoint RSP: [checkpoint]──────────────────────────────┤
-      │                                                                                        │
-      │                                                                                        │
-      │                                        Close                                           │
-      ▣ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─Socket ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─▶
-      │                                                                                        │
-      │                                                                                        │
-      ▼                                                                                        ▼
+```mermaid
+sequenceDiagram
+    participant Puller
+    participant Peer
+
+    rect rgb(230, 250, 255)
+    note over Puller,Peer: 🧭 Get checkpoints
+    Puller->>Peer: getCheckpoint RQ [clientID]
+    Peer-->>Puller: getCheckpoint RSP [checkpoint]
+    end
+
+    rect rgb(240, 255, 240)
+    note over Puller,Peer: 🔄 Subscribe to Changes
+    Puller->>Peer: subChanges RQ [since, continuous] (NoReply)
+    end
+
+    rect rgb(255, 255, 230)
+    note over Puller,Peer: 📥 Receive document changes
+    Peer-->>Puller: changes RQ [{docId, revId, ..}, {..}]
+    Puller->>Peer: changes RSP [rev1, rev2, ..]
+
+    Peer-->>Puller: changes RQ [{docId, revId, ..}, {..}]
+    Puller->>Peer: changes RSP [rev5, rev6, ..]
+
+    Peer-->>Puller: changes RQ [] (empty indicates finished) (NoReply)
+    end
+
+    rect rgb(255, 250, 240)
+    note over Puller,Peer: 📄 Get document with attachment
+    Peer-->>Puller: rev RQ [{docId, rev1, body}]
+    Puller->>Peer: getAttachment RQ [digest]
+    Peer-->>Puller: getAttachment RSP [body]
+    Puller->>Peer: getAttachment RQ [digest]
+    Peer-->>Puller: getAttachment RSP [body]
+    Puller->>Peer: rev RSP []
+    end
+
+    rect rgb(250, 240, 255)
+    note over Puller,Peer: 🧭 Set Checkpoint
+    Puller->>Peer: setCheckpoint RQ [clientID, checkpoint]
+    Peer-->>Puller: setCheckpoint RSP [checkpoint]
+    end
+
+    %% --- Close ---
+    rect rgb(255, 240, 240)
+    note over Puller,Peer: 🔚 Connection Closed
+    Puller->>Peer: Close Socket
+    end
 ```
 
 
