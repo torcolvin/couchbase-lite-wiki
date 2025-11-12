@@ -29,7 +29,7 @@ Since both peers can send messages, the protocol isn’t *technically* “client
 ### Connecting and Versioning
 
 The client opens a WebSocket connection to the server at path
-`/$dbname/_blipsync` (where `$dbname`` is the name of the database.)
+`/$dbname/_blipsync` (where `$dbname` is the name of the database.)
 This begins as an HTTP UPGRADE request, and goes through authentication as
 usual, then upgrades to WebSocket protocol.
 
