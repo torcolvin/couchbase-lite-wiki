@@ -177,11 +177,11 @@ The response SHOULD NOT be sent until the new checkpoint has been stored durably
 |`activeOnly`| Set to `true` if the requestor doesn’t want to be sent tombstones. _(optional)_|
 |`batch`| Maximum number of changes to send in a single `change` message _(optional)_|
 |`collection`| Index of the collection to operate on for this message. *[3.1+]* |
-|`channels`| If `filter` is `sync_gateway/by_channel`, this is a comma-delimited list of channel names to filter documents. (optional)|
+|`channels`| If `filter` is `sync_gateway/by_channel`, this is a comma-delimited list of channel names to filter documents. _(optional)_|
 |`continuous`| Set to `true` if the requestor wants change notifications to be sent indefinitely _(optional)_|
 |`filter`| The name of a filter function known to the recipient _(optional)_|
 |`future`| If `true`, send only changes that occur after the request is received. Overrides the `since` property. _(optional)_|
-|`requestPlus`| If `true` and a non-continuous replication, be sure to wait for all changes that exist at the time of the request and might not be cached. (optional) |
+|`requestPlus`| If `true` and a non-continuous replication, be sure to wait for all changes that exist at the time of the request and might not be cached. _(optional)_ |
 |`revocations`| Set to `true` if the requestor wants to be notified of documents whose access has been revoked. _(optional)_ |
 |`sendReplacementRevs`| If `true`, the recipient SHOULD send replacement revs rather than `norev` when the body of a requested rev is unavailable and a newer revision is available. _(optional)_ |
 |`since`| Latest sequence ID already known to the requestor, JSON-encoded _(optional)_|
